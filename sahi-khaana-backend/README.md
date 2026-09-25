@@ -102,9 +102,10 @@ Run the tests with `pytest` (from this folder).
 
 ## How extraction works
 
+0. `preprocessing.py` resizes, checks blur, then cleans the image (CLAHE, denoise, deskew). If the estimated median text-line height is under `MIN_TEXT_HEIGHT_PX` (default 30; `0` turns it off), both images are also **upscaled 2x** before OCR, because RapidOCR drops word spaces on small text. On rendered test labels this cut the word error rate by 60-80% for text lines of roughly 22-27 px and changed nothing above 30 px; on very tiny text (under about 18 px) the result was mixed. It costs about 20 ms plus a few hundred ms of extra OCR time.
 1. `sections.py` finds the *Ingredients* / *Nutrition* headings (fuzzy, so `lNGREDlENTS` still works) and cuts the ingredient list at markers like "Allergen", "Manufactured by", "Best before".
 2. `ingredient_parser.py` splits on top-level commas (brackets respected), reads percentages and INS/E numbers, expands `Emulsifier (322, 471)` into one item per number, and repairs common OCR slips (`lNS`, `1O2`, `501(l)`, full-width brackets, `.` for `,`).
-3. `normalizer.py` maps each item to `rules/additives.json` / `rules/ingredients.json`: INS number, then exact alias, then fuzzy match (rapidfuzz `token_sort_ratio >= 88`). Anything else is `known: false`.
+3. `normalizer.py` maps each item to `rules/additives.json` / `rules/ingredients.json`: INS number, then exact alias, then fuzzy match (rapidfuzz `token_sort_ratio >= 88`). If all of that fails and the token is a single word of 12+ letters, it is split into known words by dictionary segmentation (`Refinedwheatflour` becomes `Refined Wheat Flour`) and matched again; the split is kept only if that match passes the same cutoff, and then `original` shows the split text. Anything else is `known: false`.
 4. `nutrition_parser.py` reads each nutrient with regexes. Energy is returned in kcal (kJ converted), sodium in mg (salt / 2.5 if sodium isn't printed). Missing nutrients stay `null`.
 
 ## How the decisions are made
@@ -133,7 +134,7 @@ A `CONDITIONAL` rule looks like `{"food_categories": ["bakery"], "result": "PASS
 - **No usable nutrition** (nothing found, only per-serving values, or no scoring nutrient): coarse ingredient-based rules apply, the assessment is **capped at `MODERATE`** (the score is still computed) and `LIMITED_NUTRITION_DATA` is added to `warnings`.
 - **`health_result.data_completeness`** is a string: `"full"` (sugars, total fat, saturated fat and sodium all read), `"partial"` (some nutrients read) or `"ingredients_only"` (no usable nutrition). **`health_result.completeness_score`** is the numeric version: 0.7 x (scoring nutrients present) + 0.3 x (ingredients recognised), from 0 to 1. Show completeness in the app.
 
-Known limits: a comma the OCR drops completely ("Salt Sugar") can't be repaired and gives one unknown ingredient; brackets holding only a descriptor ("Salt (iodised)") are ignored.
+Known limits: a comma the OCR drops completely ("Salt Sugar") can't be repaired and gives one unknown ingredient; run-together words are only repaired for single tokens of 12+ letters made of words that appear in the rule data; brackets holding only a descriptor ("Salt (iodised)") are ignored.
 
 ## History endpoints (for the Flutter developer)
 
@@ -169,7 +170,7 @@ All three need the `X-Device-Id` header and only ever see that device's scans.
 
 **`GET /api/v1/scans/{scan_id}/explanation`** returns 200 `{"explanation": "...", "source": "llm" | "template"}` (same 404 rules as above).
 
-- Generated on the first request, then **cached in the database**: later requests return the same text and never call the LLM again. If the LLM call fails, the template is cached instead, so each scan gets exactly one LLM attempt.
+- Generated on the first request. **Cached in the database** when it is final: an `"llm"` answer, or the template when no `GROQ_API_KEY` is configured (nothing to retry). If the LLM call fails (timeout, error, empty answer, over 120 words) you get the template but it is **not cached**, so the next request tries the LLM again. A cached LLM answer is never replaced.
 - `"llm"`: worded by Groq. It is given only `fssai_result`, `health_result` and `warnings`, is told never to change a status, to stay under 120 words, and to make no medical or compliance claims. `"template"`: built directly from the finding reasons and factor labels (no API key, timeout after 10 s, HTTP error, empty answer, or an answer over 120 words).
 - The explanation never affects any status or score. It can take a few seconds the first time.
 - Set `GROQ_API_KEY` (and optionally `GROQ_MODEL`, default `llama-3.1-8b-instant`; check https://console.groq.com/docs/models for current ids) in `.env`. Without a key you always get the template.

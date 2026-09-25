@@ -1,8 +1,10 @@
 """OpenCV preprocessing: make a phone photo of a label easier for OCR.
 
-Steps: resize -> blur check -> grayscale -> CLAHE -> denoise -> deskew.
+Steps: resize -> blur check -> grayscale -> CLAHE -> denoise -> deskew -> (upscale small text).
+The upscale comes last so the expensive denoising runs on the normal-size image.
 """
 from dataclasses import dataclass
+from statistics import median
 
 import cv2
 import numpy as np
@@ -17,6 +19,8 @@ class PreprocessResult:
     original_resized: np.ndarray  # BGR, only resized (fallback OCR input)
     blur_score: float  # Laplacian variance (higher = sharper)
     deskew_angle: float  # degrees applied (0.0 if skipped)
+    text_height_px: float = 0.0  # estimated median text-line height before any upscaling (0 = no text found)
+    upscaled: bool = False  # True if both images were enlarged 2x because the text was small
 
 
 def decode_image(data: bytes) -> np.ndarray:
@@ -36,6 +40,31 @@ def _resize_long_edge(img: np.ndarray, target: int) -> np.ndarray:
         return img
     scale = target / long_edge
     return cv2.resize(img, (round(w * scale), round(h * scale)), interpolation=cv2.INTER_AREA)
+
+
+UPSCALE_FACTOR = 2
+
+
+def _upscale(img: np.ndarray) -> np.ndarray:
+    return cv2.resize(img, None, fx=UPSCALE_FACTOR, fy=UPSCALE_FACTOR, interpolation=cv2.INTER_CUBIC)
+
+
+def estimate_text_height(gray: np.ndarray) -> float:
+    """Cheap estimate of the median text-line height in pixels (0.0 if no text-like blobs).
+
+    Binarise, smear the letters horizontally so each word/line becomes one blob (vertical
+    gaps between lines stay open), and take the median height of the wide blobs.
+    """
+    _, bw = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+    kernel_width = max(5, int(0.02 * gray.shape[1]))
+    merged = cv2.dilate(bw, cv2.getStructuringElement(cv2.MORPH_RECT, (kernel_width, 1)))
+    contours, _ = cv2.findContours(merged, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    heights = []
+    for contour in contours:
+        _, _, w, h = cv2.boundingRect(contour)
+        if h >= 4 and w >= 2 * h:  # ignore specks and tall/narrow shapes (not text lines)
+            heights.append(h)
+    return float(median(heights)) if heights else 0.0
 
 
 def _estimate_skew(gray: np.ndarray) -> float:
@@ -81,6 +110,10 @@ def preprocess(image_bgr: np.ndarray) -> PreprocessResult:
             "The photo is too blurry to read. Hold the phone steady and retake it."
         )
 
+    # Small text? (decided now, on the photo as taken; applied after the cleanup below)
+    text_height = estimate_text_height(gray)
+    upscaled = 0 < text_height < cfg.min_text_height_px
+
     # CLAHE evens out uneven lighting / glare; then remove noise.
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
     enhanced = clahe.apply(gray)
@@ -93,9 +126,16 @@ def preprocess(image_bgr: np.ndarray) -> PreprocessResult:
     else:
         angle = 0.0
 
+    # OCR loses word spaces on small text, so enlarge both images before recognition.
+    if upscaled:
+        denoised = _upscale(denoised)
+        resized = _upscale(resized)
+
     return PreprocessResult(
         processed=denoised,
         original_resized=resized,
         blur_score=blur_score,
         deskew_angle=angle,
+        text_height_px=text_height,
+        upscaled=upscaled,
     )

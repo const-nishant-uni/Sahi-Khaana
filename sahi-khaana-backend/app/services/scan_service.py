@@ -96,8 +96,9 @@ def process_scan(session: Session, device_id: str, file: UploadFile, food_catego
     ocr = run_ocr(pre.processed, pre.original_resized)  # may raise NO_TEXT_FOUND
     t2 = time.perf_counter()
     log.info(
-        "scan %s: preprocess %.2fs (blur=%.0f, deskew=%.1f°), ocr %.2fs (%s, conf=%.2f)",
-        path.name, t1 - t0, pre.blur_score, pre.deskew_angle, t2 - t1, ocr.engine, ocr.confidence,
+        "scan %s: preprocess %.2fs (blur=%.0f, deskew=%.1f°, text=%.0fpx%s), ocr %.2fs (%s, conf=%.2f)",
+        path.name, t1 - t0, pre.blur_score, pre.deskew_angle, pre.text_height_px,
+        " upscaled" if pre.upscaled else "", t2 - t1, ocr.engine, ocr.confidence,
     )
 
     sections = extract_sections(ocr.raw_text)
@@ -226,13 +227,16 @@ def get_scan(session: Session, device_id: str, scan_id: str) -> ScanResponse:
 
 
 # One lock for explanation generation: two simultaneous requests for the same scan must not
-# both call the LLM. (Simple and fine for a small app; it serialises explanations.)
+# both call the LLM and store two answers. (Simple and fine for a small app; it serialises them.)
 _explanation_lock = threading.Lock()
 
 
 def get_explanation(session: Session, device_id: str, scan_id: str) -> ExplanationResponse:
-    """Cached explanation. The LLM is tried at most once per scan: if it fails, the template
-    is cached instead, so a scan never triggers a second LLM call."""
+    """Explanation for a scan, cached in the database when it is final.
+
+    Cached: an LLM answer, or the template when no GROQ_API_KEY is configured. NOT cached: the
+    template returned because the LLM call failed (timeout, error, empty, over 120 words), so
+    the next request tries the LLM again."""
     _get_owned_scan(session, device_id, scan_id)  # 404 for other devices, before anything else
     with _explanation_lock:
         scan = session.get(Scan, scan_id)
@@ -241,9 +245,10 @@ def get_explanation(session: Session, device_id: str, scan_id: str) -> Explanati
             return ExplanationResponse(explanation=scan.explanation, source=scan.explanation_source or "template")
         result = ScanResponse.model_validate_json(scan.result_json)
         explanation = generate_explanation(result.fssai_result, result.health_result, result.warnings)
-        scan.explanation, scan.explanation_source = explanation.text, explanation.source
-        session.add(scan)
-        session.commit()
+        if explanation.cacheable:
+            scan.explanation, scan.explanation_source = explanation.text, explanation.source
+            session.add(scan)
+            session.commit()
     return ExplanationResponse(explanation=explanation.text, source=explanation.source)
 
 

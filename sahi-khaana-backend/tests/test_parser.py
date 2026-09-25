@@ -3,7 +3,7 @@ import pytest
 
 from app.config import BASE_INS_MATCH_CONFIDENCE
 from app.pipeline.ingredient_parser import fix_ocr, parse_ingredients, split_top_level
-from app.pipeline.normalizer import extract_ingredients
+from app.pipeline.normalizer import _vocabulary, extract_ingredients, segment_run_together, segment_words
 from app.pipeline.nutrition_parser import parse_nutrition
 from app.pipeline.sections import extract_sections
 from tests.conftest import headers
@@ -165,6 +165,115 @@ def test_ids_are_sequential():
     assert [i.id for i in ings] == ["ing_1", "ing_2", "ing_3", "ing_4"]
 
 
+# ------------------------------------------------------------------ run-together words
+def test_segment_run_together_example_from_the_spec():
+    assert segment_run_together("Refinedwheatflour") == "Refined Wheat Flour"
+
+
+@pytest.mark.parametrize("token,expected", [
+    ("Sodiumbenzoate", "Sodium Benzoate"),
+    ("Potassiumsorbate", "Potassium Sorbate"),
+    ("REFINEDWHEATFLOUR", "Refined Wheat Flour"),  # case does not matter
+    ("Hydrogenatedvegetablefat", "Hydrogenated Vegetable Fat"),
+])
+def test_segment_run_together_more_examples(token, expected):
+    assert segment_run_together(token) == expected
+
+
+@pytest.mark.parametrize("token", [
+    "Palmoil",  # shorter than 12 characters: not attempted
+    "Refined wheat flour",  # already has spaces
+    "Refinedwheat-flour1",  # not letters only
+    "Zzyzxbloopglorbq",  # cannot be covered by known words
+    "Maltodextrin",  # a single known word, nothing to split
+    "Maltodextrinsx",  # known word + leftover letters: no partial splits
+    "",
+])
+def test_segment_run_together_refuses(token):
+    assert segment_run_together(token) is None
+
+
+def test_segmentation_prefers_fewer_longer_words():
+    vocab = {"ab", "cd", "abcd", "a", "b", "c", "d"}
+    assert segment_words("abcd", vocab) == ["abcd"]
+    assert segment_words("abcdab", vocab) == ["abcd", "ab"]
+    assert segment_words("wheatflour", _vocabulary()) == ["wheat", "flour"]
+
+
+def test_segmentation_needs_a_complete_cover():
+    assert segment_words("wheatxyz", _vocabulary()) is None
+
+
+def test_vocabulary_comes_from_the_rule_files():
+    words = _vocabulary()
+    assert {"wheat", "flour", "sodium", "benzoate", "refined", "palm", "regulator"} <= words
+    assert all(w.isalpha() and w == w.lower() for w in words)
+
+
+def test_run_together_ingredient_is_repaired_and_matched():
+    (ing,) = extract_ingredients("Refinedwheatflour")
+    assert ing.normalized == "wheat flour" and ing.known and ing.match_confidence == 1.0
+    assert ing.original == "Refined Wheat Flour"  # the repaired text, not the run-together OCR
+
+
+def test_run_together_keeps_percentage_and_brackets():
+    (ing,) = extract_ingredients("Refinedwheatflour (72%)")
+    assert ing.normalized == "wheat flour" and ing.percentage == 72.0
+    assert ing.original.startswith("Refined Wheat Flour")
+
+
+def test_run_together_additive_keeps_its_details():
+    (ing,) = extract_ingredients("Sodiumbenzoate")
+    assert (ing.normalized, ing.ins_number, ing.category) == ("sodium benzoate", "211", "preservative")
+
+
+def test_run_together_inside_a_full_list():
+    names = [i.normalized for i in extract_ingredients("Refinedwheatflour (72%), Palm oil, Sodiumbenzoate, Salt")]
+    assert names == ["wheat flour", "palm oil", "sodium benzoate", "salt"]
+
+
+def test_run_together_inside_a_class_bracket():
+    (ing,) = extract_ingredients("Flavour enhancer (Monosodiumglutamate)")
+    assert ing.normalized == "monosodium glutamate" and ing.ins_number == "621"
+    assert ing.original == "Flavour enhancer (Monosodium Glutamate)"
+
+
+def test_a_run_together_token_the_fuzzy_match_already_accepts_is_not_rewritten():
+    """"Potassiumsorbate" scores >= 88 in the normal lookup, so the fallback never runs."""
+    (ing,) = extract_ingredients("Preservative (Potassiumsorbate)")
+    assert ing.normalized == "potassium sorbate" and ing.original == "Preservative (Potassiumsorbate)"
+
+
+def test_split_text_that_does_not_match_is_rejected():
+    """Splits into known words, but "salt water palm sugar" is not an ingredient: stay unknown, text unchanged."""
+    assert segment_run_together("Saltwaterpalmsugar") == "Salt Water Palm Sugar"
+    (ing,) = extract_ingredients("Saltwaterpalmsugar")
+    assert ing.known is False and ing.normalized is None and ing.original == "Saltwaterpalmsugar"
+
+
+def test_unknown_long_chemical_name_is_not_forced_into_a_match():
+    (ing,) = extract_ingredients("Hydroxypropylmethylcellulose")
+    assert ing.known is False and ing.original == "Hydroxypropylmethylcellulose"
+
+
+def test_short_run_together_tokens_are_not_touched():
+    (ing,) = extract_ingredients("Palmoil")  # 7 characters, below the minimum length
+    assert ing.known is False and ing.original == "Palmoil"
+
+
+def test_already_matching_tokens_are_left_alone():
+    (ing,) = extract_ingredients("Maltodextrin")
+    assert ing.original == "Maltodextrin" and ing.known
+    (ing,) = extract_ingredients("Sodum benzoate")  # fuzzy match: no repair either
+    assert ing.original == "Sodum benzoate" and ing.known
+
+
+def test_repaired_match_uses_the_normal_cutoff():
+    """The split text goes through the same exact/fuzzy lookup, so a typo inside still needs >= 88."""
+    (ing,) = extract_ingredients("Refinedwheatfluor")  # "fluor" is not a known word: cannot be split at all
+    assert ing.known is False
+
+
 # ------------------------------------------------------------------ nutrition
 def test_nutrition_full_table():
     n, warnings = parse_nutrition(
@@ -296,6 +405,13 @@ def test_analyze_list_and_pasted_label(client):
     r = client.post("/api/v1/analyze", headers=headers(), json={"ingredients_text": LABEL})
     body = r.json()
     assert len(body["ingredients"]) == 5 and body["nutrition"]["energy_kcal"] == 452
+
+
+def test_analyze_repairs_run_together_words(client):
+    r = client.post("/api/v1/analyze", headers=headers(), json={"ingredients_text": "Refinedwheatflour (72%), Sodiumbenzoate, Salt"})
+    ings = r.json()["ingredients"]
+    assert [i["normalized"] for i in ings] == ["wheat flour", "sodium benzoate", "salt"]
+    assert ings[0]["original"].startswith("Refined Wheat Flour")
 
 
 def test_analyze_validation_errors(client):

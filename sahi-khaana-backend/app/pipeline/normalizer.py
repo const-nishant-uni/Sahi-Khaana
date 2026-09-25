@@ -4,7 +4,9 @@ Order of attempts (first hit wins):
   1. INS number            -> exact entry (confidence 1.0); base-number fallback (0.85)
   2. exact alias           -> confidence 1.0
   3. fuzzy alias           -> rapidfuzz token_sort_ratio >= 88, confidence = score/100
-  4. nothing matched       -> known=False, confidence = best score seen (< 0.88)
+  4. run-together fallback -> a long single token ("Refinedwheatflour") is split into known
+                              words and matched again; accepted only if THAT matches (1-3)
+  5. nothing matched       -> known=False, confidence = best score seen (< 0.88)
 
 `match_confidence` is passed on to the FSSAI engine (Phase 3), which downgrades
 a PASS to REVIEW when the match is shaky.
@@ -27,6 +29,7 @@ DESCRIPTORS = {
     "permitted", "food grade", "added", "synthetic", "artificial",
 }
 FUZZY_CUTOFF = 88
+RUN_TOGETHER_MIN_LENGTH = 12  # shorter unknown tokens are not split (too many false splits)
 MIN_FUZZY_LENGTH = 4  # very short strings ("oil") match too easily
 
 
@@ -55,6 +58,49 @@ def _index() -> _Index:
         for alias in entry["aliases"]:
             by_alias.setdefault(clean_name(alias), entry)
     return _Index(by_ins, by_alias, list(by_alias))
+
+
+# ---------------------------------------------------------------- run-together words
+@lru_cache(maxsize=1)
+def _vocabulary() -> frozenset[str]:
+    """Every alphabetic word used by an ingredient/additive name or alias (lowercase)."""
+    phrases = list(_index().aliases) + sorted(DESCRIPTORS)
+    for fc in load_rules("additives.json")["functional_classes"]:
+        phrases += [clean_name(a) for a in fc["aliases"]]
+    return frozenset(w for phrase in phrases for w in phrase.split() if w.isalpha() and len(w) >= 2)
+
+
+def segment_words(text: str, vocabulary: frozenset[str] | set[str]) -> list[str] | None:
+    """Split letters-only `text` into words from `vocabulary`, or None if it can't be covered.
+
+    Dynamic programming over prefixes; the cheapest split wins (one unit per word, short
+    words of 1-2 letters cost 3), so "wheatflour" prefers wheat+flour over w+heat+f+lour.
+    """
+    n = len(text)
+    max_word = max((len(w) for w in vocabulary), default=0)
+    best: list[tuple[int, list[str]] | None] = [None] * (n + 1)
+    best[0] = (0, [])
+    for end in range(1, n + 1):
+        for start in range(max(0, end - max_word), end):
+            if best[start] is None:
+                continue
+            word = text[start:end]
+            if word in vocabulary:
+                cost = best[start][0] + (1 if len(word) >= 3 else 3)
+                if best[end] is None or cost < best[end][0]:
+                    best[end] = (cost, best[start][1] + [word])
+    return best[n][1] if best[n] else None
+
+
+def segment_run_together(token: str) -> str | None:
+    """"Refinedwheatflour" -> "Refined Wheat Flour"; None unless it is a long, letters-only
+    token that splits completely into at least two known words."""
+    if len(token) < RUN_TOGETHER_MIN_LENGTH or not re.fullmatch(r"[A-Za-z]+", token):
+        return None
+    words = segment_words(token.lower(), _vocabulary())
+    if not words or len(words) < 2:
+        return None
+    return " ".join(w.capitalize() for w in words)
 
 
 def _lookup_ins(ins: str) -> tuple[dict | None, float]:
@@ -88,15 +134,23 @@ def _lookup_name(name: str) -> tuple[dict | None, float]:
     return None, round(score / 100, 2)
 
 
-def _match(item: ParsedIngredient) -> tuple[dict | None, float]:
+def _match(item: ParsedIngredient) -> tuple[dict | None, float, str | None]:
+    """Returns (entry, confidence, repaired_text). `repaired_text` is only set when the match
+    was found after splitting a run-together token into words."""
     if item.ins_number:
         entry, conf = _lookup_ins(item.ins_number)
         if entry:
-            return entry, conf
+            return entry, conf, None
     entry, conf = _lookup_name(item.name)
     if entry:
-        return entry, conf
-    return None, conf
+        return entry, conf, None
+
+    segmented = segment_run_together(item.name)
+    if segmented:
+        entry2, conf2 = _lookup_name(segmented)  # must pass the normal exact/fuzzy cutoff
+        if entry2:
+            return entry2, conf2, segmented
+    return None, conf, None
 
 
 def normalize_items(items: list[ParsedIngredient]) -> list[Ingredient]:
@@ -104,7 +158,7 @@ def normalize_items(items: list[ParsedIngredient]) -> list[Ingredient]:
     matches = [_match(item) for item in items]
 
     result: list[Ingredient] = []
-    for i, (item, (entry, conf)) in enumerate(zip(items, matches)):
+    for i, (item, (entry, conf, repaired)) in enumerate(zip(items, matches)):
         if item.parent_index is not None and not item.ins_number and clean_name(item.name) in DESCRIPTORS:
             continue
         # "Refined wheat flour (Maida)": the bracket is a synonym, not a 2nd ingredient.
@@ -113,11 +167,15 @@ def normalize_items(items: list[ParsedIngredient]) -> list[Ingredient]:
             if parent_entry is not None and parent_entry["id"] == entry["id"]:
                 continue
 
+        original = item.original
+        if repaired:  # show the words the OCR ran together, e.g. "Refined Wheat Flour"
+            original = original.replace(item.name, repaired, 1) if item.name in original else repaired
+
         # A functional class ("Preservative") is a useful category even if the item is unknown.
         category = entry["category"] if entry else item.functional_class
         result.append(Ingredient(
             id=f"ing_{len(result) + 1}",
-            original=item.original,
+            original=original,
             normalized=entry["name"] if entry else None,
             category=category,
             ins_number=item.ins_number or (entry.get("ins") if entry else None),

@@ -32,6 +32,11 @@ class Settings(BaseSettings):
     target_long_edge: int = 1600  # images larger than this are downscaled
     blur_threshold: float = 60.0  # Laplacian variance below this => POOR_IMAGE
     max_deskew_degrees: float = 15.0  # ignore skew estimates larger than this
+    # Text lines shorter than this many pixels (after the resize above) are upscaled 2x before
+    # OCR: RapidOCR starts dropping spaces ("Refinedwheatflour") on small text. Measured on
+    # rendered labels, that happens for line heights of about 24-31 px by this module's estimate.
+    # Set 0 to switch the upscaling off.
+    min_text_height_px: float = 30.0
 
     # --- Rule engine ---
     # A PASS whose ingredient match confidence is below this becomes REVIEW.

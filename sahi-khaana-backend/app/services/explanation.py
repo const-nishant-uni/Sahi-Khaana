@@ -4,6 +4,10 @@ The LLM (Groq) only PHRASES what the rule engines already decided. It receives j
 `fssai_result`, `health_result` and `warnings`, is told never to change a status, and
 its answer is thrown away (template used instead) if the call fails, times out, or
 comes back empty or over the word limit. With no API key the template is always used.
+
+Caching (done by the caller, see `Explanation.cacheable`): an LLM answer is cached, and so is
+the template when no key is configured (there is nothing to retry). A template that is only
+a FALLBACK after a failed LLM call is not cached, so the next request tries the LLM again.
 """
 import json
 import logging
@@ -19,6 +23,7 @@ log = logging.getLogger(__name__)
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 TIMEOUT_SECONDS = 10.0
 MAX_WORDS = 120
+MAX_TOKENS = 250
 
 SYSTEM_PROMPT = """You explain the result of a packaged-food label check to an ordinary shopper.
 You receive JSON with `fssai_result`, `health_result` and `warnings`, all produced by a rule engine.
@@ -36,6 +41,7 @@ Rules:
 class Explanation:
     text: str
     source: str  # "llm" | "template"
+    cacheable: bool = True  # False for a template returned only because the LLM call failed
 
 
 # ---------------------------------------------------------------- template (no AI)
@@ -95,7 +101,7 @@ def _call_groq(api_key: str, model: str, data: dict) -> str:
         json={
             "model": model,
             "temperature": 0.2,
-            "max_completion_tokens": 300,
+            "max_completion_tokens": MAX_TOKENS,  # Groq's name for the (older) max_tokens
             "messages": [
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": "Explain this result:\n" + json.dumps(data)},
@@ -110,17 +116,18 @@ def _call_groq(api_key: str, model: str, data: dict) -> str:
 def generate_explanation(fssai: FssaiResult, health: HealthResult, warnings: list[str]) -> Explanation:
     """LLM wording when a key is configured and the call works, otherwise the template."""
     cfg = get_settings()
-    template = Explanation(template_explanation(fssai, health, warnings), "template")
+    text_template = template_explanation(fssai, health, warnings)
     if not cfg.groq_api_key:
-        return template
+        return Explanation(text_template, "template", cacheable=True)  # no key: nothing to retry
+    fallback = Explanation(text_template, "template", cacheable=False)  # LLM was expected: retry next time
 
     try:
         text = _call_groq(cfg.groq_api_key, cfg.groq_model, _llm_input(fssai, health, warnings))
     except Exception as exc:  # timeout, network, HTTP error, unexpected JSON... all handled the same
         log.warning("Groq explanation failed (%s); using template", type(exc).__name__)
-        return template
+        return fallback
 
     if not text or len(text.split()) > MAX_WORDS:
         log.warning("Groq explanation empty or over %d words; using template", MAX_WORDS)
-        return template
-    return Explanation(text, "llm")
+        return fallback
+    return Explanation(text, "llm", cacheable=True)

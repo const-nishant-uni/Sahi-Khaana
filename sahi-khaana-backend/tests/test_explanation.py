@@ -113,7 +113,12 @@ def test_template_never_contradicts_the_status():
 # ------------------------------------------------------------------ LLM path (mocked)
 def test_llm_text_is_used_when_the_call_works(groq):
     r = ex.generate_explanation(fssai(), health(), [])
-    assert (r.text, r.source) == (GOOD_TEXT, "llm") and len(groq.calls) == 1
+    assert (r.text, r.source, r.cacheable) == (GOOD_TEXT, "llm", True) and len(groq.calls) == 1
+
+
+def test_template_without_key_is_cacheable():
+    r = ex.generate_explanation(fssai(), health(), [])
+    assert r.source == "template" and r.cacheable is True
 
 
 def test_request_shape_key_model_timeout(groq):
@@ -122,6 +127,7 @@ def test_request_shape_key_model_timeout(groq):
     assert call["url"] == "https://api.groq.com/openai/v1/chat/completions"
     assert call["headers"]["Authorization"] == "Bearer test-key"
     assert call["timeout"] == 10.0
+    assert call["json"]["max_completion_tokens"] == 250
     assert call["json"]["model"] == "test-model"  # from settings/env, not hard-coded
     assert [m["role"] for m in call["json"]["messages"]] == ["system", "user"]
 
@@ -157,7 +163,7 @@ def test_system_prompt_carries_the_required_rules():
 def test_exceptions_fall_back_to_template(groq, failure):
     groq.error = failure
     r = ex.generate_explanation(fssai(), health(), [])
-    assert r.source == "template" and "FSSAI rule check" in r.text
+    assert r.source == "template" and "FSSAI rule check" in r.text and r.cacheable is False
 
 
 @pytest.mark.parametrize("response", [
@@ -169,7 +175,8 @@ def test_exceptions_fall_back_to_template(groq, failure):
 ])
 def test_bad_responses_fall_back_to_template(groq, response):
     groq.response = response
-    assert ex.generate_explanation(fssai(), health(), []).source == "template"
+    r = ex.generate_explanation(fssai(), health(), [])
+    assert r.source == "template" and r.cacheable is False
 
 
 def test_answer_of_exactly_120_words_is_accepted(groq):
@@ -213,16 +220,48 @@ def test_endpoint_returns_llm_text_and_caches_it(client, groq, db_engine):
         assert scan.explanation == GOOD_TEXT and scan.explanation_source == "llm"
 
 
-def test_failed_llm_call_is_not_retried_for_the_same_scan(client, groq, db_engine):
+FAILURES = {
+    "timeout": lambda g: setattr(g, "error", httpx.ReadTimeout("slow")),
+    "connection error": lambda g: setattr(g, "error", httpx.ConnectError("down")),
+    "http 500": lambda g: setattr(g, "response", FakeResponse(status=500)),
+    "http 429": lambda g: setattr(g, "response", FakeResponse(status=429)),
+    "empty answer": lambda g: setattr(g, "response", FakeResponse(content="")),
+    "over 120 words": lambda g: setattr(g, "response", FakeResponse(content="word " * 121)),
+}
+
+
+@pytest.mark.parametrize("failure", list(FAILURES))
+def test_llm_failure_returns_template_but_is_not_cached(client, groq, db_engine, failure):
+    FAILURES[failure](groq)
+    sid = make_scan(client)
+    r = fetch(client, sid)
+    assert r.status_code == 200 and r.json()["source"] == "template" and "FSSAI rule check" in r.json()["explanation"]
+    with Session(db_engine) as s:
+        scan = s.get(Scan, sid)
+        assert scan.explanation is None and scan.explanation_source is None  # nothing cached
+    assert len(groq.calls) == 1
+
+
+def test_next_request_retries_the_llm_after_a_failure_and_then_caches(client, groq, db_engine):
     groq.error = httpx.ReadTimeout("slow")
     sid = make_scan(client)
-    first = fetch(client, sid).json()
-    groq.error = None  # the API "recovers", but this scan must not call it again
-    second = fetch(client, sid).json()
-    assert first["source"] == second["source"] == "template" and first == second
-    assert len(groq.calls) == 1
+    assert fetch(client, sid).json()["source"] == "template"
+    assert fetch(client, sid).json()["source"] == "template"  # still failing: retried, still not cached
+    assert len(groq.calls) == 2
+
+    groq.error = None  # the API recovers
+    recovered = fetch(client, sid).json()
+    assert recovered == {"explanation": GOOD_TEXT, "source": "llm"} and len(groq.calls) == 3
+    assert fetch(client, sid).json() == recovered and len(groq.calls) == 3  # now cached: no more calls
     with Session(db_engine) as s:
-        assert s.get(Scan, sid).explanation_source == "template"
+        assert s.get(Scan, sid).explanation_source == "llm"
+
+
+def test_a_cached_llm_answer_is_never_replaced(client, groq):
+    sid = make_scan(client)
+    first = fetch(client, sid).json()
+    groq.error = httpx.ReadTimeout("slow")  # would fail if it were called again
+    assert fetch(client, sid).json() == first and len(groq.calls) == 1
 
 
 def test_each_scan_gets_its_own_explanation_call(client, groq):
@@ -235,7 +274,16 @@ def test_no_key_means_no_llm_call_and_template_is_cached(client, db_engine):
     sid = make_scan(client)
     assert fetch(client, sid).json() == fetch(client, sid).json()
     with Session(db_engine) as s:
-        assert s.get(Scan, sid).explanation_source == "template"
+        scan = s.get(Scan, sid)
+        assert scan.explanation_source == "template" and scan.explanation  # cached: there is nothing to retry
+
+
+def test_adding_a_key_later_does_not_replace_a_cached_no_key_template(client, groq, monkeypatch):
+    monkeypatch.setattr(get_settings(), "groq_api_key", None)
+    sid = make_scan(client)
+    first = fetch(client, sid).json()
+    monkeypatch.setattr(get_settings(), "groq_api_key", "test-key")
+    assert fetch(client, sid).json() == first and groq.calls == []
 
 
 def test_other_device_gets_404_and_no_llm_call(client, groq):
