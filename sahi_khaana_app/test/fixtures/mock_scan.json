@@ -1,0 +1,222 @@
+{
+  "scan_id": "3e6bf459-fc69-4a86-bf3d-c880331c0a33",
+  "created_at": "2026-09-25T11:25:35.719306+00:00",
+  "status": "ok",
+  "warnings": [
+    "MOCK_DATA"
+  ],
+  "ocr": {
+    "raw_text": "INGREDIENTS: Refinedwheatflour (72%), Palm oil, Salt, Sugar, Acidity regulator (INS 501(i)), Flavour enhancer (INS 627, INS 631), Colour (INS 102), Preservative (INS 211).\nNUTRITION INFORMATION per 100 g: Energy 452 kcal, Total fat 17.5 g, Saturated fat 8.2 g, Trans fat 0.1 g, Carbohydrate 62 g, Total sugars 3.4 g, Protein 9.1 g, Sodium 1240 mg",
+    "confidence": 0.93,
+    "engine": "rapidocr"
+  },
+  "food_category": null,
+  "ingredients": [
+    {
+      "id": "ing_1",
+      "original": "Refinedwheatflour (72%)",
+      "normalized": "wheat flour",
+      "category": "cereal",
+      "ins_number": null,
+      "percentage": 72.0,
+      "match_confidence": 1.0,
+      "known": true,
+      "repaired": true
+    },
+    {
+      "id": "ing_2",
+      "original": "Palm oil",
+      "normalized": "palm oil",
+      "category": "fat_oil",
+      "ins_number": null,
+      "percentage": null,
+      "match_confidence": 1.0,
+      "known": true,
+      "repaired": false
+    },
+    {
+      "id": "ing_3",
+      "original": "Salt",
+      "normalized": "salt",
+      "category": "seasoning",
+      "ins_number": null,
+      "percentage": null,
+      "match_confidence": 1.0,
+      "known": true,
+      "repaired": false
+    },
+    {
+      "id": "ing_4",
+      "original": "Sugar",
+      "normalized": "sugar",
+      "category": "sugar",
+      "ins_number": null,
+      "percentage": null,
+      "match_confidence": 1.0,
+      "known": true,
+      "repaired": false
+    },
+    {
+      "id": "ing_5",
+      "original": "Acidity regulator (INS 501(i))",
+      "normalized": "potassium carbonate",
+      "category": "acidity_regulator",
+      "ins_number": "501(i)",
+      "percentage": null,
+      "match_confidence": 0.98,
+      "known": true,
+      "repaired": false
+    },
+    {
+      "id": "ing_6",
+      "original": "Flavour enhancer (INS 627)",
+      "normalized": "disodium guanylate",
+      "category": "flavour_enhancer",
+      "ins_number": "627",
+      "percentage": null,
+      "match_confidence": 0.98,
+      "known": true,
+      "repaired": false
+    },
+    {
+      "id": "ing_7",
+      "original": "Flavour enhancer (INS 631)",
+      "normalized": "disodium inosinate",
+      "category": "flavour_enhancer",
+      "ins_number": "631",
+      "percentage": null,
+      "match_confidence": 0.98,
+      "known": true,
+      "repaired": false
+    },
+    {
+      "id": "ing_8",
+      "original": "Colour (INS 102)",
+      "normalized": "tartrazine",
+      "category": "colour",
+      "ins_number": "102",
+      "percentage": null,
+      "match_confidence": 0.95,
+      "known": true,
+      "repaired": false
+    },
+    {
+      "id": "ing_9",
+      "original": "Preservative (INS 211)",
+      "normalized": "sodium benzoate",
+      "category": "preservative",
+      "ins_number": "211",
+      "percentage": null,
+      "match_confidence": 0.95,
+      "known": true,
+      "repaired": false
+    },
+    {
+      "id": "ing_10",
+      "original": "Spice extractives",
+      "normalized": null,
+      "category": null,
+      "ins_number": null,
+      "percentage": null,
+      "match_confidence": 0.41,
+      "known": false,
+      "repaired": false
+    }
+  ],
+  "nutrition": {
+    "basis": "per_100g",
+    "energy_kcal": 452.0,
+    "sugar_g": 3.4,
+    "sodium_mg": 1240.0,
+    "sat_fat_g": 8.2,
+    "trans_fat_g": 0.1,
+    "total_fat_g": 17.5,
+    "protein_g": 9.1,
+    "fiber_g": null
+  },
+  "fssai_result": {
+    "overall_status": "FLAG",
+    "summary": {
+      "scanned": 10,
+      "matched": 9,
+      "pass": 6,
+      "flag": 1,
+      "review": 3
+    },
+    "confidence": 0.84,
+    "findings": [
+      {
+        "ingredient_id": "ing_8",
+        "rule_id": "MOCK-COLOUR-001",
+        "status": "FLAG",
+        "reason": "Mock: colour not permitted in this food category.",
+        "source": "MOCK: illustrative only, not a real rule"
+      },
+      {
+        "ingredient_id": "ing_9",
+        "rule_id": "MOCK-PRES-001",
+        "status": "PASS",
+        "reason": "Mock: preservative permitted in this food category.",
+        "source": "MOCK: illustrative only, not a real rule"
+      },
+      {
+        "ingredient_id": "ing_6",
+        "rule_id": "MOCK-FLAV-001",
+        "status": "REVIEW",
+        "reason": "Mock: permission depends on the food category; please verify.",
+        "source": "MOCK: illustrative only, not a real rule"
+      },
+      {
+        "ingredient_id": "ing_10",
+        "rule_id": "UNKNOWN",
+        "status": "REVIEW",
+        "reason": "Ingredient not recognised; needs manual review.",
+        "source": "MOCK: illustrative only, not a real rule"
+      },
+      {
+        "ingredient_id": null,
+        "rule_id": "MOCK-DECL-001",
+        "status": "REVIEW",
+        "reason": "Declaration not found in the scanned area",
+        "source": "MOCK: illustrative only, not a real rule"
+      }
+    ]
+  },
+  "health_result": {
+    "score": 46,
+    "assessment": "MODERATE",
+    "data_completeness": "full",
+    "completeness_score": 0.97,
+    "factors": [
+      {
+        "key": "high_sodium",
+        "type": "nutrient",
+        "impact": -20.0,
+        "label": "High sodium",
+        "detail": "1240 mg sodium per 100 g is high."
+      },
+      {
+        "key": "high_sat_fat",
+        "type": "nutrient",
+        "impact": -12.0,
+        "label": "High saturated fat",
+        "detail": "8.2 g saturated fat per 100 g."
+      },
+      {
+        "key": "artificial_colour",
+        "type": "ingredient",
+        "impact": -8.0,
+        "label": "Contains synthetic colour",
+        "detail": "Tartrazine (INS 102) is listed."
+      },
+      {
+        "key": "protein_ok",
+        "type": "nutrient",
+        "impact": 4.0,
+        "label": "Some protein",
+        "detail": "9.1 g protein per 100 g."
+      }
+    ],
+    "disclaimer": "General information only. Not medical or dietary advice."
+  }
+}

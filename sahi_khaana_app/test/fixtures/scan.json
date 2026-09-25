@@ -1,0 +1,237 @@
+{
+  "scan_id": "6e50b23f-d4c0-41b4-8793-e0ba8c61c2b8",
+  "created_at": "2026-09-25T11:03:54.997690+00:00",
+  "status": "ok",
+  "warnings": [],
+  "ocr": {
+    "raw_text": "INGREDIENTS: Refined wheat flour (72%), Palm oil, Salt, Sugar,\nAcidity regulator (INS 501(i) ), Flavour enhancer (INS 627,\nINS631),Colour（INS102),Preservative（INS211).\nNUTRITION INFORMATION per 100g: Energy452kcal,\nTotal fat 17.5 g, Saturated fat 8.2 g, Trans fat 0.1 g.\nTotal sugars 3.4 g, Protein 9.1 g, Sodium 1240 mg",
+    "confidence": 0.9513,
+    "engine": "rapidocr"
+  },
+  "food_category": "cereals_noodles",
+  "ingredients": [
+    {
+      "id": "ing_1",
+      "original": "Refined wheat flour (72%)",
+      "normalized": "wheat flour",
+      "category": "cereal",
+      "ins_number": null,
+      "percentage": 72.0,
+      "match_confidence": 1.0,
+      "known": true,
+      "repaired": false
+    },
+    {
+      "id": "ing_2",
+      "original": "Palm oil",
+      "normalized": "palm oil",
+      "category": "fat_oil",
+      "ins_number": null,
+      "percentage": null,
+      "match_confidence": 1.0,
+      "known": true,
+      "repaired": false
+    },
+    {
+      "id": "ing_3",
+      "original": "Salt",
+      "normalized": "salt",
+      "category": "seasoning",
+      "ins_number": null,
+      "percentage": null,
+      "match_confidence": 1.0,
+      "known": true,
+      "repaired": false
+    },
+    {
+      "id": "ing_4",
+      "original": "Sugar",
+      "normalized": "sugar",
+      "category": "sugar",
+      "ins_number": null,
+      "percentage": null,
+      "match_confidence": 1.0,
+      "known": true,
+      "repaired": false
+    },
+    {
+      "id": "ing_5",
+      "original": "Acidity regulator (INS 501(i))",
+      "normalized": "potassium carbonate",
+      "category": "acidity_regulator",
+      "ins_number": "501(i)",
+      "percentage": null,
+      "match_confidence": 1.0,
+      "known": true,
+      "repaired": false
+    },
+    {
+      "id": "ing_6",
+      "original": "Flavour enhancer (INS 627)",
+      "normalized": "disodium guanylate",
+      "category": "flavour_enhancer",
+      "ins_number": "627",
+      "percentage": null,
+      "match_confidence": 1.0,
+      "known": true,
+      "repaired": false
+    },
+    {
+      "id": "ing_7",
+      "original": "Flavour enhancer (INS 631)",
+      "normalized": "disodium inosinate",
+      "category": "flavour_enhancer",
+      "ins_number": "631",
+      "percentage": null,
+      "match_confidence": 1.0,
+      "known": true,
+      "repaired": false
+    },
+    {
+      "id": "ing_8",
+      "original": "Colour (INS 102)",
+      "normalized": "tartrazine",
+      "category": "colour",
+      "ins_number": "102",
+      "percentage": null,
+      "match_confidence": 1.0,
+      "known": true,
+      "repaired": false
+    },
+    {
+      "id": "ing_9",
+      "original": "Preservative (INS 211)",
+      "normalized": "sodium benzoate",
+      "category": "preservative",
+      "ins_number": "211",
+      "percentage": null,
+      "match_confidence": 1.0,
+      "known": true,
+      "repaired": false
+    }
+  ],
+  "nutrition": {
+    "basis": "per_100g",
+    "energy_kcal": null,
+    "sugar_g": 3.4,
+    "sodium_mg": 1240.0,
+    "sat_fat_g": 8.2,
+    "trans_fat_g": 0.1,
+    "total_fat_g": 17.5,
+    "protein_g": 9.1,
+    "fiber_g": null
+  },
+  "fssai_result": {
+    "overall_status": "REVIEW",
+    "summary": {
+      "scanned": 9,
+      "matched": 9,
+      "pass": 4,
+      "flag": 0,
+      "review": 5
+    },
+    "confidence": 0.9513,
+    "findings": [
+      {
+        "ingredient_id": "ing_1",
+        "rule_id": "wheat_flour",
+        "status": "PASS",
+        "reason": "wheat flour is permitted.",
+        "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+      },
+      {
+        "ingredient_id": "ing_2",
+        "rule_id": "palm_oil",
+        "status": "PASS",
+        "reason": "palm oil is permitted.",
+        "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+      },
+      {
+        "ingredient_id": "ing_3",
+        "rule_id": "salt",
+        "status": "PASS",
+        "reason": "salt is permitted.",
+        "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+      },
+      {
+        "ingredient_id": "ing_4",
+        "rule_id": "sugar",
+        "status": "PASS",
+        "reason": "sugar is permitted.",
+        "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+      },
+      {
+        "ingredient_id": "ing_5",
+        "rule_id": "ins_501_i",
+        "status": "REVIEW",
+        "reason": "No verified rule for potassium carbonate in category 'cereals_noodles'.",
+        "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+      },
+      {
+        "ingredient_id": "ing_6",
+        "rule_id": "ins_627",
+        "status": "REVIEW",
+        "reason": "No verified rule for disodium guanylate in category 'cereals_noodles'.",
+        "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+      },
+      {
+        "ingredient_id": "ing_7",
+        "rule_id": "ins_631",
+        "status": "REVIEW",
+        "reason": "No verified rule for disodium inosinate in category 'cereals_noodles'.",
+        "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+      },
+      {
+        "ingredient_id": "ing_8",
+        "rule_id": "ins_102",
+        "status": "REVIEW",
+        "reason": "No verified rule for tartrazine in category 'cereals_noodles'.",
+        "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+      },
+      {
+        "ingredient_id": "ing_9",
+        "rule_id": "ins_211",
+        "status": "REVIEW",
+        "reason": "No verified rule for sodium benzoate in category 'cereals_noodles'.",
+        "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+      },
+      {
+        "ingredient_id": null,
+        "rule_id": "DECL-COLOUR-001",
+        "status": "REVIEW",
+        "reason": "Declaration not found in the scanned area",
+        "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+      }
+    ]
+  },
+  "health_result": {
+    "score": 60,
+    "assessment": "MODERATE",
+    "data_completeness": "full",
+    "completeness_score": 0.88,
+    "factors": [
+      {
+        "key": "medium_total_fat",
+        "type": "nutrient",
+        "impact": -5.0,
+        "label": "Medium total fat",
+        "detail": "More than 3 g total fat per 100 g (this product: 17.5 g total fat)."
+      },
+      {
+        "key": "high_sat_fat",
+        "type": "nutrient",
+        "impact": -15.0,
+        "label": "High saturated fat",
+        "detail": "More than 5 g saturated fat per 100 g (this product: 8.2 g saturated fat)."
+      },
+      {
+        "key": "high_sodium",
+        "type": "nutrient",
+        "impact": -20.0,
+        "label": "High sodium",
+        "detail": "More than 600 mg sodium (1.5 g salt) per 100 g (this product: 1240 mg sodium)."
+      }
+    ],
+    "disclaimer": "General information only. Not medical or dietary advice."
+  }
+}

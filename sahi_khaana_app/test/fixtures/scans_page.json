@@ -1,0 +1,25 @@
+{
+  "items": [
+    {
+      "scan_id": "245ea2b5-d6b2-434f-8766-bd04c76bcb9c",
+      "created_at": "2026-09-25T11:03:55.010033+00:00",
+      "food_category": "bakery",
+      "overall_status": "PASS",
+      "health_score": 90,
+      "assessment": "FEWER CONCERNS",
+      "ingredient_count": 3
+    },
+    {
+      "scan_id": "6e50b23f-d4c0-41b4-8793-e0ba8c61c2b8",
+      "created_at": "2026-09-25T11:03:54.997690+00:00",
+      "food_category": "cereals_noodles",
+      "overall_status": "REVIEW",
+      "health_score": 60,
+      "assessment": "MODERATE",
+      "ingredient_count": 9
+    }
+  ],
+  "total": 2,
+  "limit": 20,
+  "offset": 0
+}

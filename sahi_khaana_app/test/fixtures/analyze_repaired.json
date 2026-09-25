@@ -1,0 +1,111 @@
+{
+  "scan_id": "245ea2b5-d6b2-434f-8766-bd04c76bcb9c",
+  "created_at": "2026-09-25T11:03:55.010033+00:00",
+  "status": "ok",
+  "warnings": [],
+  "ocr": null,
+  "food_category": "bakery",
+  "ingredients": [
+    {
+      "id": "ing_1",
+      "original": "Refinedwheatflour (72%)",
+      "normalized": "wheat flour",
+      "category": "cereal",
+      "ins_number": null,
+      "percentage": 72.0,
+      "match_confidence": 1.0,
+      "known": true,
+      "repaired": true
+    },
+    {
+      "id": "ing_2",
+      "original": "Sugar",
+      "normalized": "sugar",
+      "category": "sugar",
+      "ins_number": null,
+      "percentage": null,
+      "match_confidence": 1.0,
+      "known": true,
+      "repaired": false
+    },
+    {
+      "id": "ing_3",
+      "original": "Salt",
+      "normalized": "salt",
+      "category": "seasoning",
+      "ins_number": null,
+      "percentage": null,
+      "match_confidence": 1.0,
+      "known": true,
+      "repaired": false
+    }
+  ],
+  "nutrition": {
+    "basis": "per_100g",
+    "energy_kcal": null,
+    "sugar_g": 12.0,
+    "sodium_mg": 300.0,
+    "sat_fat_g": null,
+    "trans_fat_g": null,
+    "total_fat_g": null,
+    "protein_g": null,
+    "fiber_g": null
+  },
+  "fssai_result": {
+    "overall_status": "PASS",
+    "summary": {
+      "scanned": 3,
+      "matched": 3,
+      "pass": 3,
+      "flag": 0,
+      "review": 0
+    },
+    "confidence": 1.0,
+    "findings": [
+      {
+        "ingredient_id": "ing_1",
+        "rule_id": "wheat_flour",
+        "status": "PASS",
+        "reason": "wheat flour is permitted.",
+        "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+      },
+      {
+        "ingredient_id": "ing_2",
+        "rule_id": "sugar",
+        "status": "PASS",
+        "reason": "sugar is permitted.",
+        "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+      },
+      {
+        "ingredient_id": "ing_3",
+        "rule_id": "salt",
+        "status": "PASS",
+        "reason": "salt is permitted.",
+        "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+      }
+    ]
+  },
+  "health_result": {
+    "score": 90,
+    "assessment": "FEWER CONCERNS",
+    "data_completeness": "partial",
+    "completeness_score": 0.53,
+    "factors": [
+      {
+        "key": "medium_sugar",
+        "type": "nutrient",
+        "impact": -5.0,
+        "label": "Medium sugar",
+        "detail": "More than 5 g total sugars per 100 g (this product: 12 g sugar)."
+      },
+      {
+        "key": "medium_sodium",
+        "type": "nutrient",
+        "impact": -5.0,
+        "label": "Medium sodium",
+        "detail": "More than 120 mg sodium (0.3 g salt) per 100 g (this product: 300 mg sodium)."
+      }
+    ],
+    "disclaimer": "General information only. Not medical or dietary advice."
+  }
+}
