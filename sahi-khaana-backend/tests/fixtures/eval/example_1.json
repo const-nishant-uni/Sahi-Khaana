@@ -1,0 +1,25 @@
+{
+  "_note": "Example fixture. The photo is a SYNTHETIC rendering of the text (not a real pack). expected_statuses reflect the current PLACEHOLDER rule data (additives are CONDITIONAL with no conditions, so they come out REVIEW); replace them with statuses you have verified.",
+  "ground_truth_text": "INGREDIENTS: Refined wheat flour (72%), Palm oil, Salt, Sugar,\nAcidity regulator (INS 501(i)), Flavour enhancer (INS 627,\nINS 631), Colour (INS 102), Preservative (INS 211).\nNUTRITION INFORMATION per 100 g: Energy 452 kcal,\nTotal fat 17.5 g, Saturated fat 8.2 g, Trans fat 0.1 g,\nTotal sugars 3.4 g, Protein 9.1 g, Sodium 1240 mg",
+  "expected_ingredients": [
+    "wheat flour",
+    "palm oil",
+    "salt",
+    "sugar",
+    "potassium carbonate",
+    "disodium guanylate",
+    "disodium inosinate",
+    "tartrazine",
+    "sodium benzoate"
+  ],
+  "expected_statuses": {
+    "wheat flour": "PASS",
+    "palm oil": "PASS",
+    "salt": "PASS",
+    "sugar": "PASS",
+    "tartrazine": "REVIEW",
+    "sodium benzoate": "REVIEW",
+    "overall": "REVIEW"
+  },
+  "food_category": "cereals_noodles"
+}

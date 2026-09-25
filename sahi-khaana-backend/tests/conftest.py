@@ -1,9 +1,11 @@
 """Shared fixtures: an API client backed by a throw-away in-memory SQLite database."""
+import httpx
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.pool import StaticPool
 from sqlmodel import Session, SQLModel, create_engine
 
+from app.config import get_settings
 from app.database import get_session
 from app.main import app
 
@@ -33,3 +35,15 @@ def client(db_engine):
     app.dependency_overrides[get_session] = override_session
     yield TestClient(app)  # no `with`: skips startup (no OCR model loading / real DB file)
     app.dependency_overrides.clear()
+
+
+@pytest.fixture(autouse=True)
+def no_real_llm_calls(monkeypatch):
+    """Safety net for EVERY test: no Groq key (even if a developer's .env has one) and any
+    real HTTP call fails loudly. Tests that exercise the LLM path replace httpx.post themselves."""
+    monkeypatch.setattr(get_settings(), "groq_api_key", None)
+
+    def blocked(*args, **kwargs):
+        raise AssertionError("A test tried to make a real HTTP request")
+
+    monkeypatch.setattr(httpx, "post", blocked)

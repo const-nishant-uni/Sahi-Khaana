@@ -1,0 +1,19 @@
+{
+  "_note": "Example fixture. The photo is a SYNTHETIC rendering of the text (not a real pack). expected_statuses reflect the current PLACEHOLDER rule data (additives are CONDITIONAL with no conditions, so they come out REVIEW); replace them with statuses you have verified.",
+  "ground_truth_text": "INGREDIENTS: Water, Sugar, Acidity regulator (INS 330),\nPreservative (INS 202), Natural flavouring substances,\nColour (INS 150d).\nNUTRITION INFORMATION per 100 ml: Energy 42 kcal,\nTotal sugars 10.5 g, Sodium 15 mg",
+  "expected_ingredients": [
+    "water",
+    "sugar",
+    "citric acid",
+    "potassium sorbate",
+    "natural flavouring substances",
+    "sulphite ammonia caramel"
+  ],
+  "expected_statuses": {
+    "water": "PASS",
+    "sugar": "PASS",
+    "natural flavouring substances": "REVIEW",
+    "overall": "REVIEW"
+  },
+  "food_category": "beverages_non_alcoholic"
+}

@@ -17,7 +17,8 @@ class Settings(BaseSettings):
 
     # --- Secrets (only ever come from .env / environment) ---
     groq_api_key: str | None = None
-    groq_model: str = "llama-3.3-70b-versatile"
+    # Small Llama on Groq (see https://console.groq.com/docs/models); override with GROQ_MODEL.
+    groq_model: str = "llama-3.1-8b-instant"
 
     # --- Database ---
     database_url: str = f"sqlite:///{BASE_DIR / 'sahi_khaana.db'}"
@@ -25,6 +26,7 @@ class Settings(BaseSettings):
     # --- Uploads ---
     upload_dir: Path = BASE_DIR / "uploads"
     max_upload_bytes: int = 5 * 1024 * 1024  # 5 MB
+    image_retention_days: int = 7  # photos older than this are deleted at startup
 
     # --- Image preprocessing ---
     target_long_edge: int = 1600  # images larger than this are downscaled

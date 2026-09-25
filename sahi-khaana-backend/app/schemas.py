@@ -117,6 +117,12 @@ class ScanResponse(BaseModel):
     health_result: HealthResult
 
 
+# ---------- Explanation ----------
+class ExplanationResponse(BaseModel):
+    explanation: str
+    source: Literal["llm", "template"]  # "template" = built from the rule results, no AI involved
+
+
 # ---------- History ----------
 class ScanSummary(BaseModel):
     """One row of GET /scans (the full result is at GET /scans/{scan_id})."""

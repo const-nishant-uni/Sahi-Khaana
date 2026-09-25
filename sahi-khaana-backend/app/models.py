@@ -20,7 +20,8 @@ class Scan(SQLModel, table=True):
     ingredient_count: int
     image_name: str | None = None  # file name inside uploads/ (None for /analyze)
     result_json: str  # full ScanResponse as JSON
-    explanation: str | None = None  # cached LLM explanation (filled in Phase 4)
+    explanation: str | None = None  # cached explanation text (LLM or template)
+    explanation_source: str | None = None  # "llm" or "template"
 
 
 class IngredientRow(SQLModel, table=True):

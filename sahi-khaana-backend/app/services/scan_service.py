@@ -7,6 +7,7 @@ Also holds the history operations (list / get / delete).
 """
 import json
 import logging
+import threading
 import time
 import uuid
 from datetime import datetime, timezone
@@ -25,7 +26,10 @@ from app.pipeline.nutrition_parser import parse_nutrition
 from app.pipeline.ocr import run_ocr
 from app.pipeline.preprocessing import decode_image, preprocess
 from app.pipeline.sections import extract_sections
-from app.schemas import AnalyzeRequest, Ingredient, Nutrition, ScanListResponse, ScanResponse, ScanSummary
+from app.schemas import (
+    AnalyzeRequest, ExplanationResponse, Ingredient, Nutrition, ScanListResponse, ScanResponse, ScanSummary,
+)
+from app.services.explanation import generate_explanation
 
 log = logging.getLogger(__name__)
 
@@ -219,6 +223,56 @@ def list_scans(session: Session, device_id: str, limit: int, offset: int) -> Sca
 
 def get_scan(session: Session, device_id: str, scan_id: str) -> ScanResponse:
     return ScanResponse.model_validate_json(_get_owned_scan(session, device_id, scan_id).result_json)
+
+
+# One lock for explanation generation: two simultaneous requests for the same scan must not
+# both call the LLM. (Simple and fine for a small app; it serialises explanations.)
+_explanation_lock = threading.Lock()
+
+
+def get_explanation(session: Session, device_id: str, scan_id: str) -> ExplanationResponse:
+    """Cached explanation. The LLM is tried at most once per scan: if it fails, the template
+    is cached instead, so a scan never triggers a second LLM call."""
+    _get_owned_scan(session, device_id, scan_id)  # 404 for other devices, before anything else
+    with _explanation_lock:
+        scan = session.get(Scan, scan_id)
+        session.refresh(scan)
+        if scan.explanation:
+            return ExplanationResponse(explanation=scan.explanation, source=scan.explanation_source or "template")
+        result = ScanResponse.model_validate_json(scan.result_json)
+        explanation = generate_explanation(result.fssai_result, result.health_result, result.warnings)
+        scan.explanation, scan.explanation_source = explanation.text, explanation.source
+        session.add(scan)
+        session.commit()
+    return ExplanationResponse(explanation=explanation.text, source=explanation.source)
+
+
+def delete_old_images(session: Session, now: float | None = None) -> int:
+    """Delete photos older than IMAGE_RETENTION_DAYS (by file age) and clear them from history.
+
+    Scan results stay; only the stored photo goes. Also removes orphaned files (for example
+    photos of scans that failed with POOR_IMAGE). Returns the number of files deleted.
+    """
+    cfg = get_settings()
+    if not cfg.upload_dir.is_dir():
+        return 0
+    cutoff = (time.time() if now is None else now) - cfg.image_retention_days * 86400
+    removed: list[str] = []
+    for path in cfg.upload_dir.iterdir():
+        if not path.is_file() or path.name.startswith("."):  # keep .gitkeep and friends
+            continue
+        try:
+            if path.stat().st_mtime < cutoff:
+                path.unlink()
+                removed.append(path.name)
+        except OSError as exc:
+            log.warning("Could not delete old image %s: %s", path.name, exc)
+    if removed:
+        for scan in session.exec(select(Scan).where(col(Scan.image_name).in_(removed))).all():
+            scan.image_name = None
+            session.add(scan)
+        session.commit()
+    return len(removed)
 
 
 def delete_scan(session: Session, device_id: str, scan_id: str) -> None:

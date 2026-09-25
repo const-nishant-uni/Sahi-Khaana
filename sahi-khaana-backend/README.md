@@ -8,7 +8,7 @@ food's ingredient label; the backend preprocesses the image (OpenCV), reads it
 > Principle: OCR/AI extracts information; deterministic rules make the
 > regulatory decision. An LLM only phrases explanations, never decides.
 
-## Status: Phase 3 (engines + database)
+## Status: Phase 4 (explanation + polish)
 
 | Part | State |
 |---|---|
@@ -16,7 +16,8 @@ food's ingredient label; the backend preprocesses the image (OpenCV), reads it
 | Section finding, `ingredients`, `nutrition`, `POST /analyze` | real |
 | FSSAI rule engine, health engine | real (but the **rule data is placeholder**, see "Rule data") |
 | SQLite history: `GET /scans`, `GET /scans/{id}`, `DELETE /scans/{id}` | real |
-| LLM explanation, image cleanup, evaluation script | not built yet (Phase 4) |
+| `GET /scans/{id}/explanation` (Groq LLM with template fallback), 7-day photo cleanup | real |
+| `scripts/evaluate.py`, optional `Dockerfile` | real (the Dockerfile is untested, see below) |
 
 `GET /api/v1/mock/scan` returns a complete, realistic sample of the final response.
 
@@ -166,6 +167,57 @@ All three need the `X-Device-Id` header and only ever see that device's scans.
 
 **`DELETE /api/v1/scans/{scan_id}`** returns **204 with an empty body** on success (the scan, its stored rows and its photo are deleted). Unknown id or another device's id gives 404 `SCAN_NOT_FOUND`. Deleting twice: the second call is a 404.
 
+**`GET /api/v1/scans/{scan_id}/explanation`** returns 200 `{"explanation": "...", "source": "llm" | "template"}` (same 404 rules as above).
+
+- Generated on the first request, then **cached in the database**: later requests return the same text and never call the LLM again. If the LLM call fails, the template is cached instead, so each scan gets exactly one LLM attempt.
+- `"llm"`: worded by Groq. It is given only `fssai_result`, `health_result` and `warnings`, is told never to change a status, to stay under 120 words, and to make no medical or compliance claims. `"template"`: built directly from the finding reasons and factor labels (no API key, timeout after 10 s, HTTP error, empty answer, or an answer over 120 words).
+- The explanation never affects any status or score. It can take a few seconds the first time.
+- Set `GROQ_API_KEY` (and optionally `GROQ_MODEL`, default `llama-3.1-8b-instant`; check https://console.groq.com/docs/models for current ids) in `.env`. Without a key you always get the template.
+
+## Photo cleanup
+
+On startup, stored photos older than 7 days (`IMAGE_RETENTION_DAYS`) are deleted from `uploads/` and `scans.image_name` is set to `NULL`. The scan results stay in history; only the photo goes. Orphan files (e.g. photos of scans that failed with `POOR_IMAGE`) are removed the same way.
+
+## Evaluating accuracy
+
+`scripts/evaluate.py` runs the pipeline on labelled photos and reports OCR and rule accuracy.
+
+```bash
+python scripts/evaluate.py                       # uses tests/fixtures/eval, writes eval_report.md
+python scripts/evaluate.py --dir my_fixtures --out my_report.md
+```
+
+Put pairs of files in `tests/fixtures/eval/`: `<name>.jpg` (or `.png`/`.webp`) and `<name>.json`:
+
+```json
+{
+  "ground_truth_text": "INGREDIENTS: Wheat flour (72%), Salt, Preservative (INS 211).\nNUTRITION INFORMATION per 100 g: Sodium 900 mg",
+  "expected_ingredients": ["wheat flour", "salt", "sodium benzoate"],
+  "expected_statuses": {"wheat flour": "PASS", "sodium benzoate": "REVIEW", "overall": "REVIEW"},
+  "food_category": "bakery"
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `ground_truth_text` | The label text exactly as printed. Used for CER/WER (compared case-insensitively, whitespace collapsed). |
+| `expected_ingredients` | Ingredient names as the normalizer should output them (`normalized`, or the printed text for unknown ones). Used for precision/recall. |
+| `expected_statuses` | `PASS`/`FLAG`/`REVIEW` per ingredient name, plus the optional key `"overall"`. Status agreement = entries matched / entries given. |
+| `food_category` | A category id from `GET /categories`, or `null`. |
+
+Report: CER and WER (jiwer), ingredient precision and recall (micro-averaged over all fixtures), status agreement %, and the mean time per stage (preprocess, OCR, extraction, engines), as a markdown table on stdout and in `eval_report.md` (gitignored). A fixture whose scan fails (e.g. `POOR_IMAGE`) counts as zero ingredients and zero statuses matched. JSON files without a photo are skipped and listed.
+
+The two shipped examples (`example_1`, `example_2`) use **synthetic photos** (text rendered onto an image), so their scores say nothing about real packs; add real photos and verified `expected_statuses`. The example statuses match the *placeholder* rule data (every additive is REVIEW) and will need updating once you fill in `conditions`.
+
+## Docker (optional)
+
+```bash
+docker build -t sahi-khaana-backend .
+docker run -p 8000:8000 --env-file .env -v sahi-data:/data sahi-khaana-backend
+```
+
+`python:3.11-slim` plus `tesseract-ocr`; the database and photos live in the `/data` volume. **This Dockerfile has not been built or run yet** (no Docker daemon was available when it was written), so treat the first build as a test.
+
 ## Warnings
 
 `warnings` in the scan response is a list of strings (it can be empty). The app should show a hint for each:
@@ -207,9 +259,13 @@ app/
   pipeline/        preprocessing, ocr, sections, ingredient_parser, nutrition_parser, normalizer
   engines/         fssai_engine.py, health_engine.py
   database.py, models.py   SQLite (scans, ingredients, findings)
-  services/        scan_service.py           (orchestration, saving, history)
+  services/        scan_service.py           (orchestration, saving, history, cleanup)
+                   explanation.py            (Groq wording + template fallback)
   rules/           food_categories, additives, ingredients, declarations, nutrition_rules (.json)
-tests/             test_parser.py, test_fssai.py, test_health.py, test_history.py
+tests/             test_parser, test_fssai, test_health, test_history, test_explanation, test_cleanup, test_evaluate
+  fixtures/eval/   example evaluation fixtures
+scripts/evaluate.py  accuracy report
+Dockerfile         optional
 uploads/           saved images (gitignored)
 ```
 

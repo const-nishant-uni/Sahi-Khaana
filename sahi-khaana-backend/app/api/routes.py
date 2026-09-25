@@ -7,7 +7,7 @@ from sqlmodel import Session
 from app.database import get_session
 from app.errors import AppError
 from app.schemas import (
-    AnalyzeRequest, CategoriesResponse, ErrorResponse, HealthCheck, ScanListResponse, ScanResponse,
+    AnalyzeRequest, CategoriesResponse, ErrorResponse, ExplanationResponse, HealthCheck, ScanListResponse, ScanResponse,
 )
 from app.services import scan_service
 
@@ -90,6 +90,20 @@ def get_scan(
 ):
     """The full stored result of one scan."""
     return scan_service.get_scan(session, device_id, scan_id)
+
+
+@router.get("/scans/{scan_id}/explanation", response_model=ExplanationResponse, responses=_ERRORS)
+def get_explanation(
+    scan_id: str,
+    device_id: str = Depends(get_device_id),
+    session: Session = Depends(get_session),
+):
+    """Plain-English explanation of a scan. Generated on first request, then cached.
+
+    `source` is "llm" (worded by an AI from the rule results) or "template" (built directly
+    from them: no API key, or the AI call failed). Neither ever changes a status.
+    """
+    return scan_service.get_explanation(session, device_id, scan_id)
 
 
 @router.delete("/scans/{scan_id}", status_code=204, response_class=Response, responses=_ERRORS)
