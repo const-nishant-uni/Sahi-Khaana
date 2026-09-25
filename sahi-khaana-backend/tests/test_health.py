@@ -275,6 +275,59 @@ def test_real_beverage_thresholds_are_half():
     assert "high_total_fat" in keys(real(nut(total_fat_g=9), bev)) and "high_sat_fat" in keys(real(nut(sat_fat_g=2.6), bev))
 
 
+# ---- medium tier: FSA "low" cut-offs, -5 points, no double counting with the high tier
+MEDIUM = [  # field, low cut-off, high cut-off, medium key, high key
+    ("sugar_g", 5, 22.5, "medium_sugar", "high_sugar"),
+    ("total_fat_g", 3, 17.5, "medium_total_fat", "high_total_fat"),
+    ("sat_fat_g", 1.5, 5, "medium_sat_fat", "high_sat_fat"),
+    ("sodium_mg", 120, 600, "medium_sodium", "high_sodium"),
+]
+
+
+@pytest.mark.parametrize("field,low,high,medium_key,high_key", MEDIUM)
+def test_medium_tier_boundaries(field, low, high, medium_key, high_key):
+    assert real(nut(**{field: low})).factors == []  # "more than": equal to the low cut-off is still low
+    r = real(nut(**{field: low + 0.1 if low < 10 else low + 1}))
+    assert keys(r) == [medium_key] and r.score == 95  # -5
+    assert keys(real(nut(**{field: high}))) == [medium_key]  # equal to the high cut-off is still medium
+    assert keys(real(nut(**{field: high + 1}))) == [high_key]  # above high: high penalty ONLY
+
+
+@pytest.mark.parametrize("field,low,high,medium_key,high_key", MEDIUM)
+def test_no_double_counting_between_medium_and_high(field, low, high, medium_key, high_key):
+    r = real(nut(**{field: high * 2}))
+    assert medium_key not in keys(r) and keys(r).count(high_key) == 1
+
+
+def test_medium_penalty_is_5_and_high_penalties_are_unchanged():
+    tiers = {t["key"]: t for ts in load_rules("nutrition_rules.json")["nutrients"].values() for t in ts}
+    for key in ("medium_sugar", "medium_total_fat", "medium_sat_fat", "medium_sodium"):
+        assert tiers[key]["impact"] == -5
+    assert [tiers[k]["impact"] for k in ("high_sugar", "high_total_fat", "high_sat_fat", "high_sodium")] == [-20, -10, -15, -20]
+
+
+def test_medium_penalties_add_up_across_nutrients():
+    r = real(nut(sugar_g=10, total_fat_g=5, sat_fat_g=2, sodium_mg=200))
+    assert sorted(keys(r)) == ["medium_sat_fat", "medium_sodium", "medium_sugar", "medium_total_fat"] and r.score == 80
+
+
+def test_salt_0_3_g_is_the_medium_sodium_threshold():
+    n, _ = parse_nutrition("per 100 g: Salt 0.3 g")
+    assert n.sodium_mg == 120 and real(n).factors == []
+    n, _ = parse_nutrition("per 100 g: Salt 0.4 g")
+    assert keys(real(n)) == ["medium_sodium"]
+
+
+def test_beverages_use_half_of_the_medium_thresholds_too():
+    bev = "beverages_non_alcoholic"
+    assert keys(real(nut(sugar_g=2.6), bev)) == ["medium_sugar"] and real(nut(sugar_g=2.5), bev).factors == []
+    assert keys(real(nut(total_fat_g=1.6), bev)) == ["medium_total_fat"]
+    assert keys(real(nut(sat_fat_g=0.8), bev)) == ["medium_sat_fat"]
+    assert keys(real(nut(basis="per_100ml", sodium_mg=61))) == ["medium_sodium"]
+    assert real(nut(sugar_g=2.6)).factors == []  # a food with 2.6 g sugar is still "low"
+    assert keys(real(nut(sugar_g=11.3), bev)) == ["high_sugar"]  # bev high = 11.25: high only, no medium
+
+
 def test_every_threshold_has_a_source():
     rules = load_rules("nutrition_rules.json")
     for nutrient, tiers in rules["nutrients"].items():
@@ -287,7 +340,9 @@ def test_every_threshold_has_a_source():
 def test_fsa_sources_and_project_heuristics_are_labelled():
     tiers = {t["key"]: t for ts in load_rules("nutrition_rules.json")["nutrients"].values() for t in ts}
     for key in ("high_sugar", "high_total_fat", "high_sat_fat", "high_sodium"):
-        assert "UK FSA" in tiers[key]["source"]
+        assert "UK FSA" in tiers[key]["source"] and "'high'" in tiers[key]["source"]
+    for key in ("medium_sugar", "medium_total_fat", "medium_sat_fat", "medium_sodium"):
+        assert "UK FSA" in tiers[key]["source"] and "'low'" in tiers[key]["source"]
     assert tiers["high_energy"]["source"] == "project heuristic"
     assert tiers["trans_fat_present"]["source"] == "project heuristic"
 

@@ -56,7 +56,8 @@ uvicorn app.main:app --reload --host 0.0.0.0
 ```
 
 - Swagger UI: http://localhost:8000/docs
-- The SQLite file `sahi_khaana.db` is created on first start (gitignored). If you ran an earlier Phase 3 build, **delete it once**: the `findings` table now allows a null `ingredient_id`, and existing tables are not migrated.
+- **Schema changed - delete your local .db file after pulling.** (`sahi_khaana.db` in this folder; it is recreated on the next start. Existing tables are not migrated.)
+- The SQLite file `sahi_khaana.db` is created on first start (gitignored).
 - The first start takes a few seconds (OCR models load once at startup).
 
 ### Connecting the Flutter app
@@ -127,7 +128,7 @@ A `CONDITIONAL` rule looks like `{"food_categories": ["bakery"], "result": "PASS
 
 **Health engine** (`engines/health_engine.py`). Score starts at `base_score` (100); thresholds and impacts come from `rules/nutrition_rules.json`; only the strictest matching tier per nutrient applies; the result is clamped to 0-100 and mapped to a band (70+ `FEWER CONCERNS`, 40-69 `MODERATE`, below 40 `SEVERAL CONCERNS`).
 
-- **Thresholds** are the UK FSA per-100 g "high" cut-offs: total sugars > 22.5 g, total fat > 17.5 g, saturated fat > 5 g, salt > 1.5 g (= sodium > 600 mg). Beverages (per 100 ml, or food category `beverages_non_alcoholic`) use half. Every threshold has a `source` in the JSON. The trans-fat and energy factors and all the *impact sizes* (points lost) are marked `"project heuristic"`.
+- **Thresholds** are the UK FSA per-100 g cut-offs. *High* (big penalty): total sugars > 22.5 g, total fat > 17.5 g, saturated fat > 5 g, salt > 1.5 g (= sodium > 600 mg). *Medium* (above the FSA "low" cut-off, **-5 points**): sugars > 5 g, total fat > 3 g, saturated fat > 1.5 g, sodium > 120 mg (= salt > 0.3 g). Only the strictest matching tier applies, so nothing is double counted. Beverages (per 100 ml, or food category `beverages_non_alcoholic`) use half of every one of these. Every threshold has a `source` in the JSON. The trans-fat and energy factors and all the *impact sizes* (points lost) are marked `"project heuristic"`.
 - **No usable nutrition** (nothing found, only per-serving values, or no scoring nutrient): coarse ingredient-based rules apply, the assessment is **capped at `MODERATE`** (the score is still computed) and `LIMITED_NUTRITION_DATA` is added to `warnings`.
 - **`health_result.data_completeness`** is a string: `"full"` (sugars, total fat, saturated fat and sodium all read), `"partial"` (some nutrients read) or `"ingredients_only"` (no usable nutrition). **`health_result.completeness_score`** is the numeric version: 0.7 x (scoring nutrients present) + 0.3 x (ingredients recognised), from 0 to 1. Show completeness in the app.
 

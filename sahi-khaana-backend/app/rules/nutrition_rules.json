@@ -1,6 +1,6 @@
 {
  "_meta": {
-  "note": "Health-score inputs, per 100 g. Score starts at base_score; each nutrient adds its (negative) impact when the value is STRICTLY greater than gt. Thresholds marked with the UK FSA source are the FSA 'high' cut-offs; the impact sizes (how many points each costs) are always a project heuristic. Beverages (per 100 ml, or a category listed in beverage_categories) use half of the thresholds listed in beverage_halved.",
+  "note": "Health-score inputs, per 100 g. Score starts at base_score; each nutrient adds its (negative) impact when the value is STRICTLY greater than gt. Each of sugars, total fat, saturated fat and sodium has two tiers from the UK FSA: 'high' (the big penalty) and 'medium' (above the FSA 'low' cut-off, -5). Only the strictest matching tier applies, so there is no double counting. Thresholds marked with the UK FSA source are those cut-offs; the impact sizes (how many points each costs) are always a project heuristic. Beverages (per 100 ml, or a category listed in beverage_categories) use half of the thresholds listed in beverage_halved.",
   "source": "UK FSA front-of-pack nutrition labelling (traffic light) criteria, per 100 g: 'high' threshold"
  },
  "base_score": 100,
@@ -33,6 +33,15 @@
     "detail": "More than 22.5 g total sugars per 100 g",
     "source": "UK FSA front-of-pack nutrition labelling (traffic light) criteria, per 100 g: 'high' threshold",
     "impact_source": "project heuristic"
+   },
+   {
+    "key": "medium_sugar",
+    "label": "Medium sugar",
+    "gt": 5,
+    "impact": -5,
+    "detail": "More than 5 g total sugars per 100 g",
+    "source": "UK FSA front-of-pack nutrition labelling (traffic light) criteria, per 100 g: 'low' threshold (above it = 'medium')",
+    "impact_source": "project heuristic"
    }
   ],
   "total_fat_g": [
@@ -43,6 +52,15 @@
     "impact": -10,
     "detail": "More than 17.5 g total fat per 100 g",
     "source": "UK FSA front-of-pack nutrition labelling (traffic light) criteria, per 100 g: 'high' threshold",
+    "impact_source": "project heuristic"
+   },
+   {
+    "key": "medium_total_fat",
+    "label": "Medium total fat",
+    "gt": 3,
+    "impact": -5,
+    "detail": "More than 3 g total fat per 100 g",
+    "source": "UK FSA front-of-pack nutrition labelling (traffic light) criteria, per 100 g: 'low' threshold (above it = 'medium')",
     "impact_source": "project heuristic"
    }
   ],
@@ -55,6 +73,15 @@
     "detail": "More than 5 g saturated fat per 100 g",
     "source": "UK FSA front-of-pack nutrition labelling (traffic light) criteria, per 100 g: 'high' threshold",
     "impact_source": "project heuristic"
+   },
+   {
+    "key": "medium_sat_fat",
+    "label": "Medium saturated fat",
+    "gt": 1.5,
+    "impact": -5,
+    "detail": "More than 1.5 g saturated fat per 100 g",
+    "source": "UK FSA front-of-pack nutrition labelling (traffic light) criteria, per 100 g: 'low' threshold (above it = 'medium')",
+    "impact_source": "project heuristic"
    }
   ],
   "sodium_mg": [
@@ -65,6 +92,15 @@
     "impact": -20,
     "detail": "More than 600 mg sodium (1.5 g salt) per 100 g",
     "source": "UK FSA front-of-pack nutrition labelling (traffic light) criteria, per 100 g: 'high' threshold",
+    "impact_source": "project heuristic"
+   },
+   {
+    "key": "medium_sodium",
+    "label": "Medium sodium",
+    "gt": 120,
+    "impact": -5,
+    "detail": "More than 120 mg sodium (0.3 g salt) per 100 g",
+    "source": "UK FSA front-of-pack nutrition labelling (traffic light) criteria, per 100 g: 'low' threshold (above it = 'medium')",
     "impact_source": "project heuristic"
    }
   ],
