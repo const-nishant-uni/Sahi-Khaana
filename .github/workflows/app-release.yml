@@ -1,0 +1,88 @@
+# App CD. Push a tag like  v1.2.0-app  to:
+#   1. re-run the app CI,
+#   2. build a release APK,
+#   3. attach it (and a checksum) to a GitHub Release.
+# The tag's version must match `version:` in sahi_khaana_app/pubspec.yaml (1.2.0 for 1.2.0+3).
+#
+#   git tag -a v1.2.0-app -m "App 1.2.0" && git push origin v1.2.0-app
+name: App release
+
+on:
+  push:
+    tags: ["v*-app"]
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: ./.github/workflows/app-ci.yml
+
+  release:
+    name: Build APK and release
+    needs: ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: write # create the GitHub Release
+    defaults:
+      run:
+        working-directory: sahi_khaana_app
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the tag matches pubspec.yaml
+        id: version
+        run: |
+          tag_version="${GITHUB_REF_NAME#v}"
+          tag_version="${tag_version%-app}"
+          pubspec_version="$(sed -nE 's/^version:[[:space:]]*([0-9]+\.[0-9]+\.[0-9]+).*/\1/p' pubspec.yaml)"
+          if [ "$tag_version" != "$pubspec_version" ]; then
+            echo "Tag says $tag_version but pubspec.yaml says $pubspec_version. Update pubspec.yaml (or the tag)." >&2
+            exit 1
+          fi
+          echo "version=$tag_version" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: "3.47.5"
+          cache: true
+
+      - run: flutter pub get
+
+      # The backend address baked into the APK: set the repository VARIABLE  API_BASE_URL
+      # (Settings > Secrets and variables > Actions > Variables), e.g. https://api.example.com/api/v1.
+      # If it is empty the app falls back to its built-in development address.
+      - name: Build the release APK
+        env:
+          API_BASE_URL: ${{ vars.API_BASE_URL }}
+        run: flutter build apk --release --dart-define=API_BASE_URL="$API_BASE_URL"
+
+      - name: Name the files
+        id: files
+        run: |
+          apk="sahi-khaana-${{ steps.version.outputs.version }}.apk"
+          cp build/app/outputs/flutter-apk/app-release.apk "$apk"
+          sha256sum "$apk" > "$apk.sha256"
+          echo "apk=sahi_khaana_app/$apk" >> "$GITHUB_OUTPUT"
+          echo "sum=sahi_khaana_app/$apk.sha256" >> "$GITHUB_OUTPUT"
+
+      - name: Create the GitHub Release
+        working-directory: .
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            "${{ steps.files.outputs.apk }}" "${{ steps.files.outputs.sum }}" \
+            --title "App $VERSION" \
+            --generate-notes \
+            --notes "Release APK. Signed with the Flutter DEBUG key, so it is for testing on devices, not for the Play Store." \
+            --verify-tag

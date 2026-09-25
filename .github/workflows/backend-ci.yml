@@ -1,0 +1,132 @@
+# Backend CI: run the tests, and prove the Docker image builds and answers requests.
+name: Backend CI
+
+on:
+  push:
+    branches: [master]
+    paths: ["sahi-khaana-backend/**", ".github/workflows/backend-ci.yml"]
+  pull_request:
+    paths: ["sahi-khaana-backend/**", ".github/workflows/backend-ci.yml"]
+  workflow_dispatch:
+  workflow_call: # reused by backend-release.yml
+    secrets:
+      GROQ_API_KEY:
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Tests (pytest)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: sahi-khaana-backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: sahi-khaana-backend/requirements.txt
+
+      # Tesseract is the OCR fallback engine (see the backend README).
+      - name: Install Tesseract
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends tesseract-ocr
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          # Must be installed WITHOUT deps: it would pull in the full opencv-python,
+          # which clashes with opencv-python-headless (see the backend README).
+          pip install rapidocr-onnxruntime --no-deps
+
+      # No .env here, so there is no Groq key; the tests also block real network calls.
+      - name: Run tests
+        run: python -m pytest -q
+
+  docker:
+    name: Docker image builds and runs
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build the image
+        uses: docker/build-push-action@v6
+        with:
+          context: sahi-khaana-backend
+          load: true
+          push: false
+          tags: sahi-khaana-backend:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # The Groq key (repository secret GROQ_API_KEY) goes only to the container, by name, so it never
+      # appears on a command line. Optional repository variable GROQ_MODEL overrides the model.
+      - name: Start the container
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GROQ_MODEL_OVERRIDE: ${{ vars.GROQ_MODEL }}
+        run: |
+          args=()
+          if [ -n "$GROQ_API_KEY" ]; then
+            args+=(-e GROQ_API_KEY)
+            echo "EXPECT_LLM=true" >> "$GITHUB_ENV"
+          else
+            echo "No GROQ_API_KEY secret: explanations will use the template."
+          fi
+          if [ -n "$GROQ_MODEL_OVERRIDE" ]; then export GROQ_MODEL="$GROQ_MODEL_OVERRIDE"; args+=(-e GROQ_MODEL); fi
+          docker run -d --name sahi -p 8000:8000 "${args[@]}" sahi-khaana-backend:ci
+
+      - name: Wait for the server (the OCR models load at startup)
+        run: |
+          for i in $(seq 1 60); do
+            if curl -fs http://localhost:8000/api/v1/health >/dev/null; then echo "up after ~$((i * 2))s"; exit 0; fi
+            sleep 2
+          done
+          echo "server did not come up" >&2
+          docker logs sahi
+          exit 1
+
+      - name: Call the API inside the container
+        run: |
+          set -e
+          B=http://localhost:8000/api/v1
+          DEVICE=$(cat /proc/sys/kernel/random/uuid)
+
+          curl -fs $B/health; echo
+          curl -fs $B/categories | grep -q '"bakery"'
+
+          # A real photo through preprocessing + OCR + rules + database, inside the image.
+          curl -fs -X POST $B/scan -H "X-Device-Id: $DEVICE" \
+            -F image=@sahi-khaana-backend/tests/fixtures/eval/example_1.jpg \
+            -F food_category=cereals_noodles > scan.json
+          grep -q '"wheat flour"' scan.json
+          grep -q '"sodium_mg":1240' scan.json
+
+          # History works (SQLite in the container) and Tesseract is installed.
+          curl -fs "$B/scans" -H "X-Device-Id: $DEVICE" | grep -q '"total":1'
+
+          # With a key, the container must really reach Groq and get an LLM answer (not the template).
+          SCAN_ID=$(python3 -c "import json; print(json.load(open('scan.json'))['scan_id'])")
+          curl -fs "$B/scans/$SCAN_ID/explanation" -H "X-Device-Id: $DEVICE" > explanation.json
+          cat explanation.json; echo
+          if [ "$EXPECT_LLM" = "true" ]; then
+            grep -q '"source":"llm"' explanation.json || { echo "Expected an LLM explanation but got the template: check GROQ_MODEL / the key" >&2; exit 1; }
+          fi
+          docker exec sahi tesseract --version | head -1
+
+      - name: Container logs
+        if: always()
+        run: docker logs sahi

@@ -1,0 +1,79 @@
+# Backend CD. Push a tag like  v1.2.0-backend  to:
+#   1. re-run the backend CI,
+#   2. publish the Docker image to GitHub Container Registry (ghcr.io),
+#   3. create a GitHub Release.
+#
+#   git tag -a v1.2.0-backend -m "Backend 1.2.0" && git push origin v1.2.0-backend
+name: Backend release
+
+on:
+  push:
+    tags: ["v*-backend"]
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: ./.github/workflows/backend-ci.yml
+    secrets: inherit # the CI's Docker check uses GROQ_API_KEY when it is set
+
+  publish:
+    name: Publish image and release
+    needs: ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write # create the GitHub Release
+      packages: write # push to ghcr.io
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Work out names
+        id: names
+        run: |
+          version="${GITHUB_REF_NAME#v}"      # v1.2.0-backend -> 1.2.0-backend
+          version="${version%-backend}"       #             -> 1.2.0
+          if ! [[ "$version" =~ ^[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
+            echo "Tag '$GITHUB_REF_NAME' must look like v1.2.0-backend" >&2
+            exit 1
+          fi
+          owner="${GITHUB_REPOSITORY_OWNER,,}" # image names must be lowercase
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "image=ghcr.io/$owner/sahi-khaana-backend" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: sahi-khaana-backend
+          push: true
+          tags: |
+            ${{ steps.names.outputs.image }}:${{ steps.names.outputs.version }}
+            ${{ steps.names.outputs.image }}:latest
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.version=${{ steps.names.outputs.version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Create the GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          IMAGE: ${{ steps.names.outputs.image }}
+          VERSION: ${{ steps.names.outputs.version }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --title "Backend $VERSION" \
+            --generate-notes \
+            --notes "Docker image: \`$IMAGE:$VERSION\`" \
+            --verify-tag

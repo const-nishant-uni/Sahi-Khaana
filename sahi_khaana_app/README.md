@@ -123,6 +123,8 @@ flutter test                        # 94 tests, no server needed (HTTP is faked)
 
 # Against a running backend (calls every endpoint, expects 27 checks to pass):
 dart run tool/api_smoke.dart --base http://localhost:8000/api/v1
+# If the backend has a Groq key, also require the explanation to come from the LLM (28 checks):
+dart run tool/api_smoke.dart --base http://localhost:8000/api/v1 --expect-llm
 ```
 
 `test/fixtures/*.json` are real backend responses.

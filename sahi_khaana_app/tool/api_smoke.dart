@@ -6,6 +6,9 @@
 //   dart run tool/api_smoke.dart --base http://localhost:8000/api/v1 \
 //       --image ../sahi-khaana-backend/tests/fixtures/eval/example_1.jpg
 //
+// Add --expect-llm when the backend has a Groq key: the explanation must then come from the
+// LLM, not the fallback template (this catches a retired or misspelt GROQ_MODEL).
+//
 // (Pure Dart: no Flutter needed, so it also works in CI.)
 import 'dart:io';
 import 'dart:typed_data';
@@ -41,7 +44,8 @@ String arg(List<String> args, String name, String fallback) {
 Future<void> main(List<String> args) async {
   final base = arg(args, '--base', ApiConfig.localBaseUrl);
   final imagePath = arg(args, '--image', '../sahi-khaana-backend/tests/fixtures/eval/example_1.jpg');
-  print('Backend: $base\nPhoto:   $imagePath\n');
+  final expectLlm = args.contains('--expect-llm');
+  print('Backend: $base\nPhoto:   $imagePath${expectLlm ? '\nExpecting an LLM explanation' : ''}\n');
 
   final store = InMemoryDeviceIdStore();
   final api = SahiApi(ApiClient(config: ApiConfig(baseUrl: base), deviceIdStore: store));
@@ -89,6 +93,9 @@ Future<void> main(List<String> args) async {
     final e1 = await api.explanation(scan.scanId);
     final e2 = await api.explanation(scan.scanId);
     check('explanation', e1.text.isNotEmpty && e1.text == e2.text && e1.source == e2.source, 'source ${e1.source.apiValue}, ${e1.text.split(' ').length} words');
+    if (expectLlm) {
+      check('explanation came from the LLM (not the template)', e1.source == ExplanationSource.llm && e1.text.split(' ').length <= 120, 'source ${e1.source.apiValue}');
+    }
     print('    "${e1.text}"');
 
     // ---- errors + isolation
