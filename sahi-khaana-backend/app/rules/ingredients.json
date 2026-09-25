@@ -1,0 +1,828 @@
+{
+ "_meta": {
+  "note": "Plain (non-INS) ingredients used by the normalizer. `PERMITTED` here only means 'ordinary food ingredient, no additive rule needed' and is itself unverified.",
+  "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+ },
+ "ingredients": [
+  {
+   "id": "wheat_flour",
+   "name": "wheat flour",
+   "category": "cereal",
+   "aliases": [
+    "atta",
+    "enriched wheat flour",
+    "maida",
+    "refined wheat flour",
+    "wheat",
+    "wheat atta",
+    "wheat flour",
+    "wheat flour maida",
+    "whole wheat flour"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "rice_flour",
+   "name": "rice flour",
+   "category": "cereal",
+   "aliases": [
+    "rice flour",
+    "rice powder"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "rice",
+   "name": "rice",
+   "category": "cereal",
+   "aliases": [
+    "basmati rice",
+    "rice",
+    "rice grain"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "corn_flour",
+   "name": "corn flour",
+   "category": "cereal",
+   "aliases": [
+    "corn flour",
+    "corn meal",
+    "maize",
+    "maize flour"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "oats",
+   "name": "oats",
+   "category": "cereal",
+   "aliases": [
+    "oat flour",
+    "oatmeal",
+    "oats",
+    "rolled oats"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "semolina",
+   "name": "semolina",
+   "category": "cereal",
+   "aliases": [
+    "rava",
+    "semolina",
+    "sooji",
+    "suji"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "gram_flour",
+   "name": "gram flour",
+   "category": "pulse",
+   "aliases": [
+    "bengal gram flour",
+    "besan",
+    "chickpea flour",
+    "gram flour"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "starch",
+   "name": "starch",
+   "category": "cereal",
+   "aliases": [
+    "corn starch",
+    "cornflour starch",
+    "maize starch",
+    "potato starch",
+    "starch",
+    "tapioca starch",
+    "wheat starch"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "sugar",
+   "name": "sugar",
+   "category": "sweetener",
+   "aliases": [
+    "cane sugar",
+    "icing sugar",
+    "refined sugar",
+    "sucrose",
+    "sugar",
+    "sugar powder",
+    "white sugar"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "glucose_syrup",
+   "name": "glucose syrup",
+   "category": "sweetener",
+   "aliases": [
+    "glucose",
+    "glucose syrup",
+    "liquid glucose"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "invert_sugar_syrup",
+   "name": "invert sugar syrup",
+   "category": "sweetener",
+   "aliases": [
+    "invert sugar",
+    "invert sugar syrup",
+    "invert syrup"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "dextrose",
+   "name": "dextrose",
+   "category": "sweetener",
+   "aliases": [
+    "dextrose",
+    "dextrose monohydrate"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "maltodextrin",
+   "name": "maltodextrin",
+   "category": "sweetener",
+   "aliases": [
+    "maltodextrin"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "fructose",
+   "name": "fructose",
+   "category": "sweetener",
+   "aliases": [
+    "fructose",
+    "fructose syrup",
+    "high fructose corn syrup"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "jaggery",
+   "name": "jaggery",
+   "category": "sweetener",
+   "aliases": [
+    "gur",
+    "jaggery"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "honey",
+   "name": "honey",
+   "category": "sweetener",
+   "aliases": [
+    "honey"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "palm_oil",
+   "name": "palm oil",
+   "category": "fat_oil",
+   "aliases": [
+    "palm oil",
+    "palm oil refined",
+    "palm olein",
+    "palmolein",
+    "palmolein oil",
+    "refined palm oil",
+    "refined palmolein"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "edible_vegetable_oil",
+   "name": "edible vegetable oil",
+   "category": "fat_oil",
+   "aliases": [
+    "edible oil",
+    "edible vegetable fat",
+    "edible vegetable oil",
+    "refined vegetable oil",
+    "vegetable fat",
+    "vegetable oil"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "sunflower_oil",
+   "name": "sunflower oil",
+   "category": "fat_oil",
+   "aliases": [
+    "refined sunflower oil",
+    "sunflower oil"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "soybean_oil",
+   "name": "soybean oil",
+   "category": "fat_oil",
+   "aliases": [
+    "refined soybean oil",
+    "soya bean oil",
+    "soyabean oil",
+    "soybean oil"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "groundnut_oil",
+   "name": "groundnut oil",
+   "category": "fat_oil",
+   "aliases": [
+    "groundnut oil",
+    "peanut oil"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "mustard_oil",
+   "name": "mustard oil",
+   "category": "fat_oil",
+   "aliases": [
+    "mustard oil"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "coconut_oil",
+   "name": "coconut oil",
+   "category": "fat_oil",
+   "aliases": [
+    "coconut oil"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "rice_bran_oil",
+   "name": "rice bran oil",
+   "category": "fat_oil",
+   "aliases": [
+    "rice bran oil"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "cottonseed_oil",
+   "name": "cottonseed oil",
+   "category": "fat_oil",
+   "aliases": [
+    "cotton seed oil",
+    "cottonseed oil"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "ghee",
+   "name": "ghee",
+   "category": "fat_oil",
+   "aliases": [
+    "clarified butter",
+    "ghee"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "butter",
+   "name": "butter",
+   "category": "dairy",
+   "aliases": [
+    "butter",
+    "table butter",
+    "white butter"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "hydrogenated_vegetable_fat",
+   "name": "hydrogenated vegetable fat",
+   "category": "fat_oil",
+   "aliases": [
+    "hydrogenated fat",
+    "hydrogenated vegetable fat",
+    "hydrogenated vegetable oil",
+    "interesterified vegetable fat",
+    "partially hydrogenated vegetable oil",
+    "vanaspati"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "salt",
+   "name": "salt",
+   "category": "seasoning",
+   "aliases": [
+    "black salt",
+    "common salt",
+    "edible salt",
+    "iodised salt",
+    "iodized salt",
+    "rock salt",
+    "salt",
+    "table salt"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "spices",
+   "name": "spices",
+   "category": "seasoning",
+   "aliases": [
+    "condiments",
+    "mixed spices",
+    "spice",
+    "spice extractives",
+    "spice mix",
+    "spices",
+    "spices and condiments"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "chilli_powder",
+   "name": "chilli powder",
+   "category": "seasoning",
+   "aliases": [
+    "chili",
+    "chili powder",
+    "chilli",
+    "chilli powder",
+    "red chilli",
+    "red chilli powder"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "turmeric_powder",
+   "name": "turmeric powder",
+   "category": "seasoning",
+   "aliases": [
+    "haldi",
+    "turmeric",
+    "turmeric powder"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "onion_powder",
+   "name": "onion powder",
+   "category": "seasoning",
+   "aliases": [
+    "dehydrated onion",
+    "onion",
+    "onion powder"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "garlic_powder",
+   "name": "garlic powder",
+   "category": "seasoning",
+   "aliases": [
+    "dehydrated garlic",
+    "garlic",
+    "garlic powder"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "black_pepper",
+   "name": "black pepper",
+   "category": "seasoning",
+   "aliases": [
+    "black pepper",
+    "pepper",
+    "pepper powder"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "cumin",
+   "name": "cumin",
+   "category": "seasoning",
+   "aliases": [
+    "cumin",
+    "cumin powder",
+    "jeera"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "coriander_powder",
+   "name": "coriander powder",
+   "category": "seasoning",
+   "aliases": [
+    "coriander",
+    "coriander powder",
+    "dhania"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "ginger",
+   "name": "ginger",
+   "category": "seasoning",
+   "aliases": [
+    "dry ginger",
+    "ginger",
+    "ginger powder"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "milk_solids",
+   "name": "milk solids",
+   "category": "dairy",
+   "aliases": [
+    "milk powder",
+    "milk solid",
+    "milk solids",
+    "skim milk powder",
+    "skimmed milk powder",
+    "whole milk powder"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "milk",
+   "name": "milk",
+   "category": "dairy",
+   "aliases": [
+    "full cream milk",
+    "milk",
+    "skimmed milk",
+    "toned milk"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "whey_powder",
+   "name": "whey powder",
+   "category": "dairy",
+   "aliases": [
+    "whey",
+    "whey powder",
+    "whey protein",
+    "whey solids"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "cream",
+   "name": "cream",
+   "category": "dairy",
+   "aliases": [
+    "cream",
+    "milk cream"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "cheese",
+   "name": "cheese",
+   "category": "dairy",
+   "aliases": [
+    "cheese",
+    "cheese powder",
+    "processed cheese"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "soy_protein",
+   "name": "soy protein",
+   "category": "protein",
+   "aliases": [
+    "soy flour",
+    "soy protein",
+    "soy protein isolate",
+    "soya flour",
+    "soya protein",
+    "soya protein isolate",
+    "textured soy protein"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "wheat_gluten",
+   "name": "wheat gluten",
+   "category": "protein",
+   "aliases": [
+    "gluten",
+    "vital wheat gluten",
+    "wheat gluten"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "water",
+   "name": "water",
+   "category": "other",
+   "aliases": [
+    "carbonated water",
+    "drinking water",
+    "filtered water",
+    "potable water",
+    "water"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "cocoa_solids",
+   "name": "cocoa solids",
+   "category": "other",
+   "aliases": [
+    "cocoa",
+    "cocoa liquor",
+    "cocoa mass",
+    "cocoa powder",
+    "cocoa solids"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "cocoa_butter",
+   "name": "cocoa butter",
+   "category": "fat_oil",
+   "aliases": [
+    "cocoa butter"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "tomato_paste",
+   "name": "tomato paste",
+   "category": "vegetable",
+   "aliases": [
+    "tomato",
+    "tomato paste",
+    "tomato powder",
+    "tomato puree"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "dehydrated_vegetables",
+   "name": "dehydrated vegetables",
+   "category": "vegetable",
+   "aliases": [
+    "dehydrated vegetables",
+    "dried vegetables",
+    "mixed vegetables",
+    "vegetables"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "yeast",
+   "name": "yeast",
+   "category": "other",
+   "aliases": [
+    "baker's yeast",
+    "bakers yeast",
+    "yeast"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "yeast_extract",
+   "name": "yeast extract",
+   "category": "other",
+   "aliases": [
+    "yeast extract"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "malt_extract",
+   "name": "malt extract",
+   "category": "other",
+   "aliases": [
+    "barley malt extract",
+    "malt",
+    "malt extract"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "vinegar",
+   "name": "vinegar",
+   "category": "other",
+   "aliases": [
+    "spirit vinegar",
+    "synthetic vinegar",
+    "vinegar"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "peanuts",
+   "name": "peanuts",
+   "category": "nut",
+   "aliases": [
+    "groundnut",
+    "groundnuts",
+    "peanut",
+    "peanuts",
+    "roasted peanuts"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "almonds",
+   "name": "almonds",
+   "category": "nut",
+   "aliases": [
+    "almond",
+    "almonds"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "cashew_nuts",
+   "name": "cashew nuts",
+   "category": "nut",
+   "aliases": [
+    "cashew",
+    "cashew nut",
+    "cashew nuts",
+    "cashews"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "sesame_seeds",
+   "name": "sesame seeds",
+   "category": "seed",
+   "aliases": [
+    "sesame",
+    "sesame seeds",
+    "til"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "potato",
+   "name": "potato",
+   "category": "vegetable",
+   "aliases": [
+    "dehydrated potato",
+    "potato",
+    "potato flakes",
+    "potatoes"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "egg_powder",
+   "name": "egg powder",
+   "category": "other",
+   "aliases": [
+    "egg",
+    "egg powder",
+    "egg solids",
+    "whole egg powder"
+   ],
+   "status": "PERMITTED",
+   "source": "General food ingredient (not an additive). TODO: verify against FSS (FPS&FA) Regulations 2011"
+  },
+  {
+   "id": "natural_flavouring_substances",
+   "name": "natural flavouring substances",
+   "category": "flavour",
+   "aliases": [
+    "natural flavor",
+    "natural flavour",
+    "natural flavouring",
+    "natural flavouring substances",
+    "natural flavours"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder; flavours are subject to declaration rules)"
+  },
+  {
+   "id": "nature_identical_flavouring_substances",
+   "name": "nature identical flavouring substances",
+   "category": "flavour",
+   "aliases": [
+    "nature identical flavour",
+    "nature identical flavouring substances",
+    "nature identical flavours",
+    "nature-identical flavouring substances"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder; flavours are subject to declaration rules)"
+  },
+  {
+   "id": "artificial_flavouring_substances",
+   "name": "artificial flavouring substances",
+   "category": "flavour",
+   "aliases": [
+    "artificial flavor",
+    "artificial flavour",
+    "artificial flavouring",
+    "artificial flavouring substances",
+    "artificial flavours"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder; flavours are subject to declaration rules)"
+  },
+  {
+   "id": "added_flavour",
+   "name": "added flavour",
+   "category": "flavour",
+   "aliases": [
+    "added flavour",
+    "added flavours",
+    "flavor",
+    "flavoring",
+    "flavour",
+    "flavouring",
+    "flavouring agent",
+    "flavours"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder; flavours are subject to declaration rules)"
+  }
+ ]
+}

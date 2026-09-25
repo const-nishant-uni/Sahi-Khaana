@@ -1,0 +1,1995 @@
+{
+ "_meta": {
+  "note": "Food additives by INS number. `status` is a PLACEHOLDER for every entry: none were verified. `conditions` is empty on purpose; Phase 3 will read entries like {\"food_categories\": [\"bakery\"], \"result\": \"PASS\"} once you fill them in from the regulations.",
+  "status_values": [
+   "PERMITTED",
+   "NOT_PERMITTED",
+   "CONDITIONAL"
+  ],
+  "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+ },
+ "functional_classes": [
+  {
+   "category": "colour",
+   "aliases": [
+    "colour",
+    "colours",
+    "color",
+    "colors",
+    "food colour",
+    "food colours",
+    "food color"
+   ],
+   "source": "Common label wording"
+  },
+  {
+   "category": "preservative",
+   "aliases": [
+    "preservative",
+    "preservatives"
+   ],
+   "source": "Common label wording"
+  },
+  {
+   "category": "antioxidant",
+   "aliases": [
+    "antioxidant",
+    "antioxidants"
+   ],
+   "source": "Common label wording"
+  },
+  {
+   "category": "acidity_regulator",
+   "aliases": [
+    "acidity regulator",
+    "acidity regulators",
+    "acidulant",
+    "acidity controller"
+   ],
+   "source": "Common label wording"
+  },
+  {
+   "category": "thickener",
+   "aliases": [
+    "thickener",
+    "thickeners",
+    "thickening agent",
+    "stabilizer",
+    "stabiliser",
+    "stabilizers",
+    "stabilisers",
+    "gelling agent",
+    "gelling agents"
+   ],
+   "source": "Common label wording"
+  },
+  {
+   "category": "emulsifier",
+   "aliases": [
+    "emulsifier",
+    "emulsifiers",
+    "emulsifying agent"
+   ],
+   "source": "Common label wording"
+  },
+  {
+   "category": "flavour_enhancer",
+   "aliases": [
+    "flavour enhancer",
+    "flavour enhancers",
+    "flavor enhancer",
+    "flavor enhancers"
+   ],
+   "source": "Common label wording"
+  },
+  {
+   "category": "sweetener",
+   "aliases": [
+    "sweetener",
+    "sweeteners",
+    "artificial sweetener",
+    "artificial sweeteners",
+    "intense sweetener"
+   ],
+   "source": "Common label wording"
+  },
+  {
+   "category": "anticaking_agent",
+   "aliases": [
+    "anticaking agent",
+    "anti caking agent",
+    "anticaking agents",
+    "anti-caking agent",
+    "free flowing agent"
+   ],
+   "source": "Common label wording"
+  },
+  {
+   "category": "raising_agent",
+   "aliases": [
+    "raising agent",
+    "raising agents",
+    "leavening agent"
+   ],
+   "source": "Common label wording"
+  },
+  {
+   "category": "flour_treatment_agent",
+   "aliases": [
+    "flour treatment agent",
+    "flour improver"
+   ],
+   "source": "Common label wording"
+  },
+  {
+   "category": "glazing_agent",
+   "aliases": [
+    "glazing agent",
+    "glazing agents"
+   ],
+   "source": "Common label wording"
+  },
+  {
+   "category": "firming_agent",
+   "aliases": [
+    "firming agent"
+   ],
+   "source": "Common label wording"
+  },
+  {
+   "category": "antifoaming_agent",
+   "aliases": [
+    "antifoaming agent",
+    "anti foaming agent"
+   ],
+   "source": "Common label wording"
+  },
+  {
+   "category": "humectant",
+   "aliases": [
+    "humectant",
+    "humectants"
+   ],
+   "source": "Common label wording"
+  },
+  {
+   "category": "bulking_agent",
+   "aliases": [
+    "bulking agent",
+    "bulking agents"
+   ],
+   "source": "Common label wording"
+  }
+ ],
+ "additives": [
+  {
+   "id": "ins_100",
+   "ins": "100",
+   "name": "curcumin",
+   "category": "colour",
+   "aliases": [
+    "curcumin",
+    "curcumin colour",
+    "turmeric colour"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_101",
+   "ins": "101",
+   "name": "riboflavin",
+   "category": "colour",
+   "aliases": [
+    "riboflavin",
+    "riboflavin colour",
+    "vitamin b2"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_102",
+   "ins": "102",
+   "name": "tartrazine",
+   "category": "colour",
+   "aliases": [
+    "tartrazine",
+    "tartrazine colour"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_104",
+   "ins": "104",
+   "name": "quinoline yellow",
+   "category": "colour",
+   "aliases": [
+    "quinoline yellow"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_110",
+   "ins": "110",
+   "name": "sunset yellow fcf",
+   "category": "colour",
+   "aliases": [
+    "sunset yellow",
+    "sunset yellow fcf"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_120",
+   "ins": "120",
+   "name": "carmines",
+   "category": "colour",
+   "aliases": [
+    "carmine",
+    "carmines",
+    "cochineal"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_122",
+   "ins": "122",
+   "name": "carmoisine",
+   "category": "colour",
+   "aliases": [
+    "azorubine",
+    "carmoisine"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_123",
+   "ins": "123",
+   "name": "amaranth",
+   "category": "colour",
+   "aliases": [
+    "amaranth"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_124",
+   "ins": "124",
+   "name": "ponceau 4r",
+   "category": "colour",
+   "aliases": [
+    "ponceau",
+    "ponceau 4r"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_127",
+   "ins": "127",
+   "name": "erythrosine",
+   "category": "colour",
+   "aliases": [
+    "erythrosine"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_129",
+   "ins": "129",
+   "name": "allura red ac",
+   "category": "colour",
+   "aliases": [
+    "allura red",
+    "allura red ac"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_131",
+   "ins": "131",
+   "name": "patent blue v",
+   "category": "colour",
+   "aliases": [
+    "patent blue v"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_132",
+   "ins": "132",
+   "name": "indigo carmine",
+   "category": "colour",
+   "aliases": [
+    "indigo carmine",
+    "indigotine"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_133",
+   "ins": "133",
+   "name": "brilliant blue fcf",
+   "category": "colour",
+   "aliases": [
+    "brilliant blue",
+    "brilliant blue fcf"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_140",
+   "ins": "140",
+   "name": "chlorophylls",
+   "category": "colour",
+   "aliases": [
+    "chlorophyll",
+    "chlorophylls"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_141",
+   "ins": "141",
+   "name": "chlorophyllin copper complex",
+   "category": "colour",
+   "aliases": [
+    "chlorophyllin copper complex"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_143",
+   "ins": "143",
+   "name": "fast green fcf",
+   "category": "colour",
+   "aliases": [
+    "fast green",
+    "fast green fcf"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_150a",
+   "ins": "150a",
+   "name": "plain caramel",
+   "category": "colour",
+   "aliases": [
+    "caramel i",
+    "plain caramel"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_150b",
+   "ins": "150b",
+   "name": "caustic sulphite caramel",
+   "category": "colour",
+   "aliases": [
+    "caramel ii",
+    "caustic sulphite caramel"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_150c",
+   "ins": "150c",
+   "name": "ammonia caramel",
+   "category": "colour",
+   "aliases": [
+    "ammonia caramel",
+    "caramel iii"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_150d",
+   "ins": "150d",
+   "name": "sulphite ammonia caramel",
+   "category": "colour",
+   "aliases": [
+    "caramel",
+    "caramel colour",
+    "caramel iv",
+    "sulphite ammonia caramel"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_160a_i",
+   "ins": "160a(i)",
+   "name": "beta-carotene (synthetic)",
+   "category": "colour",
+   "aliases": [
+    "beta carotene",
+    "beta-carotene (synthetic)",
+    "carotene"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_160b",
+   "ins": "160b",
+   "name": "annatto extracts",
+   "category": "colour",
+   "aliases": [
+    "annatto",
+    "annatto extracts"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_160c",
+   "ins": "160c",
+   "name": "paprika oleoresin",
+   "category": "colour",
+   "aliases": [
+    "paprika extract",
+    "paprika oleoresin"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_160d",
+   "ins": "160d",
+   "name": "lycopene",
+   "category": "colour",
+   "aliases": [
+    "lycopene"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_162",
+   "ins": "162",
+   "name": "beet red",
+   "category": "colour",
+   "aliases": [
+    "beet red",
+    "beetroot red"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_163",
+   "ins": "163",
+   "name": "anthocyanins",
+   "category": "colour",
+   "aliases": [
+    "anthocyanin",
+    "anthocyanins"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_171",
+   "ins": "171",
+   "name": "titanium dioxide",
+   "category": "colour",
+   "aliases": [
+    "titanium dioxide"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_172",
+   "ins": "172",
+   "name": "iron oxides",
+   "category": "colour",
+   "aliases": [
+    "iron oxide",
+    "iron oxides"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_200",
+   "ins": "200",
+   "name": "sorbic acid",
+   "category": "preservative",
+   "aliases": [
+    "sorbic acid"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_201",
+   "ins": "201",
+   "name": "sodium sorbate",
+   "category": "preservative",
+   "aliases": [
+    "sodium sorbate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_202",
+   "ins": "202",
+   "name": "potassium sorbate",
+   "category": "preservative",
+   "aliases": [
+    "potassium sorbate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_203",
+   "ins": "203",
+   "name": "calcium sorbate",
+   "category": "preservative",
+   "aliases": [
+    "calcium sorbate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_210",
+   "ins": "210",
+   "name": "benzoic acid",
+   "category": "preservative",
+   "aliases": [
+    "benzoic acid"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_211",
+   "ins": "211",
+   "name": "sodium benzoate",
+   "category": "preservative",
+   "aliases": [
+    "sodium benzoate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_212",
+   "ins": "212",
+   "name": "potassium benzoate",
+   "category": "preservative",
+   "aliases": [
+    "potassium benzoate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_213",
+   "ins": "213",
+   "name": "calcium benzoate",
+   "category": "preservative",
+   "aliases": [
+    "calcium benzoate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_220",
+   "ins": "220",
+   "name": "sulphur dioxide",
+   "category": "preservative",
+   "aliases": [
+    "sulfur dioxide",
+    "sulphur dioxide"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_221",
+   "ins": "221",
+   "name": "sodium sulphite",
+   "category": "preservative",
+   "aliases": [
+    "sodium sulfite",
+    "sodium sulphite"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_222",
+   "ins": "222",
+   "name": "sodium hydrogen sulphite",
+   "category": "preservative",
+   "aliases": [
+    "sodium bisulphite",
+    "sodium hydrogen sulphite"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_223",
+   "ins": "223",
+   "name": "sodium metabisulphite",
+   "category": "preservative",
+   "aliases": [
+    "sodium metabisulfite",
+    "sodium metabisulphite"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_224",
+   "ins": "224",
+   "name": "potassium metabisulphite",
+   "category": "preservative",
+   "aliases": [
+    "potassium metabisulfite",
+    "potassium metabisulphite"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_234",
+   "ins": "234",
+   "name": "nisin",
+   "category": "preservative",
+   "aliases": [
+    "nisin"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_235",
+   "ins": "235",
+   "name": "natamycin",
+   "category": "preservative",
+   "aliases": [
+    "natamycin"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_249",
+   "ins": "249",
+   "name": "potassium nitrite",
+   "category": "preservative",
+   "aliases": [
+    "potassium nitrite"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_250",
+   "ins": "250",
+   "name": "sodium nitrite",
+   "category": "preservative",
+   "aliases": [
+    "sodium nitrite"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_251",
+   "ins": "251",
+   "name": "sodium nitrate",
+   "category": "preservative",
+   "aliases": [
+    "sodium nitrate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_252",
+   "ins": "252",
+   "name": "potassium nitrate",
+   "category": "preservative",
+   "aliases": [
+    "potassium nitrate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_280",
+   "ins": "280",
+   "name": "propionic acid",
+   "category": "preservative",
+   "aliases": [
+    "propionic acid"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_281",
+   "ins": "281",
+   "name": "sodium propionate",
+   "category": "preservative",
+   "aliases": [
+    "sodium propionate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_282",
+   "ins": "282",
+   "name": "calcium propionate",
+   "category": "preservative",
+   "aliases": [
+    "calcium propionate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_283",
+   "ins": "283",
+   "name": "potassium propionate",
+   "category": "preservative",
+   "aliases": [
+    "potassium propionate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_300",
+   "ins": "300",
+   "name": "ascorbic acid",
+   "category": "antioxidant",
+   "aliases": [
+    "ascorbic acid",
+    "vitamin c"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_301",
+   "ins": "301",
+   "name": "sodium ascorbate",
+   "category": "antioxidant",
+   "aliases": [
+    "sodium ascorbate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_304",
+   "ins": "304",
+   "name": "ascorbyl palmitate",
+   "category": "antioxidant",
+   "aliases": [
+    "ascorbyl palmitate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_306",
+   "ins": "306",
+   "name": "tocopherols mixed concentrate",
+   "category": "antioxidant",
+   "aliases": [
+    "mixed tocopherols",
+    "tocopherol",
+    "tocopherols mixed concentrate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_310",
+   "ins": "310",
+   "name": "propyl gallate",
+   "category": "antioxidant",
+   "aliases": [
+    "propyl gallate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_319",
+   "ins": "319",
+   "name": "tertiary butylhydroquinone",
+   "category": "antioxidant",
+   "aliases": [
+    "tbhq",
+    "tertiary butylhydroquinone"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_320",
+   "ins": "320",
+   "name": "butylated hydroxyanisole",
+   "category": "antioxidant",
+   "aliases": [
+    "bha",
+    "butylated hydroxyanisole"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_321",
+   "ins": "321",
+   "name": "butylated hydroxytoluene",
+   "category": "antioxidant",
+   "aliases": [
+    "bht",
+    "butylated hydroxytoluene"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_260",
+   "ins": "260",
+   "name": "acetic acid",
+   "category": "acidity_regulator",
+   "aliases": [
+    "acetic acid"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_270",
+   "ins": "270",
+   "name": "lactic acid",
+   "category": "acidity_regulator",
+   "aliases": [
+    "lactic acid"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_296",
+   "ins": "296",
+   "name": "malic acid",
+   "category": "acidity_regulator",
+   "aliases": [
+    "malic acid"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_297",
+   "ins": "297",
+   "name": "fumaric acid",
+   "category": "acidity_regulator",
+   "aliases": [
+    "fumaric acid"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_325",
+   "ins": "325",
+   "name": "sodium lactate",
+   "category": "acidity_regulator",
+   "aliases": [
+    "sodium lactate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_326",
+   "ins": "326",
+   "name": "potassium lactate",
+   "category": "acidity_regulator",
+   "aliases": [
+    "potassium lactate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_327",
+   "ins": "327",
+   "name": "calcium lactate",
+   "category": "acidity_regulator",
+   "aliases": [
+    "calcium lactate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_330",
+   "ins": "330",
+   "name": "citric acid",
+   "category": "acidity_regulator",
+   "aliases": [
+    "citric acid"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_331",
+   "ins": "331",
+   "name": "sodium citrates",
+   "category": "acidity_regulator",
+   "aliases": [
+    "sodium citrate",
+    "sodium citrates"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_332",
+   "ins": "332",
+   "name": "potassium citrates",
+   "category": "acidity_regulator",
+   "aliases": [
+    "potassium citrate",
+    "potassium citrates"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_334",
+   "ins": "334",
+   "name": "tartaric acid",
+   "category": "acidity_regulator",
+   "aliases": [
+    "tartaric acid"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_338",
+   "ins": "338",
+   "name": "phosphoric acid",
+   "category": "acidity_regulator",
+   "aliases": [
+    "phosphoric acid"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_339",
+   "ins": "339",
+   "name": "sodium phosphates",
+   "category": "acidity_regulator",
+   "aliases": [
+    "sodium phosphates"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_340",
+   "ins": "340",
+   "name": "potassium phosphates",
+   "category": "acidity_regulator",
+   "aliases": [
+    "potassium phosphates"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_341",
+   "ins": "341",
+   "name": "calcium phosphates",
+   "category": "acidity_regulator",
+   "aliases": [
+    "calcium phosphates"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_500",
+   "ins": "500",
+   "name": "sodium carbonates",
+   "category": "acidity_regulator",
+   "aliases": [
+    "sodium carbonates"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_500_i",
+   "ins": "500(i)",
+   "name": "sodium carbonate",
+   "category": "acidity_regulator",
+   "aliases": [
+    "soda ash",
+    "sodium carbonate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_500_ii",
+   "ins": "500(ii)",
+   "name": "sodium hydrogen carbonate",
+   "category": "acidity_regulator",
+   "aliases": [
+    "baking soda",
+    "sodium bicarbonate",
+    "sodium hydrogen carbonate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_501",
+   "ins": "501",
+   "name": "potassium carbonates",
+   "category": "acidity_regulator",
+   "aliases": [
+    "potassium carbonates"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_501_i",
+   "ins": "501(i)",
+   "name": "potassium carbonate",
+   "category": "acidity_regulator",
+   "aliases": [
+    "potassium carbonate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_501_ii",
+   "ins": "501(ii)",
+   "name": "potassium hydrogen carbonate",
+   "category": "acidity_regulator",
+   "aliases": [
+    "potassium bicarbonate",
+    "potassium hydrogen carbonate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_507",
+   "ins": "507",
+   "name": "hydrochloric acid",
+   "category": "acidity_regulator",
+   "aliases": [
+    "hydrochloric acid"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_524",
+   "ins": "524",
+   "name": "sodium hydroxide",
+   "category": "acidity_regulator",
+   "aliases": [
+    "sodium hydroxide"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_575",
+   "ins": "575",
+   "name": "glucono delta-lactone",
+   "category": "acidity_regulator",
+   "aliases": [
+    "glucono delta-lactone",
+    "gluconolactone"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_400",
+   "ins": "400",
+   "name": "alginic acid",
+   "category": "thickener",
+   "aliases": [
+    "alginic acid"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_401",
+   "ins": "401",
+   "name": "sodium alginate",
+   "category": "thickener",
+   "aliases": [
+    "sodium alginate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_406",
+   "ins": "406",
+   "name": "agar",
+   "category": "thickener",
+   "aliases": [
+    "agar",
+    "agar agar"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_407",
+   "ins": "407",
+   "name": "carrageenan",
+   "category": "thickener",
+   "aliases": [
+    "carrageenan"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_410",
+   "ins": "410",
+   "name": "locust bean gum",
+   "category": "thickener",
+   "aliases": [
+    "carob bean gum",
+    "locust bean gum"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_412",
+   "ins": "412",
+   "name": "guar gum",
+   "category": "thickener",
+   "aliases": [
+    "guar gum"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_414",
+   "ins": "414",
+   "name": "gum arabic",
+   "category": "thickener",
+   "aliases": [
+    "acacia gum",
+    "gum arabic"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_415",
+   "ins": "415",
+   "name": "xanthan gum",
+   "category": "thickener",
+   "aliases": [
+    "xanthan gum"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_417",
+   "ins": "417",
+   "name": "tara gum",
+   "category": "thickener",
+   "aliases": [
+    "tara gum"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_418",
+   "ins": "418",
+   "name": "gellan gum",
+   "category": "thickener",
+   "aliases": [
+    "gellan gum"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_440",
+   "ins": "440",
+   "name": "pectins",
+   "category": "thickener",
+   "aliases": [
+    "pectin",
+    "pectins"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_460",
+   "ins": "460",
+   "name": "cellulose",
+   "category": "thickener",
+   "aliases": [
+    "cellulose"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_460_i",
+   "ins": "460(i)",
+   "name": "microcrystalline cellulose",
+   "category": "thickener",
+   "aliases": [
+    "microcrystalline cellulose"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_461",
+   "ins": "461",
+   "name": "methyl cellulose",
+   "category": "thickener",
+   "aliases": [
+    "methyl cellulose"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_466",
+   "ins": "466",
+   "name": "sodium carboxymethyl cellulose",
+   "category": "thickener",
+   "aliases": [
+    "carboxymethyl cellulose",
+    "cmc",
+    "sodium carboxymethyl cellulose"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_1442",
+   "ins": "1442",
+   "name": "hydroxypropyl distarch phosphate",
+   "category": "thickener",
+   "aliases": [
+    "hydroxypropyl distarch phosphate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_322",
+   "ins": "322",
+   "name": "lecithins",
+   "category": "emulsifier",
+   "aliases": [
+    "lecithin",
+    "lecithins",
+    "soy lecithin",
+    "soya lecithin",
+    "sunflower lecithin"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_322_i",
+   "ins": "322(i)",
+   "name": "lecithin",
+   "category": "emulsifier",
+   "aliases": [
+    "lecithin"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_432",
+   "ins": "432",
+   "name": "polysorbate 20",
+   "category": "emulsifier",
+   "aliases": [
+    "polysorbate 20"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_433",
+   "ins": "433",
+   "name": "polysorbate 80",
+   "category": "emulsifier",
+   "aliases": [
+    "polysorbate 80"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_435",
+   "ins": "435",
+   "name": "polysorbate 60",
+   "category": "emulsifier",
+   "aliases": [
+    "polysorbate 60"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_471",
+   "ins": "471",
+   "name": "mono- and diglycerides of fatty acids",
+   "category": "emulsifier",
+   "aliases": [
+    "glycerol monostearate",
+    "mono and diglycerides",
+    "mono- and diglycerides of fatty acids",
+    "monoglycerides and diglycerides"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_472e",
+   "ins": "472e",
+   "name": "diacetyltartaric and fatty acid esters of glycerol",
+   "category": "emulsifier",
+   "aliases": [
+    "datem",
+    "diacetyltartaric and fatty acid esters of glycerol"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_473",
+   "ins": "473",
+   "name": "sucrose esters of fatty acids",
+   "category": "emulsifier",
+   "aliases": [
+    "sucrose esters of fatty acids"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_475",
+   "ins": "475",
+   "name": "polyglycerol esters of fatty acids",
+   "category": "emulsifier",
+   "aliases": [
+    "polyglycerol esters of fatty acids"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_477",
+   "ins": "477",
+   "name": "propylene glycol esters of fatty acids",
+   "category": "emulsifier",
+   "aliases": [
+    "propylene glycol esters of fatty acids"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_481_i",
+   "ins": "481(i)",
+   "name": "sodium stearoyl lactylate",
+   "category": "emulsifier",
+   "aliases": [
+    "sodium stearoyl lactylate",
+    "sodium stearoyl-2-lactylate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_491",
+   "ins": "491",
+   "name": "sorbitan monostearate",
+   "category": "emulsifier",
+   "aliases": [
+    "sorbitan monostearate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_620",
+   "ins": "620",
+   "name": "glutamic acid",
+   "category": "flavour_enhancer",
+   "aliases": [
+    "glutamic acid"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_621",
+   "ins": "621",
+   "name": "monosodium glutamate",
+   "category": "flavour_enhancer",
+   "aliases": [
+    "monosodium glutamate",
+    "monosodium l-glutamate",
+    "msg"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_622",
+   "ins": "622",
+   "name": "monopotassium glutamate",
+   "category": "flavour_enhancer",
+   "aliases": [
+    "monopotassium glutamate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_627",
+   "ins": "627",
+   "name": "disodium guanylate",
+   "category": "flavour_enhancer",
+   "aliases": [
+    "disodium guanylate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_631",
+   "ins": "631",
+   "name": "disodium inosinate",
+   "category": "flavour_enhancer",
+   "aliases": [
+    "disodium inosinate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_635",
+   "ins": "635",
+   "name": "disodium 5'-ribonucleotides",
+   "category": "flavour_enhancer",
+   "aliases": [
+    "disodium 5'-ribonucleotides",
+    "disodium ribonucleotides",
+    "ribonucleotides"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_420",
+   "ins": "420",
+   "name": "sorbitol",
+   "category": "sweetener",
+   "aliases": [
+    "sorbitol"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_421",
+   "ins": "421",
+   "name": "mannitol",
+   "category": "sweetener",
+   "aliases": [
+    "mannitol"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_950",
+   "ins": "950",
+   "name": "acesulfame potassium",
+   "category": "sweetener",
+   "aliases": [
+    "acesulfame",
+    "acesulfame k",
+    "acesulfame potassium"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_951",
+   "ins": "951",
+   "name": "aspartame",
+   "category": "sweetener",
+   "aliases": [
+    "aspartame"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_952",
+   "ins": "952",
+   "name": "cyclamates",
+   "category": "sweetener",
+   "aliases": [
+    "cyclamate",
+    "cyclamates"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_954",
+   "ins": "954",
+   "name": "saccharins",
+   "category": "sweetener",
+   "aliases": [
+    "saccharin",
+    "saccharins"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_955",
+   "ins": "955",
+   "name": "sucralose",
+   "category": "sweetener",
+   "aliases": [
+    "sucralose"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_960",
+   "ins": "960",
+   "name": "steviol glycosides",
+   "category": "sweetener",
+   "aliases": [
+    "stevia",
+    "steviol glycosides"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_965",
+   "ins": "965",
+   "name": "maltitol",
+   "category": "sweetener",
+   "aliases": [
+    "maltitol"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_967",
+   "ins": "967",
+   "name": "xylitol",
+   "category": "sweetener",
+   "aliases": [
+    "xylitol"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_968",
+   "ins": "968",
+   "name": "erythritol",
+   "category": "sweetener",
+   "aliases": [
+    "erythritol"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_170_i",
+   "ins": "170(i)",
+   "name": "calcium carbonate",
+   "category": "anticaking_agent",
+   "aliases": [
+    "calcium carbonate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_503",
+   "ins": "503",
+   "name": "ammonium carbonates",
+   "category": "raising_agent",
+   "aliases": [
+    "ammonium bicarbonate",
+    "ammonium carbonates"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_508",
+   "ins": "508",
+   "name": "potassium chloride",
+   "category": "firming_agent",
+   "aliases": [
+    "potassium chloride"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_509",
+   "ins": "509",
+   "name": "calcium chloride",
+   "category": "firming_agent",
+   "aliases": [
+    "calcium chloride"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_535",
+   "ins": "535",
+   "name": "sodium ferrocyanide",
+   "category": "anticaking_agent",
+   "aliases": [
+    "sodium ferrocyanide"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_536",
+   "ins": "536",
+   "name": "potassium ferrocyanide",
+   "category": "anticaking_agent",
+   "aliases": [
+    "potassium ferrocyanide"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_551",
+   "ins": "551",
+   "name": "silicon dioxide",
+   "category": "anticaking_agent",
+   "aliases": [
+    "amorphous silica",
+    "silica",
+    "silicon dioxide"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_552",
+   "ins": "552",
+   "name": "calcium silicate",
+   "category": "anticaking_agent",
+   "aliases": [
+    "calcium silicate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_553_iii",
+   "ins": "553(iii)",
+   "name": "talc",
+   "category": "anticaking_agent",
+   "aliases": [
+    "talc"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_554",
+   "ins": "554",
+   "name": "sodium aluminosilicate",
+   "category": "anticaking_agent",
+   "aliases": [
+    "sodium aluminosilicate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_900a",
+   "ins": "900a",
+   "name": "polydimethylsiloxane",
+   "category": "antifoaming_agent",
+   "aliases": [
+    "polydimethylsiloxane"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_901",
+   "ins": "901",
+   "name": "beeswax",
+   "category": "glazing_agent",
+   "aliases": [
+    "beeswax",
+    "white beeswax",
+    "yellow beeswax"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_903",
+   "ins": "903",
+   "name": "carnauba wax",
+   "category": "glazing_agent",
+   "aliases": [
+    "carnauba wax"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_904",
+   "ins": "904",
+   "name": "shellac",
+   "category": "glazing_agent",
+   "aliases": [
+    "shellac"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_924",
+   "ins": "924",
+   "name": "potassium bromate",
+   "category": "flour_treatment_agent",
+   "aliases": [
+    "potassium bromate"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_927b",
+   "ins": "927b",
+   "name": "carbamide",
+   "category": "flour_treatment_agent",
+   "aliases": [
+    "carbamide",
+    "urea"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  },
+  {
+   "id": "ins_1100",
+   "ins": "1100",
+   "name": "amylases",
+   "category": "flour_treatment_agent",
+   "aliases": [
+    "amylase",
+    "amylases"
+   ],
+   "status": "CONDITIONAL",
+   "conditions": [],
+   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011 (placeholder status; name/INS only from the Codex INS list)"
+  }
+ ]
+}

@@ -1,0 +1,159 @@
+{
+ "_meta": {
+  "note": "Configurable health-score inputs (Phase 3). Values are per 100 g. Score starts at `base_score`; each matching tier adds its (negative) impact; for each nutrient only the highest matching tier applies.",
+  "source": "Placeholder health heuristic, NOT a regulatory limit. TODO: replace with cited thresholds"
+ },
+ "base_score": 100,
+ "nutrients": {
+  "sugar_g": [
+   {
+    "key": "high_sugar",
+    "label": "High sugar",
+    "gt": 15,
+    "impact": -20,
+    "detail": "More than 15 g sugar per 100 g",
+    "source": "Placeholder health heuristic, NOT a regulatory limit. TODO: replace with cited thresholds"
+   },
+   {
+    "key": "moderate_sugar",
+    "label": "Moderate sugar",
+    "gt": 5,
+    "impact": -8,
+    "detail": "More than 5 g sugar per 100 g",
+    "source": "Placeholder health heuristic, NOT a regulatory limit. TODO: replace with cited thresholds"
+   }
+  ],
+  "sodium_mg": [
+   {
+    "key": "high_sodium",
+    "label": "High sodium",
+    "gt": 600,
+    "impact": -20,
+    "detail": "More than 600 mg sodium per 100 g",
+    "source": "Placeholder health heuristic, NOT a regulatory limit. TODO: replace with cited thresholds"
+   },
+   {
+    "key": "moderate_sodium",
+    "label": "Moderate sodium",
+    "gt": 300,
+    "impact": -8,
+    "detail": "More than 300 mg sodium per 100 g",
+    "source": "Placeholder health heuristic, NOT a regulatory limit. TODO: replace with cited thresholds"
+   }
+  ],
+  "sat_fat_g": [
+   {
+    "key": "high_sat_fat",
+    "label": "High saturated fat",
+    "gt": 5,
+    "impact": -15,
+    "detail": "More than 5 g saturated fat per 100 g",
+    "source": "Placeholder health heuristic, NOT a regulatory limit. TODO: replace with cited thresholds"
+   },
+   {
+    "key": "moderate_sat_fat",
+    "label": "Moderate saturated fat",
+    "gt": 1.5,
+    "impact": -6,
+    "detail": "More than 1.5 g saturated fat per 100 g",
+    "source": "Placeholder health heuristic, NOT a regulatory limit. TODO: replace with cited thresholds"
+   }
+  ],
+  "trans_fat_g": [
+   {
+    "key": "trans_fat_present",
+    "label": "Contains trans fat",
+    "gt": 0.2,
+    "impact": -15,
+    "detail": "More than 0.2 g trans fat per 100 g",
+    "source": "Placeholder health heuristic, NOT a regulatory limit. TODO: replace with cited thresholds"
+   }
+  ],
+  "energy_kcal": [
+   {
+    "key": "high_energy",
+    "label": "High energy density",
+    "gt": 400,
+    "impact": -8,
+    "detail": "More than 400 kcal per 100 g",
+    "source": "Placeholder health heuristic, NOT a regulatory limit. TODO: replace with cited thresholds"
+   }
+  ]
+ },
+ "positive_nutrients": {
+  "fiber_g": {
+   "key": "good_fiber",
+   "label": "Source of fibre",
+   "gte": 3,
+   "impact": 5,
+   "detail": "At least 3 g fibre per 100 g",
+   "source": "Placeholder health heuristic, NOT a regulatory limit. TODO: replace with cited thresholds"
+  },
+  "protein_g": {
+   "key": "good_protein",
+   "label": "Source of protein",
+   "gte": 10,
+   "impact": 5,
+   "detail": "At least 10 g protein per 100 g",
+   "source": "Placeholder health heuristic, NOT a regulatory limit. TODO: replace with cited thresholds"
+  }
+ },
+ "ingredient_fallbacks": {
+  "note": "Used only when there is no nutrition table. Impact is applied once per category present.",
+  "by_category": {
+   "colour": {
+    "key": "has_colour",
+    "label": "Contains added colour",
+    "impact": -5,
+    "source": "Placeholder health heuristic, NOT a regulatory limit. TODO: replace with cited thresholds"
+   },
+   "preservative": {
+    "key": "has_preservative",
+    "label": "Contains preservative",
+    "impact": -5,
+    "source": "Placeholder health heuristic, NOT a regulatory limit. TODO: replace with cited thresholds"
+   },
+   "sweetener": {
+    "key": "has_sweetener",
+    "label": "Contains sweetener",
+    "impact": -3,
+    "source": "Placeholder health heuristic, NOT a regulatory limit. TODO: replace with cited thresholds"
+   },
+   "flavour_enhancer": {
+    "key": "has_flavour_enhancer",
+    "label": "Contains flavour enhancer",
+    "impact": -5,
+    "source": "Placeholder health heuristic, NOT a regulatory limit. TODO: replace with cited thresholds"
+   }
+  },
+  "by_ingredient_id": {
+   "hydrogenated_vegetable_fat": {
+    "key": "hydrogenated_fat",
+    "label": "Contains hydrogenated fat",
+    "impact": -10,
+    "source": "Placeholder health heuristic, NOT a regulatory limit. TODO: replace with cited thresholds"
+   },
+   "palm_oil": {
+    "key": "palm_oil",
+    "label": "Contains palm oil",
+    "impact": -5,
+    "source": "Placeholder health heuristic, NOT a regulatory limit. TODO: replace with cited thresholds"
+   }
+  }
+ },
+ "bands": [
+  {
+   "min_score": 70,
+   "assessment": "FEWER CONCERNS"
+  },
+  {
+   "min_score": 40,
+   "assessment": "MODERATE"
+  },
+  {
+   "min_score": 0,
+   "assessment": "SEVERAL CONCERNS"
+  }
+ ],
+ "disclaimer": "General information only. Not medical or dietary advice."
+}

@@ -1,0 +1,68 @@
+{
+  "_meta": {
+    "note": "Dropdown list shown in the Flutter app. These are plain UI labels; they are NOT regulatory statuses. Later phases use the id to look up per-category rules.",
+    "source": "TODO: verify against the FSS (FPS&FA) Regulations 2011 food category system"
+  },
+  "categories": [
+    {
+      "id": "bakery",
+      "name": "Bread, biscuits & bakery",
+      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+    },
+    {
+      "id": "beverages_non_alcoholic",
+      "name": "Beverages (non-alcoholic)",
+      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+    },
+    {
+      "id": "cereals_noodles",
+      "name": "Cereals, noodles & pasta",
+      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+    },
+    {
+      "id": "confectionery",
+      "name": "Confectionery & chocolates",
+      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+    },
+    {
+      "id": "dairy",
+      "name": "Dairy products",
+      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+    },
+    {
+      "id": "fats_oils",
+      "name": "Fats & oils",
+      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+    },
+    {
+      "id": "fruit_veg_products",
+      "name": "Fruit & vegetable products",
+      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+    },
+    {
+      "id": "meat_fish_egg",
+      "name": "Meat, fish & egg products",
+      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+    },
+    {
+      "id": "sauces_condiments",
+      "name": "Sauces, spreads & condiments",
+      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+    },
+    {
+      "id": "snacks_savoury",
+      "name": "Savoury snacks & namkeen",
+      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+    },
+    {
+      "id": "sweets_desserts",
+      "name": "Sweets & desserts",
+      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+    },
+    {
+      "id": "other",
+      "name": "Other",
+      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+    }
+  ]
+}

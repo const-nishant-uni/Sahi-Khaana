@@ -1,0 +1,32 @@
+# Secrets: only .env.example is committed
+.env
+.env.*
+!.env.example
+
+# Uploaded label photos (keep the folder itself)
+uploads/*
+!uploads/.gitkeep
+
+# Local database
+*.db
+*.sqlite
+*.sqlite3
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+
+# Tests / tooling caches
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Logs
+*.log

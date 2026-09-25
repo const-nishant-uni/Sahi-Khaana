@@ -1,0 +1,32 @@
+# Web framework
+fastapi>=0.110
+uvicorn[standard]>=0.27
+python-multipart>=0.0.9
+pydantic>=2.6
+pydantic-settings>=2.2
+
+# Database (used from Phase 3)
+sqlmodel>=0.0.16
+
+# Image processing + OCR
+# rapidocr-onnxruntime itself is NOT listed here: it depends on the full
+# "opencv-python", which clashes with opencv-python-headless. Install it
+# separately with --no-deps (see README). Its real dependencies are below.
+opencv-python-headless>=4.8
+numpy>=1.26
+onnxruntime>=1.7
+pyclipper>=1.2
+shapely>=1.7
+pyyaml
+Pillow
+six
+tqdm
+pytesseract>=0.3.10
+
+# Text matching / LLM calls (used from Phase 2 / 4)
+rapidfuzz>=3.6
+httpx>=0.27
+
+# Tests + evaluation
+pytest>=8.0
+jiwer>=3.0
