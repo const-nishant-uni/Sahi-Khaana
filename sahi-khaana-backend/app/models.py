@@ -44,7 +44,7 @@ class FindingRow(SQLModel, table=True):
 
     id: int | None = Field(default=None, primary_key=True)
     scan_id: str = Field(foreign_key="scans.id", index=True)
-    ingredient_id: str  # matches IngredientRow.ing_id
+    ingredient_id: str | None = None  # matches IngredientRow.ing_id; None = label-level finding
     rule_id: str
     status: str
     reason: str

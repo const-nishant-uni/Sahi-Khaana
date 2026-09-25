@@ -8,27 +8,23 @@ Per ingredient:
         category missing                   -> REVIEW
         a condition covers the category    -> that condition's result (PASS / FLAG)
         no condition covers it             -> REVIEW
-  * a PASS with a shaky match (confidence < LOW_MATCH_CONFIDENCE) -> REVIEW
-Then declaration rules (e.g. "contains permitted colour") can downgrade to REVIEW.
+  * a PASS with a shaky match (confidence < settings.match_confidence_cutoff) -> REVIEW
 
-Overall: any FLAG -> FLAG, else any REVIEW -> REVIEW, else PASS.
+Declaration rules (e.g. "contains permitted colour") give ONE label-level finding
+(ingredient_id = null, always REVIEW, never FLAG) when the phrase is not found.
+They do not change any ingredient's own finding or the per-ingredient summary counts.
+
+Overall: any FLAG -> FLAG, else any REVIEW (ingredient or label-level) -> REVIEW, else PASS.
 """
 import re
 
 from rapidfuzz import fuzz
 
+from app.config import get_settings
 from app.rules import load_entries, load_rules
 from app.schemas import Finding, FssaiResult, FssaiSummary, Ingredient
 
-LOW_MATCH_CONFIDENCE = 0.95  # below this, a PASS is not trusted (fuzzy / base-INS matches)
 DECLARATION_MATCH_SCORE = 90  # fuzzy score for finding a required phrase in noisy OCR text
-
-_SEVERITY = {"PASS": 0, "REVIEW": 1, "FLAG": 2}
-
-
-def _worst(a: str, b: str) -> str:
-    return a if _SEVERITY[a] >= _SEVERITY[b] else b
-
 
 def _squash(text: str) -> str:
     return " ".join(re.sub(r"[^a-z0-9]+", " ", text.lower()).split())
@@ -66,7 +62,7 @@ class FssaiEngine:
         else:  # CONDITIONAL
             status, reason = self._check_conditions(entry, food_category)
 
-        if status == "PASS" and ing.match_confidence < LOW_MATCH_CONFIDENCE:
+        if status == "PASS" and ing.match_confidence < get_settings().match_confidence_cutoff:
             status = "REVIEW"
             reason += f" Match confidence is only {ing.match_confidence:.2f}; please verify."
         return status, rule_id, reason, source
@@ -105,26 +101,23 @@ class FssaiEngine:
         ocr_confidence: float = 1.0,
     ) -> FssaiResult:
         findings: list[Finding] = []
-        per_ingredient: dict[str, str] = {}
+        per_ingredient: dict[str, str] = {}  # summary counts come from these only
 
         for ing in ingredients:
             status, rule_id, reason, source = self._check_ingredient(ing, food_category)
             findings.append(Finding(ingredient_id=ing.id, rule_id=rule_id, status=status, reason=reason, source=source))
             per_ingredient[ing.id] = status
 
-        # Declaration rules: only reported when the required phrase is missing.
+        # Declaration rules: one label-level finding per rule whose phrase is missing.
         for decl in self.declarations:
-            triggering = [i for i in ingredients if i.category == decl["applies_to_category"]]
-            if not triggering or self._declaration_present(decl, label_text):
+            if not any(i.category == decl["applies_to_category"] for i in ingredients):
                 continue
-            missing_status = decl["status_if_missing"]
-            for ing in triggering:
-                findings.append(Finding(
-                    ingredient_id=ing.id, rule_id=decl["id"], status=missing_status,
-                    reason=f"Required declaration for {decl['applies_to_category']} not found in the label text.",
-                    source=decl["source"],
-                ))
-                per_ingredient[ing.id] = _worst(per_ingredient[ing.id], missing_status)
+            if self._declaration_present(decl, label_text):
+                continue
+            findings.append(Finding(
+                ingredient_id=None, rule_id=decl["id"], status="REVIEW",
+                reason="Declaration not found in the scanned area", source=decl["source"],
+            ))
 
         counts = {"PASS": 0, "FLAG": 0, "REVIEW": 0}
         for status in per_ingredient.values():
@@ -132,9 +125,10 @@ class FssaiEngine:
         scanned = len(ingredients)
         matched = sum(1 for i in ingredients if i.known)
 
-        if counts["FLAG"]:
+        label_level = {f.status for f in findings if f.ingredient_id is None}
+        if counts["FLAG"] or "FLAG" in label_level:
             overall = "FLAG"
-        elif counts["REVIEW"] or scanned == 0:
+        elif counts["REVIEW"] or label_level or scanned == 0:
             overall = "REVIEW"
         else:
             overall = "PASS"

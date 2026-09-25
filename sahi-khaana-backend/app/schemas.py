@@ -50,7 +50,7 @@ class FssaiSummary(BaseModel):
 
 
 class Finding(BaseModel):
-    ingredient_id: str
+    ingredient_id: str | None  # null = label-level finding (e.g. a missing declaration)
     rule_id: str
     status: Status
     reason: str
@@ -73,10 +73,14 @@ class HealthFactor(BaseModel):
     detail: str  # one-line explanation
 
 
+Completeness = Literal["full", "partial", "ingredients_only"]
+
+
 class HealthResult(BaseModel):
     score: int = Field(ge=0, le=100)
     assessment: Assessment
-    data_completeness: float = Field(ge=0, le=1)
+    data_completeness: Completeness  # full = all key nutrients read; ingredients_only = no usable nutrition
+    completeness_score: float = Field(ge=0, le=1)  # numeric version of the same idea
     factors: list[HealthFactor]
     disclaimer: str
 

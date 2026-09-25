@@ -56,6 +56,7 @@ uvicorn app.main:app --reload --host 0.0.0.0
 ```
 
 - Swagger UI: http://localhost:8000/docs
+- The SQLite file `sahi_khaana.db` is created on first start (gitignored). If you ran an earlier Phase 3 build, **delete it once**: the `findings` table now allows a null `ingredient_id`, and existing tables are not migrated.
 - The first start takes a few seconds (OCR models load once at startup).
 
 ### Connecting the Flutter app
@@ -116,16 +117,65 @@ Run the tests with `pytest` (from this folder).
 | Rule says `CONDITIONAL` and no food category was sent | REVIEW |
 | `CONDITIONAL` and a condition covers the category | that condition's `PASS` / `FLAG` |
 | `CONDITIONAL` and no condition covers the category | REVIEW |
-| Would be PASS but `match_confidence < 0.95` | REVIEW |
-| Declaration rule (e.g. "contains permitted colour") and the phrase is missing from the label text | REVIEW |
+| Would be PASS but `match_confidence < MATCH_CONFIDENCE_CUTOFF` (default 0.90, set in `.env`) | REVIEW |
 
-Overall: any FLAG gives FLAG, otherwise any REVIEW gives REVIEW, otherwise PASS. `confidence = ocr_confidence x matched / scanned` (typed text counts as OCR confidence 1.0). The summary counts each ingredient once, at its worst status.
+**Declarations** (e.g. "contains permitted colour"): if an ingredient of that category is present and none of the accepted phrases is found in the scanned text, the engine adds **one label-level finding** with `"ingredient_id": null`, status `REVIEW` (never `FLAG`, since OCR may just have missed the text) and reason `"Declaration not found in the scanned area"`. It does not change any ingredient's own finding, and `summary` counts ingredients only (so `pass + flag + review == scanned` always holds).
+
+Overall: any FLAG gives FLAG, otherwise any REVIEW (an ingredient's or a label-level finding) gives REVIEW, otherwise PASS. `confidence = ocr_confidence x matched / scanned` (typed text counts as OCR confidence 1.0). The summary counts each ingredient once, at its worst status.
 
 A `CONDITIONAL` rule looks like `{"food_categories": ["bakery"], "result": "PASS", "note": "..."}` in the entry's `conditions` list (`"*"` matches every category).
 
-**Health engine** (`engines/health_engine.py`). Score starts at `base_score` (100); thresholds and impacts come from `rules/nutrition_rules.json`; only the strictest matching tier per nutrient applies; the result is clamped to 0-100 and mapped to a band. Values are per 100 g, so a per-serving table is not scored. With no usable nutrition, coarse ingredient-based rules apply instead. `data_completeness` = 0.7 x (scoring nutrients present) + 0.3 x (ingredients recognised); **show it in the app**, because a product with no nutrition table can score high simply because nothing is known.
+**Health engine** (`engines/health_engine.py`). Score starts at `base_score` (100); thresholds and impacts come from `rules/nutrition_rules.json`; only the strictest matching tier per nutrient applies; the result is clamped to 0-100 and mapped to a band (70+ `FEWER CONCERNS`, 40-69 `MODERATE`, below 40 `SEVERAL CONCERNS`).
+
+- **Thresholds** are the UK FSA per-100 g "high" cut-offs: total sugars > 22.5 g, total fat > 17.5 g, saturated fat > 5 g, salt > 1.5 g (= sodium > 600 mg). Beverages (per 100 ml, or food category `beverages_non_alcoholic`) use half. Every threshold has a `source` in the JSON. The trans-fat and energy factors and all the *impact sizes* (points lost) are marked `"project heuristic"`.
+- **No usable nutrition** (nothing found, only per-serving values, or no scoring nutrient): coarse ingredient-based rules apply, the assessment is **capped at `MODERATE`** (the score is still computed) and `LIMITED_NUTRITION_DATA` is added to `warnings`.
+- **`health_result.data_completeness`** is a string: `"full"` (sugars, total fat, saturated fat and sodium all read), `"partial"` (some nutrients read) or `"ingredients_only"` (no usable nutrition). **`health_result.completeness_score`** is the numeric version: 0.7 x (scoring nutrients present) + 0.3 x (ingredients recognised), from 0 to 1. Show completeness in the app.
 
 Known limits: a comma the OCR drops completely ("Salt Sugar") can't be repaired and gives one unknown ingredient; brackets holding only a descriptor ("Salt (iodised)") are ignored.
+
+## History endpoints (for the Flutter developer)
+
+All three need the `X-Device-Id` header and only ever see that device's scans.
+
+**`GET /api/v1/scans?limit=20&offset=0`** (`limit` 1-100, default 20; `offset` >= 0). Newest first. Returns 200:
+
+```json
+{
+  "items": [
+    {
+      "scan_id": "f3d1f1c9-90cc-4324-9d79-9bbf2e1fec64",
+      "created_at": "2026-09-25T10:29:39.469425+00:00",
+      "food_category": "cereals_noodles",
+      "overall_status": "REVIEW",
+      "health_score": 57,
+      "assessment": "MODERATE",
+      "ingredient_count": 7
+    }
+  ],
+  "total": 12,
+  "limit": 20,
+  "offset": 0
+}
+```
+
+- `food_category` may be `null`. `overall_status` is `PASS` | `FLAG` | `REVIEW`. `assessment` is `FEWER CONCERNS` | `MODERATE` | `SEVERAL CONCERNS`.
+- `total` is the number of scans for this device (use it for paging: fetch the next page while `offset + items.length < total`). An empty history is `{"items": [], "total": 0, ...}`, not an error.
+
+**`GET /api/v1/scans/{scan_id}`** returns 200 with the same full object `/scan` returned. Unknown id or another device's id gives 404 `SCAN_NOT_FOUND`.
+
+**`DELETE /api/v1/scans/{scan_id}`** returns **204 with an empty body** on success (the scan, its stored rows and its photo are deleted). Unknown id or another device's id gives 404 `SCAN_NOT_FOUND`. Deleting twice: the second call is a 404.
+
+## Warnings
+
+`warnings` in the scan response is a list of strings (it can be empty). The app should show a hint for each:
+
+| Warning | Meaning |
+|---|---|
+| `LOW_OCR_CONFIDENCE` | OCR confidence below 0.75; the text may contain mistakes |
+| `NO_NUTRITION_FOUND` | No nutrient values were found on the label |
+| `IMPLAUSIBLE_NUTRIENT_IGNORED:<field>` | A value was dropped as an obvious OCR error (e.g. 175 g fat per 100 g) |
+| `LIMITED_NUTRITION_DATA` | No usable per-100 g nutrition. The score is computed from ingredients only and the assessment is capped at `MODERATE` |
+| `NUTRITION_PER_SERVING_ONLY` | Only a per-serving table was found. It is not compared with the per-100 g thresholds (so `LIMITED_NUTRITION_DATA` is added too) |
 
 ## Errors
 
@@ -139,8 +189,10 @@ Always `{"error": {"code": "...", "message": "..."}}`.
 | `INVALID_FILE` | 400 | Not JPG/PNG/WEBP (checked by magic bytes), empty, or missing |
 | `FILE_TOO_LARGE` | 413 | Over 5 MB |
 | `INVALID_CATEGORY` | 400 | `food_category` is not an id from `/categories` |
+| `MISSING_DEVICE_ID` | 400 | The `X-Device-Id` header is missing (required on `/scan`, `/analyze`, `/scans*`) |
 | `INVALID_DEVICE_ID` | 400 | `X-Device-Id` is not a UUID |
-| `VALIDATION_ERROR` / `NOT_FOUND` / `INTERNAL_ERROR` | 422 / 404 / 500 | Generic |
+| `SCAN_NOT_FOUND` | 404 | No scan with that id **for this device** (someone else's scan looks the same) |
+| `VALIDATION_ERROR` / `NOT_FOUND` / `INTERNAL_ERROR` | 422 / 404 / 500 | Generic (bad JSON body, unknown URL, server bug) |
 
 ## Project layout
 
@@ -169,4 +221,5 @@ relying on any result.
 - **Until you fill in `conditions`, every additive comes out as REVIEW** (that is deliberate: no rule is verified, so the engine never claims PASS or FLAG for an additive).
 - `additives.json`: INS numbers, names and categories come from the Codex INS list, but **every `status` is a `CONDITIONAL` placeholder with empty `conditions`**. Nothing is asserted about what is permitted.
 - `ingredients.json`: ordinary foods (`PERMITTED` = "not an additive", itself unverified) and flavour entries (placeholder).
-- `declarations.json`: accepted phrases are placeholders. `nutrition_rules.json`: health thresholds are placeholder heuristics, not regulatory limits.
+- `declarations.json`: accepted phrases are placeholders.
+- `nutrition_rules.json`: the four FSA thresholds are cited; the energy and trans-fat thresholds and every impact size are project heuristics, labelled as such.

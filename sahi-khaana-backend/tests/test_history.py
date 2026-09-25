@@ -25,6 +25,46 @@ def test_analyze_response_has_real_engine_output(client):
     assert 0 <= body["health_result"]["score"] <= 100 and body["health_result"]["disclaimer"]
 
 
+def test_no_nutrition_gives_capped_band_and_warning(client):
+    body = analyze(client, nutrition_text=None)
+    h = body["health_result"]
+    assert "LIMITED_NUTRITION_DATA" in body["warnings"] and "NO_NUTRITION_FOUND" in body["warnings"]
+    assert h["assessment"] != "FEWER CONCERNS" and h["data_completeness"] == "ingredients_only"
+
+
+def test_per_serving_only_warns(client):
+    body = analyze(client, nutrition_text="Nutrition per serving (30 g): Energy 120 kcal, Total sugars 5 g")
+    assert "NUTRITION_PER_SERVING_ONLY" in body["warnings"] and "LIMITED_NUTRITION_DATA" in body["warnings"]
+    assert body["health_result"]["data_completeness"] == "ingredients_only"
+
+
+def test_health_completeness_fields_in_response(client):
+    h = analyze(client, nutrition_text="per 100 g: Total sugars 3 g, Total fat 5 g, Saturated fat 1 g, Sodium 100 mg")["health_result"]
+    assert h["data_completeness"] == "full" and isinstance(h["completeness_score"], float)
+    assert analyze(client)["health_result"]["data_completeness"] == "partial"  # BODY has only sodium
+
+
+def test_beverage_category_uses_half_thresholds(client):
+    def factor_keys(**extra):
+        body = analyze(client, nutrition_text="per 100 g: Total sugars 12 g", **extra)
+        return [f["key"] for f in body["health_result"]["factors"]]
+
+    assert "high_sugar" in factor_keys(food_category="beverages_non_alcoholic")  # 12 > 11.25
+    assert "high_sugar" not in factor_keys(food_category="bakery")  # 12 < 22.5
+    assert "high_sugar" not in factor_keys()  # no category: food thresholds
+
+
+def test_label_level_finding_roundtrips_with_null_ingredient_id(client, db_engine):
+    created = analyze(client, ingredients_text="Sugar, Colour (INS 102)")
+    nulls = [f for f in created["fssai_result"]["findings"] if f["ingredient_id"] is None]
+    assert len(nulls) == 1 and nulls[0]["status"] == "REVIEW"
+    assert nulls[0]["reason"] == "Declaration not found in the scanned area"
+    stored = client.get(f"/api/v1/scans/{created['scan_id']}", headers=headers()).json()
+    assert stored == created
+    with Session(db_engine) as s:
+        assert [r.ingredient_id for r in s.exec(select(FindingRow)) if r.ingredient_id is None] == [None]
+
+
 def test_device_header_required_and_validated(client):
     for url, kwargs in [("/api/v1/analyze", {"json": BODY}), ("/api/v1/scans", {}), ("/api/v1/scans/x", {})]:
         method = client.post if "analyze" in url else client.get
@@ -107,9 +147,13 @@ def test_delete_leaves_other_scans_alone(client):
     assert [i["scan_id"] for i in client.get("/api/v1/scans", headers=headers()).json()["items"]] == [keep["scan_id"]]
 
 
-def test_mock_scan_needs_no_device_header(client):
+def test_mock_scan_needs_no_device_header_and_matches_the_schema(client):
     r = client.get("/api/v1/mock/scan")
-    assert r.status_code == 200 and r.json()["fssai_result"]["summary"]["pass"] == 6
+    body = r.json()
+    assert r.status_code == 200 and body["fssai_result"]["summary"]["pass"] == 6
+    assert body["health_result"]["data_completeness"] in ("full", "partial", "ingredients_only")
+    assert isinstance(body["health_result"]["completeness_score"], float)
+    assert any(f["ingredient_id"] is None for f in body["fssai_result"]["findings"])  # shows the label-level shape
 
 
 def test_scan_photo_end_to_end(client, tmp_path, monkeypatch):

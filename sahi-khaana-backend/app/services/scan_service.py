@@ -154,16 +154,17 @@ def build_response(
 ) -> ScanResponse:
     """Run both engines, assemble the response and save it to history."""
     ocr_confidence = ocr["confidence"] if ocr else 1.0  # typed text has no OCR uncertainty
+    health, health_warnings = assess_health(nutrition, ingredients, food_category)
     response = ScanResponse(
         scan_id=str(uuid.uuid4()),
         created_at=datetime.now(timezone.utc).isoformat(),
-        warnings=warnings,
+        warnings=warnings + health_warnings,
         ocr=ocr,
         food_category=food_category,
         ingredients=ingredients,
         nutrition=nutrition,
         fssai_result=evaluate_fssai(ingredients, food_category, label_text, ocr_confidence),
-        health_result=assess_health(nutrition, ingredients),
+        health_result=health,
     )
     _save_scan(session, device_id, response, image_name)
     return response
@@ -274,7 +275,7 @@ def build_mock_analysis(food_category: str | None = None) -> dict:
             "sat_fat_g": 8.2, "trans_fat_g": 0.1, "total_fat_g": 17.5, "protein_g": 9.1, "fiber_g": None,
         },
         "fssai_result": {
-            "overall_status": "REVIEW",
+            "overall_status": "FLAG",
             "summary": {"scanned": 10, "matched": 9, "pass": 6, "flag": 1, "review": 3},
             "confidence": 0.84,
             "findings": [
@@ -282,12 +283,14 @@ def build_mock_analysis(food_category: str | None = None) -> dict:
                 {"ingredient_id": "ing_9", "rule_id": "MOCK-PRES-001", "status": "PASS", "reason": "Mock: preservative permitted in this food category.", "source": mock_source},
                 {"ingredient_id": "ing_6", "rule_id": "MOCK-FLAV-001", "status": "REVIEW", "reason": "Mock: permission depends on the food category; please verify.", "source": mock_source},
                 {"ingredient_id": "ing_10", "rule_id": "UNKNOWN", "status": "REVIEW", "reason": "Ingredient not recognised; needs manual review.", "source": mock_source},
+                {"ingredient_id": None, "rule_id": "MOCK-DECL-001", "status": "REVIEW", "reason": "Declaration not found in the scanned area", "source": mock_source},
             ],
         },
         "health_result": {
             "score": 46,
             "assessment": "MODERATE",
-            "data_completeness": 0.89,
+            "data_completeness": "full",
+            "completeness_score": 0.97,
             "factors": [
                 {"key": "high_sodium", "type": "nutrient", "impact": -20.0, "label": "High sodium", "detail": "1240 mg sodium per 100 g is high."},
                 {"key": "high_sat_fat", "type": "nutrient", "impact": -12.0, "label": "High saturated fat", "detail": "8.2 g saturated fat per 100 g."},

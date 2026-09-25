@@ -1,7 +1,7 @@
 """Match parsed ingredients to the known ingredient/additive lists.
 
 Order of attempts (first hit wins):
-  1. INS number            -> exact entry (confidence 1.0); base-number fallback (0.9)
+  1. INS number            -> exact entry (confidence 1.0); base-number fallback (0.85)
   2. exact alias           -> confidence 1.0
   3. fuzzy alias           -> rapidfuzz token_sort_ratio >= 88, confidence = score/100
   4. nothing matched       -> known=False, confidence = best score seen (< 0.88)
@@ -26,6 +26,9 @@ DESCRIPTORS = {
     "permitted", "food grade", "added", "synthetic", "artificial",
 }
 FUZZY_CUTOFF = 88
+# "331(i)" matched only the broader "331" entry: deliberately below the engine's
+# MATCH_CONFIDENCE_CUTOFF (0.90) so a PASS on it is downgraded to REVIEW.
+BASE_INS_CONFIDENCE = 0.85
 MIN_FUZZY_LENGTH = 4  # very short strings ("oil") match too easily
 
 
@@ -63,7 +66,7 @@ def _lookup_ins(ins: str) -> tuple[dict | None, float]:
         return idx.by_ins[key], 1.0
     base = re.match(r"\d+", key)  # "331(i)" -> try "331" (e.g. "sodium citrates")
     if base and base.group() in idx.by_ins:
-        return idx.by_ins[base.group()], 0.9
+        return idx.by_ins[base.group()], BASE_INS_CONFIDENCE
     return None, 0.0
 
 

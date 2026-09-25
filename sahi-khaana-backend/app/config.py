@@ -26,6 +26,10 @@ class Settings(BaseSettings):
     blur_threshold: float = 60.0  # Laplacian variance below this => POOR_IMAGE
     max_deskew_degrees: float = 15.0  # ignore skew estimates larger than this
 
+    # --- Rule engine ---
+    # A PASS whose ingredient match confidence is below this becomes REVIEW.
+    match_confidence_cutoff: float = 0.90
+
     # --- OCR ---
     ocr_retry_confidence: float = 0.6  # below this, try the other engines too
     ocr_warn_confidence: float = 0.75  # below this, add LOW_OCR_CONFIDENCE

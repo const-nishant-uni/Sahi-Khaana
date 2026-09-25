@@ -1,6 +1,6 @@
 {
  "_meta": {
-  "note": "Label declaration rules used by the FSSAI engine in Phase 3. If any ingredient of `applies_to_category` is present but none of `accepted_phrases` appear in the label text, the engine reports `status_if_missing`. All entries are placeholders.",
+  "note": "Label declaration rules used by the FSSAI engine. If any ingredient of `applies_to_category` is present but none of `accepted_phrases` appear in the scanned text, the engine adds ONE label-level finding (ingredient_id null) with status REVIEW. A missing declaration is never a FLAG, because OCR may simply have missed the text. All entries are placeholders.",
   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
  },
  "declarations": [
@@ -13,7 +13,6 @@
     "permitted synthetic colour",
     "contains added colour"
    ],
-   "status_if_missing": "REVIEW",
    "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
   },
   {
@@ -26,7 +25,6 @@
     "contains added flavour",
     "added flavour"
    ],
-   "status_if_missing": "REVIEW",
    "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
   },
   {
@@ -37,7 +35,6 @@
     "contains preservative",
     "preservative"
    ],
-   "status_if_missing": "REVIEW",
    "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
   }
  ]

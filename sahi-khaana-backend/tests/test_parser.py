@@ -147,7 +147,7 @@ def test_unknown_ins_keeps_number_and_class():
 
 def test_ins_variant_falls_back_to_base_with_lower_confidence():
     (ing,) = extract_ingredients("Acidity regulator (331(i))")
-    assert ing.known and ing.match_confidence == 0.9
+    assert ing.known and ing.match_confidence == 0.85  # below the 0.90 engine cutoff: a PASS on it becomes REVIEW
 
 
 def test_synonym_in_brackets_not_duplicated():

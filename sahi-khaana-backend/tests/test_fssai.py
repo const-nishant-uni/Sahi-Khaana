@@ -1,5 +1,8 @@
 """FSSAI engine tests. Uses small made-up rule sets so the tests don't depend on the
 placeholder data in rules/*.json (which the project owner is still verifying)."""
+import pytest
+
+from app.config import Settings, get_settings
 from app.engines.fssai_engine import FssaiEngine
 from app.rules import load_entries, load_rules
 from app.schemas import Ingredient
@@ -20,7 +23,7 @@ ENTRIES = [
 ]
 DECLARATIONS = [
     {"id": "DECL-COLOUR", "applies_to_category": "colour",
-     "accepted_phrases": ["contains permitted synthetic food colour"], "status_if_missing": "REVIEW", "source": SRC},
+     "accepted_phrases": ["contains permitted synthetic food colour"], "source": SRC},
 ]
 
 
@@ -88,12 +91,12 @@ def test_conditional_with_no_conditions_is_review():
 
 
 def test_low_match_confidence_downgrades_pass_to_review():
-    _, f = one(ing(1, "sugar", "sweetener", conf=0.9))
-    assert f.status == "REVIEW" and "0.90" in f.reason
+    _, f = one(ing(1, "sugar", "sweetener", conf=0.85))
+    assert f.status == "REVIEW" and "0.85" in f.reason
 
 
 def test_low_match_confidence_does_not_hide_a_flag():
-    _, f = one(ing(1, "ponceau 4r", "colour", conf=0.9), label_text="contains permitted synthetic food colour")
+    _, f = one(ing(1, "ponceau 4r", "colour", conf=0.85), label_text="contains permitted synthetic food colour")
     assert f.status == "FLAG"
 
 
@@ -102,47 +105,103 @@ def test_slightly_imperfect_match_still_passes():
     assert f.status == "PASS"
 
 
+# ------------------------------------------------------------------ MATCH_CONFIDENCE_CUTOFF (config)
+def test_cutoff_default_is_0_90(monkeypatch):
+    monkeypatch.delenv("MATCH_CONFIDENCE_CUTOFF", raising=False)
+    assert Settings(_env_file=None).match_confidence_cutoff == 0.90
+
+
+def test_cutoff_can_be_set_from_environment(monkeypatch):
+    monkeypatch.setenv("MATCH_CONFIDENCE_CUTOFF", "0.97")
+    assert Settings(_env_file=None).match_confidence_cutoff == 0.97
+
+
+def test_cutoff_boundary_is_inclusive_of_the_cutoff_value():
+    assert one(ing(1, "sugar", "sweetener", conf=0.90))[1].status == "PASS"  # equal to cutoff: trusted
+    assert one(ing(1, "sugar", "sweetener", conf=0.89))[1].status == "REVIEW"
+
+
+def test_engine_reads_the_configured_cutoff(monkeypatch):
+    monkeypatch.setattr(get_settings(), "match_confidence_cutoff", 0.99)
+    assert one(ing(1, "sugar", "sweetener", conf=0.97))[1].status == "REVIEW"
+    monkeypatch.setattr(get_settings(), "match_confidence_cutoff", 0.50)
+    assert one(ing(1, "sugar", "sweetener", conf=0.60))[1].status == "PASS"
+
+
+def test_base_ins_fallback_match_is_not_trusted_by_default():
+    from app.pipeline.normalizer import extract_ingredients
+    entries = ENTRIES + [{"id": "ins_331", "name": "sodium citrates", "category": "acidity_regulator",
+                          "status": "PERMITTED", "source": SRC}]
+    (i,) = extract_ingredients("Acidity regulator (331(i))")
+    assert FssaiEngine(entries, []).evaluate([i], None, "").findings[0].status == "REVIEW"
+
+
 # ------------------------------------------------------------------ declarations
-def test_missing_declaration_downgrades_to_review():
+def label_level(result):
+    return [f for f in result.findings if f.ingredient_id is None]
+
+
+def test_missing_declaration_gives_one_label_level_review_finding():
     result, _ = one(ing(1, "tartrazine", "colour"), category="bakery", label_text="")
-    assert any(f.rule_id == "DECL-COLOUR" and f.status == "REVIEW" for f in result.findings)
+    (f,) = label_level(result)
+    assert f.rule_id == "DECL-COLOUR" and f.status == "REVIEW" and f.source == SRC
+    assert f.reason == "Declaration not found in the scanned area"
 
 
-def test_declaration_present_adds_no_finding():
-    label = "Ingredients: sugar. CONTAINS PERMITTED SYNTHETIC FOOD COLOUR (INS 102)"
-    result, _ = one(ing(1, "tartrazine", "colour"), category="bakery", label_text=label)
-    assert all(f.rule_id != "DECL-COLOUR" for f in result.findings)
+def test_one_finding_per_rule_even_with_several_matching_ingredients():
+    result = engine.evaluate([ing(1, "tartrazine", "colour"), ing(2, "ponceau 4r", "colour")], None, "")
+    assert len(label_level(result)) == 1
 
 
-def test_declaration_found_despite_ocr_noise():
-    label = "CONTAINS PERMITTED SYNTHETlC FOOD C0L0UR"  # 3 OCR slips
-    result, _ = one(ing(1, "tartrazine", "colour"), category="bakery", label_text=label)
-    assert all(f.rule_id != "DECL-COLOUR" for f in result.findings)
+def test_declaration_never_flags_even_if_a_rule_asks_for_it():
+    rule = {**DECLARATIONS[0], "status_if_missing": "FLAG"}  # legacy/hand-edited data
+    result = FssaiEngine(ENTRIES, [rule]).evaluate([ing(1, "tartrazine", "colour")], "bakery", "")
+    assert label_level(result)[0].status == "REVIEW"
 
 
-def test_a_different_declaration_does_not_count():
-    """"natural colour" must not satisfy the "synthetic food colour" requirement."""
-    result, _ = one(ing(1, "tartrazine", "colour"), category="bakery", label_text="Contains permitted natural colour")
-    assert any(f.rule_id == "DECL-COLOUR" for f in result.findings)
-
-
-def test_declaration_can_downgrade_a_pass():
+def test_declaration_does_not_touch_the_ingredients_own_finding():
     entries = ENTRIES + [{"id": "ins_x", "name": "good colour", "category": "colour",
                           "status": "PERMITTED", "source": SRC}]
-    eng = FssaiEngine(entries, DECLARATIONS)
-    result = eng.evaluate([ing(1, "good colour", "colour")], None, "no declaration here")
-    assert result.summary.review == 1 and result.summary.pass_ == 0
-    assert result.overall_status == "REVIEW"
+    result = FssaiEngine(entries, DECLARATIONS).evaluate([ing(1, "good colour", "colour")], None, "no declaration")
+    own = [f for f in result.findings if f.ingredient_id == "ing_1"]
+    assert len(own) == 1 and own[0].status == "PASS"
+    assert (result.summary.pass_, result.summary.review) == (1, 0)  # counts are per ingredient
+    assert result.overall_status == "REVIEW"  # ...but the label-level finding still lifts the overall status
 
 
 def test_declaration_does_not_soften_a_flag():
     result, _ = one(ing(1, "ponceau 4r", "colour"), label_text="nothing")
     assert result.summary.flag == 1 and result.overall_status == "FLAG"
+    assert [f.status for f in result.findings if f.ingredient_id == "ing_1"] == ["FLAG"]
+
+
+def test_declaration_present_adds_no_finding():
+    label = "Ingredients: sugar. CONTAINS PERMITTED SYNTHETIC FOOD COLOUR (INS 102)"
+    result, _ = one(ing(1, "tartrazine", "colour"), category="bakery", label_text=label)
+    assert label_level(result) == []
+
+
+def test_declaration_found_despite_ocr_noise():
+    label = "CONTAINS PERMITTED SYNTHETlC FOOD C0L0UR"  # 3 OCR slips
+    result, _ = one(ing(1, "tartrazine", "colour"), category="bakery", label_text=label)
+    assert label_level(result) == []
+
+
+def test_a_different_declaration_does_not_count():
+    """"natural colour" must not satisfy the "synthetic food colour" requirement."""
+    result, _ = one(ing(1, "tartrazine", "colour"), category="bakery", label_text="Contains permitted natural colour")
+    assert len(label_level(result)) == 1
 
 
 def test_declaration_not_checked_when_category_absent():
     result, _ = one(ing(1, "sugar", "sweetener"), label_text="")
     assert len(result.findings) == 1
+
+
+def test_label_level_finding_serialises_null_ingredient_id():
+    result, _ = one(ing(1, "tartrazine", "colour"), category="bakery")
+    dumped = result.model_dump(by_alias=True)
+    assert [f["ingredient_id"] for f in dumped["findings"]] == ["ing_1", None]
 
 
 # ------------------------------------------------------------------ overall + summary
@@ -166,10 +225,10 @@ def test_summary_counts_and_confidence():
     assert result.confidence == 0.4  # 0.8 * 2/4
 
 
-def test_summary_counts_each_ingredient_once():
-    """An ingredient with two findings (rule + declaration) is counted once, at its worst status."""
+def test_summary_counts_ingredients_only():
+    """Label-level findings are not ingredients: counts always add up to `scanned`."""
     result, _ = one(ing(1, "tartrazine", "colour"), category="bakery", label_text="")
-    assert len(result.findings) == 2
+    assert len(result.findings) == 2  # the ingredient's own + the label-level declaration
     s = result.summary
     assert s.pass_ + s.flag + s.review == s.scanned == 1
 
@@ -195,7 +254,7 @@ def test_rule_files_are_well_formed():
         for cond in e.get("conditions", []):
             assert cond["result"] in ("PASS", "FLAG") and cond["food_categories"]
     for d in load_rules("declarations.json")["declarations"]:
-        assert d["source"] and d["accepted_phrases"] and d["status_if_missing"] in ("REVIEW", "FLAG")
+        assert d["source"] and d["accepted_phrases"] and d["applies_to_category"]
 
 
 def test_seed_additives_are_review_until_verified():
