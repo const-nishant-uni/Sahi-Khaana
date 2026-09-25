@@ -15,6 +15,7 @@ from functools import lru_cache
 
 from rapidfuzz import fuzz, process
 
+from app.config import BASE_INS_MATCH_CONFIDENCE
 from app.pipeline.ingredient_parser import ParsedIngredient, parse_ingredients
 from app.rules import load_rules
 from app.schemas import Ingredient
@@ -26,9 +27,6 @@ DESCRIPTORS = {
     "permitted", "food grade", "added", "synthetic", "artificial",
 }
 FUZZY_CUTOFF = 88
-# "331(i)" matched only the broader "331" entry: deliberately below the engine's
-# MATCH_CONFIDENCE_CUTOFF (0.90) so a PASS on it is downgraded to REVIEW.
-BASE_INS_CONFIDENCE = 0.85
 MIN_FUZZY_LENGTH = 4  # very short strings ("oil") match too easily
 
 
@@ -66,7 +64,7 @@ def _lookup_ins(ins: str) -> tuple[dict | None, float]:
         return idx.by_ins[key], 1.0
     base = re.match(r"\d+", key)  # "331(i)" -> try "331" (e.g. "sodium citrates")
     if base and base.group() in idx.by_ins:
-        return idx.by_ins[base.group()], BASE_INS_CONFIDENCE
+        return idx.by_ins[base.group()], BASE_INS_MATCH_CONFIDENCE
     return None, 0.0
 
 

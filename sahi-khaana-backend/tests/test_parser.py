@@ -1,6 +1,7 @@
 """Unit tests for Phase 2: sections, ingredient parser, nutrition parser, normalizer, /analyze."""
 import pytest
 
+from app.config import BASE_INS_MATCH_CONFIDENCE
 from app.pipeline.ingredient_parser import fix_ocr, parse_ingredients, split_top_level
 from app.pipeline.normalizer import extract_ingredients
 from app.pipeline.nutrition_parser import parse_nutrition
@@ -147,7 +148,7 @@ def test_unknown_ins_keeps_number_and_class():
 
 def test_ins_variant_falls_back_to_base_with_lower_confidence():
     (ing,) = extract_ingredients("Acidity regulator (331(i))")
-    assert ing.known and ing.match_confidence == 0.85  # below the 0.90 engine cutoff: a PASS on it becomes REVIEW
+    assert ing.known and ing.match_confidence == BASE_INS_MATCH_CONFIDENCE == 0.85  # below the 0.90 engine cutoff
 
 
 def test_synonym_in_brackets_not_duplicated():

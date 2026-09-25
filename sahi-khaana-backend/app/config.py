@@ -6,6 +6,11 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Confidence given to an INS number that matched only the broader base entry
+# (e.g. "331(i)" -> "331 sodium citrates"). Deliberately below the default
+# MATCH_CONFIDENCE_CUTOFF (0.90) so a PASS on such a match is downgraded to REVIEW.
+BASE_INS_MATCH_CONFIDENCE = 0.85
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=BASE_DIR / ".env", extra="ignore")
