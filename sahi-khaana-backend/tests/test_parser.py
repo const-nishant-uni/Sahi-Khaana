@@ -213,35 +213,39 @@ def test_vocabulary_comes_from_the_rule_files():
 def test_run_together_ingredient_is_repaired_and_matched():
     (ing,) = extract_ingredients("Refinedwheatflour")
     assert ing.normalized == "wheat flour" and ing.known and ing.match_confidence == 1.0
-    assert ing.original == "Refined Wheat Flour"  # the repaired text, not the run-together OCR
+    assert ing.original == "Refinedwheatflour"  # the raw OCR token is kept as read
+    assert ing.repaired is True
 
 
 def test_run_together_keeps_percentage_and_brackets():
     (ing,) = extract_ingredients("Refinedwheatflour (72%)")
     assert ing.normalized == "wheat flour" and ing.percentage == 72.0
-    assert ing.original.startswith("Refined Wheat Flour")
+    assert ing.original == "Refinedwheatflour (72%)" and ing.repaired is True
 
 
 def test_run_together_additive_keeps_its_details():
     (ing,) = extract_ingredients("Sodiumbenzoate")
     assert (ing.normalized, ing.ins_number, ing.category) == ("sodium benzoate", "211", "preservative")
+    assert ing.original == "Sodiumbenzoate" and ing.repaired is True
 
 
 def test_run_together_inside_a_full_list():
-    names = [i.normalized for i in extract_ingredients("Refinedwheatflour (72%), Palm oil, Sodiumbenzoate, Salt")]
-    assert names == ["wheat flour", "palm oil", "sodium benzoate", "salt"]
+    ings = extract_ingredients("Refinedwheatflour (72%), Palm oil, Sodiumbenzoate, Salt")
+    assert [i.normalized for i in ings] == ["wheat flour", "palm oil", "sodium benzoate", "salt"]
+    assert [i.repaired for i in ings] == [True, False, True, False]  # only the repaired ones are flagged
 
 
 def test_run_together_inside_a_class_bracket():
     (ing,) = extract_ingredients("Flavour enhancer (Monosodiumglutamate)")
     assert ing.normalized == "monosodium glutamate" and ing.ins_number == "621"
-    assert ing.original == "Flavour enhancer (Monosodium Glutamate)"
+    assert ing.original == "Flavour enhancer (Monosodiumglutamate)" and ing.repaired is True
 
 
 def test_a_run_together_token_the_fuzzy_match_already_accepts_is_not_rewritten():
     """"Potassiumsorbate" scores >= 88 in the normal lookup, so the fallback never runs."""
     (ing,) = extract_ingredients("Preservative (Potassiumsorbate)")
     assert ing.normalized == "potassium sorbate" and ing.original == "Preservative (Potassiumsorbate)"
+    assert ing.repaired is False  # matched without the split, so not "repaired"
 
 
 def test_split_text_that_does_not_match_is_rejected():
@@ -249,23 +253,35 @@ def test_split_text_that_does_not_match_is_rejected():
     assert segment_run_together("Saltwaterpalmsugar") == "Salt Water Palm Sugar"
     (ing,) = extract_ingredients("Saltwaterpalmsugar")
     assert ing.known is False and ing.normalized is None and ing.original == "Saltwaterpalmsugar"
+    assert ing.repaired is False
 
 
 def test_unknown_long_chemical_name_is_not_forced_into_a_match():
     (ing,) = extract_ingredients("Hydroxypropylmethylcellulose")
-    assert ing.known is False and ing.original == "Hydroxypropylmethylcellulose"
+    assert ing.known is False and ing.original == "Hydroxypropylmethylcellulose" and ing.repaired is False
 
 
 def test_short_run_together_tokens_are_not_touched():
     (ing,) = extract_ingredients("Palmoil")  # 7 characters, below the minimum length
-    assert ing.known is False and ing.original == "Palmoil"
+    assert ing.known is False and ing.original == "Palmoil" and ing.repaired is False
 
 
 def test_already_matching_tokens_are_left_alone():
     (ing,) = extract_ingredients("Maltodextrin")
-    assert ing.original == "Maltodextrin" and ing.known
+    assert ing.original == "Maltodextrin" and ing.known and ing.repaired is False
     (ing,) = extract_ingredients("Sodum benzoate")  # fuzzy match: no repair either
-    assert ing.original == "Sodum benzoate" and ing.known
+    assert ing.original == "Sodum benzoate" and ing.known and ing.repaired is False
+
+
+def test_repaired_is_false_for_every_ordinary_match():
+    text = "Wheat flour (72%), Salt, Preservative (INS 211), Emulsifier (322, 471), Maida, Sodum benzoate, Zzyzx gum"
+    assert [i.repaired for i in extract_ingredients(text)] == [False] * 8
+
+
+def test_repaired_field_defaults_to_false_and_old_data_still_loads():
+    from app.schemas import Ingredient
+    assert Ingredient(id="i", original="x", match_confidence=0.5, known=False).repaired is False
+    assert "repaired" in Ingredient.model_fields
 
 
 def test_repaired_match_uses_the_normal_cutoff():
@@ -411,7 +427,8 @@ def test_analyze_repairs_run_together_words(client):
     r = client.post("/api/v1/analyze", headers=headers(), json={"ingredients_text": "Refinedwheatflour (72%), Sodiumbenzoate, Salt"})
     ings = r.json()["ingredients"]
     assert [i["normalized"] for i in ings] == ["wheat flour", "sodium benzoate", "salt"]
-    assert ings[0]["original"].startswith("Refined Wheat Flour")
+    assert ings[0]["original"] == "Refinedwheatflour (72%)"  # raw OCR token
+    assert [i["repaired"] for i in ings] == [True, True, False]
 
 
 def test_analyze_validation_errors(client):

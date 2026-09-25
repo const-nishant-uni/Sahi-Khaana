@@ -188,6 +188,7 @@ def _save_scan(session: Session, device_id: str, r: ScanResponse, image_name: st
             scan_id=r.scan_id, ing_id=ing.id, position=position, original=ing.original,
             normalized=ing.normalized, category=ing.category, ins_number=ing.ins_number,
             percentage=ing.percentage, match_confidence=ing.match_confidence, known=ing.known,
+            repaired=ing.repaired,
         ))
     for f in r.fssai_result.findings:
         session.add(FindingRow(
@@ -306,7 +307,7 @@ def build_mock_analysis(food_category: str | None = None) -> dict:
         "warnings": ["MOCK_DATA"],
         "ocr": {
             "raw_text": (
-                "INGREDIENTS: Refined wheat flour (72%), Palm oil, Salt, Sugar, "
+                "INGREDIENTS: Refinedwheatflour (72%), Palm oil, Salt, Sugar, "
                 "Acidity regulator (INS 501(i)), Flavour enhancer (INS 627, INS 631), "
                 "Colour (INS 102), Preservative (INS 211).\n"
                 "NUTRITION INFORMATION per 100 g: Energy 452 kcal, Total fat 17.5 g, "
@@ -318,16 +319,16 @@ def build_mock_analysis(food_category: str | None = None) -> dict:
         },
         "food_category": food_category,
         "ingredients": [
-            {"id": "ing_1", "original": "Refined wheat flour (72%)", "normalized": "wheat flour", "category": "cereal", "ins_number": None, "percentage": 72.0, "match_confidence": 1.0, "known": True},
-            {"id": "ing_2", "original": "Palm oil", "normalized": "palm oil", "category": "fat_oil", "ins_number": None, "percentage": None, "match_confidence": 1.0, "known": True},
-            {"id": "ing_3", "original": "Salt", "normalized": "salt", "category": "seasoning", "ins_number": None, "percentage": None, "match_confidence": 1.0, "known": True},
-            {"id": "ing_4", "original": "Sugar", "normalized": "sugar", "category": "sugar", "ins_number": None, "percentage": None, "match_confidence": 1.0, "known": True},
-            {"id": "ing_5", "original": "Acidity regulator (INS 501(i))", "normalized": "potassium carbonate", "category": "acidity_regulator", "ins_number": "501(i)", "percentage": None, "match_confidence": 0.98, "known": True},
-            {"id": "ing_6", "original": "Flavour enhancer (INS 627)", "normalized": "disodium guanylate", "category": "flavour_enhancer", "ins_number": "627", "percentage": None, "match_confidence": 0.98, "known": True},
-            {"id": "ing_7", "original": "Flavour enhancer (INS 631)", "normalized": "disodium inosinate", "category": "flavour_enhancer", "ins_number": "631", "percentage": None, "match_confidence": 0.98, "known": True},
-            {"id": "ing_8", "original": "Colour (INS 102)", "normalized": "tartrazine", "category": "colour", "ins_number": "102", "percentage": None, "match_confidence": 0.95, "known": True},
-            {"id": "ing_9", "original": "Preservative (INS 211)", "normalized": "sodium benzoate", "category": "preservative", "ins_number": "211", "percentage": None, "match_confidence": 0.95, "known": True},
-            {"id": "ing_10", "original": "Spice extractives", "normalized": None, "category": None, "ins_number": None, "percentage": None, "match_confidence": 0.41, "known": False},
+            {"id": "ing_1", "original": "Refinedwheatflour (72%)", "normalized": "wheat flour", "category": "cereal", "ins_number": None, "percentage": 72.0, "match_confidence": 1.0, "known": True, "repaired": True},
+            {"id": "ing_2", "original": "Palm oil", "normalized": "palm oil", "category": "fat_oil", "ins_number": None, "percentage": None, "match_confidence": 1.0, "known": True, "repaired": False},
+            {"id": "ing_3", "original": "Salt", "normalized": "salt", "category": "seasoning", "ins_number": None, "percentage": None, "match_confidence": 1.0, "known": True, "repaired": False},
+            {"id": "ing_4", "original": "Sugar", "normalized": "sugar", "category": "sugar", "ins_number": None, "percentage": None, "match_confidence": 1.0, "known": True, "repaired": False},
+            {"id": "ing_5", "original": "Acidity regulator (INS 501(i))", "normalized": "potassium carbonate", "category": "acidity_regulator", "ins_number": "501(i)", "percentage": None, "match_confidence": 0.98, "known": True, "repaired": False},
+            {"id": "ing_6", "original": "Flavour enhancer (INS 627)", "normalized": "disodium guanylate", "category": "flavour_enhancer", "ins_number": "627", "percentage": None, "match_confidence": 0.98, "known": True, "repaired": False},
+            {"id": "ing_7", "original": "Flavour enhancer (INS 631)", "normalized": "disodium inosinate", "category": "flavour_enhancer", "ins_number": "631", "percentage": None, "match_confidence": 0.98, "known": True, "repaired": False},
+            {"id": "ing_8", "original": "Colour (INS 102)", "normalized": "tartrazine", "category": "colour", "ins_number": "102", "percentage": None, "match_confidence": 0.95, "known": True, "repaired": False},
+            {"id": "ing_9", "original": "Preservative (INS 211)", "normalized": "sodium benzoate", "category": "preservative", "ins_number": "211", "percentage": None, "match_confidence": 0.95, "known": True, "repaired": False},
+            {"id": "ing_10", "original": "Spice extractives", "normalized": None, "category": None, "ins_number": None, "percentage": None, "match_confidence": 0.41, "known": False, "repaired": False},
         ],
         "nutrition": {
             "basis": "per_100g", "energy_kcal": 452.0, "sugar_g": 3.4, "sodium_mg": 1240.0,

@@ -17,13 +17,14 @@ class OcrInfo(BaseModel):
 # ---------- Extraction ----------
 class Ingredient(BaseModel):
     id: str
-    original: str  # text as printed / OCR'd
-    normalized: str | None = None  # canonical name after normalisation
+    original: str  # the raw OCR token, exactly as read (even if words were run together)
+    normalized: str | None = None  # canonical name of the matched rule entry (None if unknown)
     category: str | None = None  # e.g. "preservative", "colour"
     ins_number: str | None = None  # e.g. "211", "102"
     percentage: float | None = None  # if printed, e.g. 72.0
     match_confidence: float = Field(ge=0, le=1)
     known: bool  # False => not found in our rule data
+    repaired: bool = False  # True if the match was found only after splitting run-together words
 
 
 class Nutrition(BaseModel):

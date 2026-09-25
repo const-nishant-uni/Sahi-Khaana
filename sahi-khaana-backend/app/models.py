@@ -38,6 +38,7 @@ class IngredientRow(SQLModel, table=True):
     percentage: float | None = None
     match_confidence: float
     known: bool
+    repaired: bool = False
 
 
 class FindingRow(SQLModel, table=True):

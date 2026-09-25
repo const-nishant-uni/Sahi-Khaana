@@ -5,7 +5,9 @@ Order of attempts (first hit wins):
   2. exact alias           -> confidence 1.0
   3. fuzzy alias           -> rapidfuzz token_sort_ratio >= 88, confidence = score/100
   4. run-together fallback -> a long single token ("Refinedwheatflour") is split into known
-                              words and matched again; accepted only if THAT matches (1-3)
+                              words and matched again; accepted only if THAT matches (1-3).
+                              The ingredient keeps the raw token in `original` and gets
+                              `repaired=True`; `normalized` holds the matched name.
   5. nothing matched       -> known=False, confidence = best score seen (< 0.88)
 
 `match_confidence` is passed on to the FSSAI engine (Phase 3), which downgrades
@@ -134,23 +136,23 @@ def _lookup_name(name: str) -> tuple[dict | None, float]:
     return None, round(score / 100, 2)
 
 
-def _match(item: ParsedIngredient) -> tuple[dict | None, float, str | None]:
-    """Returns (entry, confidence, repaired_text). `repaired_text` is only set when the match
-    was found after splitting a run-together token into words."""
+def _match(item: ParsedIngredient) -> tuple[dict | None, float, bool]:
+    """Returns (entry, confidence, repaired). `repaired` is True only when the match was found
+    after splitting a run-together token into words."""
     if item.ins_number:
         entry, conf = _lookup_ins(item.ins_number)
         if entry:
-            return entry, conf, None
+            return entry, conf, False
     entry, conf = _lookup_name(item.name)
     if entry:
-        return entry, conf, None
+        return entry, conf, False
 
     segmented = segment_run_together(item.name)
     if segmented:
         entry2, conf2 = _lookup_name(segmented)  # must pass the normal exact/fuzzy cutoff
         if entry2:
-            return entry2, conf2, segmented
-    return None, conf, None
+            return entry2, conf2, True
+    return None, conf, False
 
 
 def normalize_items(items: list[ParsedIngredient]) -> list[Ingredient]:
@@ -167,21 +169,18 @@ def normalize_items(items: list[ParsedIngredient]) -> list[Ingredient]:
             if parent_entry is not None and parent_entry["id"] == entry["id"]:
                 continue
 
-        original = item.original
-        if repaired:  # show the words the OCR ran together, e.g. "Refined Wheat Flour"
-            original = original.replace(item.name, repaired, 1) if item.name in original else repaired
-
         # A functional class ("Preservative") is a useful category even if the item is unknown.
         category = entry["category"] if entry else item.functional_class
         result.append(Ingredient(
             id=f"ing_{len(result) + 1}",
-            original=original,
+            original=item.original,
             normalized=entry["name"] if entry else None,
             category=category,
             ins_number=item.ins_number or (entry.get("ins") if entry else None),
             percentage=item.percentage,
             match_confidence=conf,
             known=entry is not None,
+            repaired=repaired,
         ))
     return result
 

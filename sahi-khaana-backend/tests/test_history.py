@@ -65,6 +65,16 @@ def test_label_level_finding_roundtrips_with_null_ingredient_id(client, db_engin
         assert [r.ingredient_id for r in s.exec(select(FindingRow)) if r.ingredient_id is None] == [None]
 
 
+def test_repaired_flag_is_stored_and_returned(client, db_engine):
+    created = analyze(client, ingredients_text="Refinedwheatflour (72%), Salt")
+    assert [(i["original"], i["normalized"], i["repaired"]) for i in created["ingredients"]] == [
+        ("Refinedwheatflour (72%)", "wheat flour", True), ("Salt", "salt", False)]
+    assert client.get(f"/api/v1/scans/{created['scan_id']}", headers=headers()).json() == created
+    with Session(db_engine) as s:
+        rows = s.exec(select(IngredientRow).order_by(IngredientRow.position)).all()
+        assert [(r.original, r.repaired) for r in rows] == [("Refinedwheatflour (72%)", True), ("Salt", False)]
+
+
 def test_device_header_required_and_validated(client):
     for url, kwargs in [("/api/v1/analyze", {"json": BODY}), ("/api/v1/scans", {}), ("/api/v1/scans/x", {})]:
         method = client.post if "analyze" in url else client.get
@@ -154,6 +164,8 @@ def test_mock_scan_needs_no_device_header_and_matches_the_schema(client):
     assert body["health_result"]["data_completeness"] in ("full", "partial", "ingredients_only")
     assert isinstance(body["health_result"]["completeness_score"], float)
     assert any(f["ingredient_id"] is None for f in body["fssai_result"]["findings"])  # shows the label-level shape
+    assert all(isinstance(i["repaired"], bool) for i in body["ingredients"])
+    assert [i["original"] for i in body["ingredients"] if i["repaired"]] == ["Refinedwheatflour (72%)"]  # shows a repaired one
 
 
 def test_scan_photo_end_to_end(client, tmp_path, monkeypatch):

@@ -8,7 +8,9 @@ food's ingredient label; the backend preprocesses the image (OpenCV), reads it
 > Principle: OCR/AI extracts information; deterministic rules make the
 > regulatory decision. An LLM only phrases explanations, never decides.
 
-## Status: Phase 4 (explanation + polish)
+**Flutter developer: start with [docs/API_CHANGES.md](docs/API_CHANGES.md)** (checklist of changes, every endpoint, field, warning and error code, with real example responses).
+
+## Status: Phase 4 (explanation + polish), backend frozen at `v1.0-backend`
 
 | Part | State |
 |---|---|
@@ -105,7 +107,7 @@ Run the tests with `pytest` (from this folder).
 0. `preprocessing.py` resizes, checks blur, then cleans the image (CLAHE, denoise, deskew). If the estimated median text-line height is under `MIN_TEXT_HEIGHT_PX` (default 30; `0` turns it off), both images are also **upscaled 2x** before OCR, because RapidOCR drops word spaces on small text. On rendered test labels this cut the word error rate by 60-80% for text lines of roughly 22-27 px and changed nothing above 30 px; on very tiny text (under about 18 px) the result was mixed. It costs about 20 ms plus a few hundred ms of extra OCR time.
 1. `sections.py` finds the *Ingredients* / *Nutrition* headings (fuzzy, so `lNGREDlENTS` still works) and cuts the ingredient list at markers like "Allergen", "Manufactured by", "Best before".
 2. `ingredient_parser.py` splits on top-level commas (brackets respected), reads percentages and INS/E numbers, expands `Emulsifier (322, 471)` into one item per number, and repairs common OCR slips (`lNS`, `1O2`, `501(l)`, full-width brackets, `.` for `,`).
-3. `normalizer.py` maps each item to `rules/additives.json` / `rules/ingredients.json`: INS number, then exact alias, then fuzzy match (rapidfuzz `token_sort_ratio >= 88`). If all of that fails and the token is a single word of 12+ letters, it is split into known words by dictionary segmentation (`Refinedwheatflour` becomes `Refined Wheat Flour`) and matched again; the split is kept only if that match passes the same cutoff, and then `original` shows the split text. Anything else is `known: false`.
+3. `normalizer.py` maps each item to `rules/additives.json` / `rules/ingredients.json`: INS number, then exact alias, then fuzzy match (rapidfuzz `token_sort_ratio >= 88`). If all of that fails and the token is a single word of 12+ letters, it is split into known words by dictionary segmentation (`Refinedwheatflour` becomes `Refined Wheat Flour`) and matched again; the split is kept only if that match passes the same cutoff. Such an ingredient keeps the raw OCR token in `original` (`Refinedwheatflour`), holds the matched name in `normalized`, and has **`repaired: true`** (it is `false` for every ordinary match). Anything else is `known: false`.
 4. `nutrition_parser.py` reads each nutrient with regexes. Energy is returned in kcal (kJ converted), sodium in mg (salt / 2.5 if sodium isn't printed). Missing nutrients stay `null`.
 
 ## How the decisions are made
