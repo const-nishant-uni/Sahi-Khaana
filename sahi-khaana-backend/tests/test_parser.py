@@ -362,6 +362,66 @@ def test_nutrition_energy_unit_in_label():
     assert n.energy_kcal == 452
 
 
+# ---- OCR that dropped the spaces
+@pytest.mark.parametrize("text,field,value", [
+    ("Energy452kcal", "energy_kcal", 452),
+    ("Sodium1240mg", "sodium_mg", 1240),
+    ("Protein9.1g", "protein_g", 9.1),
+    ("Total fat17.5g", "total_fat_g", 17.5),
+    ("Saturated fat8.2g", "sat_fat_g", 8.2),
+    ("Trans fat0.1g", "trans_fat_g", 0.1),
+    ("Total sugars3.4g", "sugar_g", 3.4),
+    ("Salt1.5g", "sodium_mg", 600),
+    ("Dietary fibre3g", "fiber_g", 3),
+    ("Energy1890kJ", "energy_kcal", 451.72),
+])
+def test_nutrition_value_glued_to_its_label(text, field, value):
+    n, _ = parse_nutrition("per 100 g: " + text)
+    assert getattr(n, field) == pytest.approx(value, abs=0.01)
+
+
+@pytest.mark.parametrize("text,field,value", [
+    ("Totalfat17.5g", "total_fat_g", 17.5),
+    ("Saturatedfat8.2g", "sat_fat_g", 8.2),
+    ("Transfat0.1g", "trans_fat_g", 0.1),
+    ("Totalsugars3.4g", "sugar_g", 3.4),
+    ("Dietaryfibre3g", "fiber_g", 3),
+    ("Total fat 17.5 g", "total_fat_g", 17.5),  # normal spacing still works
+])
+def test_nutrition_labels_with_dropped_spaces(text, field, value):
+    n, _ = parse_nutrition("per 100 g: " + text)
+    assert getattr(n, field) == pytest.approx(value)
+
+
+def test_nutrition_actual_ocr_output_from_the_example_label():
+    """Real OCR text (space lost after "Energy") that used to give energy_kcal = None."""
+    n, warnings = parse_nutrition(
+        "NUTRITION INFORMATION per 100g: Energy452kcal,\nTotal fat 17.5 g, Saturated fat 8.2 g, Trans fat 0.1 g.\n"
+        "Total sugars 3.4 g, Protein 9.1 g, Sodium 1240 mg")
+    assert (n.basis, n.energy_kcal, n.total_fat_g, n.sat_fat_g, n.trans_fat_g) == ("per_100g", 452, 17.5, 8.2, 0.1)
+    assert (n.sugar_g, n.protein_g, n.sodium_mg) == (3.4, 9.1, 1240) and warnings == []
+
+
+def test_nutrition_everything_run_together():
+    n, _ = parse_nutrition("per 100 g: Energy452kcalTotalfat17.5gSaturatedfat8.2gSodium1240mg")
+    assert (n.energy_kcal, n.total_fat_g, n.sat_fat_g, n.sodium_mg) == (452, 17.5, 8.2, 1240)
+
+
+@pytest.mark.parametrize("text", [
+    "Salted peanuts 5 g", "Sugarcane juice 5 g", "Fatty acids 5 g", "Proteinbar 5 g",
+    "Energydrink 5 g", "Sodiumbenzoate 5 g", "Brownsugar 5 g", "Unsalted 5 g",
+])
+def test_labels_inside_longer_words_are_not_nutrients(text):
+    n, _ = parse_nutrition("per 100 g: " + text)
+    assert all(getattr(n, f) is None for f in ("energy_kcal", "sugar_g", "sodium_mg", "sat_fat_g",
+                                                "trans_fat_g", "total_fat_g", "protein_g", "fiber_g"))
+
+
+def test_gluing_does_not_break_the_percent_and_added_sugar_guards():
+    assert parse_nutrition("Sugar(12%)")[0].sugar_g is None
+    assert parse_nutrition("Total sugars3.4g Added sugars1g")[0].sugar_g == 3.4
+
+
 # ------------------------------------------------------------------ sections
 LABEL = (
     "INGREDIENTS: Refined wheat flour (72%), Palm oil, Salt,\nSugar, Acidity regulator (INS 501(i)).\n"

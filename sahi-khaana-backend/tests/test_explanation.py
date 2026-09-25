@@ -314,3 +314,26 @@ def test_deleting_a_scan_removes_its_explanation(client, groq):
     fetch(client, sid)
     client.delete(f"/api/v1/scans/{sid}", headers=headers())
     assert fetch(client, sid).status_code == 404
+
+
+# ------------------------------------------------------------------ default model
+def test_default_model_matches_the_one_documented_in_env_example(monkeypatch):
+    """The code default and .env.example must not drift apart again (a stale id made every explanation a template)."""
+    from pathlib import Path
+    from app.config import Settings
+    monkeypatch.delenv("GROQ_MODEL", raising=False)
+    example = (Path(__file__).resolve().parent.parent / ".env.example").read_text(encoding="utf-8")
+    listed = [line.split("=", 1)[1].strip() for line in example.splitlines() if line.startswith("GROQ_MODEL=")]
+    assert listed == [Settings(_env_file=None).groq_model]
+
+
+def test_default_model_is_not_a_retired_llama_id(monkeypatch):
+    from app.config import Settings
+    monkeypatch.delenv("GROQ_MODEL", raising=False)
+    assert Settings(_env_file=None).groq_model not in {"llama-3.1-8b-instant", "llama-3.3-70b-versatile"}
+
+
+def test_env_var_still_overrides_the_default(monkeypatch):
+    from app.config import Settings
+    monkeypatch.setenv("GROQ_MODEL", "some/other-model")
+    assert Settings(_env_file=None).groq_model == "some/other-model"

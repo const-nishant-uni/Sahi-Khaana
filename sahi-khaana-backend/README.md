@@ -175,7 +175,8 @@ All three need the `X-Device-Id` header and only ever see that device's scans.
 - Generated on the first request. **Cached in the database** when it is final: an `"llm"` answer, or the template when no `GROQ_API_KEY` is configured (nothing to retry). If the LLM call fails (timeout, error, empty answer, over 120 words) you get the template but it is **not cached**, so the next request tries the LLM again. A cached LLM answer is never replaced.
 - `"llm"`: worded by Groq. It is given only `fssai_result`, `health_result` and `warnings`, is told never to change a status, to stay under 120 words, and to make no medical or compliance claims. `"template"`: built directly from the finding reasons and factor labels (no API key, timeout after 10 s, HTTP error, empty answer, or an answer over 120 words).
 - The explanation never affects any status or score. It can take a few seconds the first time.
-- Set `GROQ_API_KEY` (and optionally `GROQ_MODEL`, default `llama-3.1-8b-instant`; check https://console.groq.com/docs/models for current ids) in `.env`. Without a key you always get the template.
+- Set `GROQ_API_KEY` (and optionally `GROQ_MODEL`, default `qwen/qwen3.8-27b`) in `.env`. Without a key you always get the template.
+- **If explanations always say `"template"` even with a key**, the model id is probably unavailable: Groq retires models (`llama-3.1-8b-instant` and `llama-3.3-70b-versatile` now return 404 `model_not_found`), and the server log then shows `Groq explanation failed (HTTPStatusError)`. List the models your key can use with `curl -s https://api.groq.com/openai/v1/models -H "Authorization: Bearer $GROQ_API_KEY"` and set `GROQ_MODEL` in `.env`. **A `GROQ_MODEL` line in `.env` overrides the default**, so an old value there must be updated by hand. Avoid `openai/gpt-oss-*`: they spend the 250-token limit on hidden reasoning and return empty text, so you would always get the template.
 
 ## Photo cleanup
 

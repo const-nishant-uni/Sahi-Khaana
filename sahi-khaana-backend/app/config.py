@@ -17,8 +17,12 @@ class Settings(BaseSettings):
 
     # --- Secrets (only ever come from .env / environment) ---
     groq_api_key: str | None = None
-    # Small Llama on Groq (see https://console.groq.com/docs/models); override with GROQ_MODEL.
-    groq_model: str = "llama-3.1-8b-instant"
+    # Chat model used to WORD explanations. Groq retires models, so check
+    # https://console.groq.com/docs/models (or GET https://api.groq.com/openai/v1/models with your key);
+    # override with GROQ_MODEL. Verified working with the explanation prompt (Sep 2026): a reply of
+    # ~70-90 words in about a second. Models that spend the token limit on hidden reasoning
+    # (openai/gpt-oss-*) return empty text, which falls back to the template.
+    groq_model: str = "qwen/qwen3.8-27b"
 
     # --- Database ---
     database_url: str = f"sqlite:///{BASE_DIR / 'sahi_khaana.db'}"

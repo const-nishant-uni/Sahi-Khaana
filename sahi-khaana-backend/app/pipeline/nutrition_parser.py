@@ -13,22 +13,28 @@ SALT_TO_SODIUM = 400.0  # 1 g salt ~ 400 mg sodium (sodium = salt / 2.5)
 # Longest labels first so "saturated fat" wins over plain "fat".
 _LABELS = [
     ("energy_kcal", r"energy|calories|calorie"),
-    ("sat_fat_g", r"saturated\s+fat(?:ty\s+acids)?|sat\.?\s*fat|saturates"),
-    ("trans_fat_g", r"trans\s+fat(?:ty\s+acids)?|trans\s+fats"),
-    ("total_fat_g", r"total\s+fat|fat"),
-    ("ignore_added_sugar", r"added\s+sugars?"),  # skipped: not the same as total sugars
-    ("sugar_g", r"total\s+sugars?|sugars?"),
+    ("sat_fat_g", r"saturated\s*fat(?:ty\s*acids)?|sat\.?\s*fat|saturates"),
+    ("trans_fat_g", r"trans\s*fat(?:ty\s*acids)?|trans\s*fats"),
+    ("total_fat_g", r"total\s*fat|fat"),
+    ("ignore_added_sugar", r"added\s*sugars?"),  # skipped: not the same as total sugars
+    ("sugar_g", r"total\s*sugars?|sugars?"),
     ("sodium_mg", r"sodium"),
     ("salt_g", r"salt"),
     ("protein_g", r"proteins?"),
-    ("fiber_g", r"dietary\s+fib(?:er|re)|fib(?:er|re)"),
+    ("fiber_g", r"dietary\s*fib(?:er|re)|fib(?:er|re)"),
 ]
 _LABEL_RE = "|".join(f"(?P<{key}>{pat})" for key, pat in _LABELS)
+# OCR often drops spaces ("Energy452kcal", "Totalfat17.5g", "452kcalTotal fat"), so the label is
+# bounded by letters rather than by a word boundary: it must not sit inside a longer word
+# ("Salted", "Sugarcane", "Fatty"), but a digit may follow it, and it may directly follow a unit.
+_LABEL_START = r"(?:(?<![a-z])|(?<=\dg)|(?<=\dmg)|(?<=\dmcg)|(?<=\dkj)|(?<=\dkcal))"
+_LABEL_END = r"(?![a-z])"
 # label, up to 20 non-digit chars (e.g. ":", "(kcal)", "of which"), value, optional unit.
 # The value may contain OCR look-alikes (O, l) but must contain at least one real digit.
+# Nothing is required after the unit, because the next label may follow it directly ("17.5gSaturated fat").
 _ROW_RE = re.compile(
-    rf"\b(?:{_LABEL_RE})\b(?P<mid>[^\d\n]{{0,20}}?)"
-    r"(?P<val>(?=[\dOoIl.,]*\d)[\dOoIl]+(?:[.,][\dOoIl]+)?)\s*(?P<unit>kcal|kj|mg|mcg|µg|g)?\b",
+    rf"{_LABEL_START}(?:{_LABEL_RE}){_LABEL_END}(?P<mid>[^\d\n]{{0,20}}?)"
+    r"(?P<val>(?=[\dOoIl.,]*\d)[\dOoIl]+(?:[.,][\dOoIl]+)?)\s*(?P<unit>kcal|kj|mg|mcg|µg|g)?",
     re.IGNORECASE,
 )
 # Allowed range per 100 g; larger numbers are almost certainly OCR errors ("17.5" -> "175").
