@@ -113,6 +113,26 @@ class ScanResponse(BaseModel):
     health_result: HealthResult
 
 
+# ---------- History ----------
+class ScanSummary(BaseModel):
+    """One row of GET /scans (the full result is at GET /scans/{scan_id})."""
+
+    scan_id: str
+    created_at: str
+    food_category: str | None
+    overall_status: Status
+    health_score: int
+    assessment: Assessment
+    ingredient_count: int
+
+
+class ScanListResponse(BaseModel):
+    items: list[ScanSummary]
+    total: int  # all scans for this device (for paging)
+    limit: int
+    offset: int
+
+
 # ---------- Small endpoints ----------
 class HealthCheck(BaseModel):
     status: Literal["ok"] = "ok"

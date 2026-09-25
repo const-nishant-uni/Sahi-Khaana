@@ -1,12 +1,11 @@
 """Unit tests for Phase 2: sections, ingredient parser, nutrition parser, normalizer, /analyze."""
 import pytest
-from fastapi.testclient import TestClient
 
-from app.main import app
 from app.pipeline.ingredient_parser import fix_ocr, parse_ingredients, split_top_level
 from app.pipeline.normalizer import extract_ingredients
 from app.pipeline.nutrition_parser import parse_nutrition
 from app.pipeline.sections import extract_sections
+from tests.conftest import headers
 
 
 # ------------------------------------------------------------------ splitting
@@ -277,11 +276,8 @@ def test_sections_no_ingredients_heading():
 
 
 # ------------------------------------------------------------------ /analyze
-client = TestClient(app)  # no `with`: skips startup (OCR model loading isn't needed here)
-
-
-def test_analyze_text():
-    r = client.post("/api/v1/analyze", json={
+def test_analyze_text(client):
+    r = client.post("/api/v1/analyze", headers=headers(), json={
         "ingredients_text": "Wheat flour (72%), Salt, Preservative (INS 211)",
         "nutrition_text": "Sodium 900 mg, Protein 8 g",
         "food_category": "bakery",
@@ -293,18 +289,18 @@ def test_analyze_text():
     assert body["nutrition"]["sodium_mg"] == 900 and body["nutrition"]["sugar_g"] is None
 
 
-def test_analyze_list_and_pasted_label():
-    r = client.post("/api/v1/analyze", json={"ingredients": ["Sugar", "Emulsifier (322, 471)"]})
+def test_analyze_list_and_pasted_label(client):
+    r = client.post("/api/v1/analyze", headers=headers(), json={"ingredients": ["Sugar", "Emulsifier (322, 471)"]})
     assert [i["ins_number"] for i in r.json()["ingredients"]] == [None, "322", "471"]
-    r = client.post("/api/v1/analyze", json={"ingredients_text": LABEL})
+    r = client.post("/api/v1/analyze", headers=headers(), json={"ingredients_text": LABEL})
     body = r.json()
     assert len(body["ingredients"]) == 5 and body["nutrition"]["energy_kcal"] == 452
 
 
-def test_analyze_validation_errors():
-    r = client.post("/api/v1/analyze", json={})
+def test_analyze_validation_errors(client):
+    r = client.post("/api/v1/analyze", headers=headers(), json={})
     assert r.status_code == 422 and r.json()["error"]["code"] == "VALIDATION_ERROR"
-    r = client.post("/api/v1/analyze", json={"ingredients_text": "Sugar", "food_category": "nope"})
+    r = client.post("/api/v1/analyze", headers=headers(), json={"ingredients_text": "Sugar", "food_category": "nope"})
     assert r.json()["error"]["code"] == "INVALID_CATEGORY"
-    r = client.post("/api/v1/analyze", json={"ingredients_text": "   ,  ; "})
+    r = client.post("/api/v1/analyze", headers=headers(), json={"ingredients_text": "   ,  ; "})
     assert r.status_code == 422

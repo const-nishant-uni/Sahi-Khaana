@@ -14,6 +14,9 @@ class Settings(BaseSettings):
     groq_api_key: str | None = None
     groq_model: str = "llama-3.3-70b-versatile"
 
+    # --- Database ---
+    database_url: str = f"sqlite:///{BASE_DIR / 'sahi_khaana.db'}"
+
     # --- Uploads ---
     upload_dir: Path = BASE_DIR / "uploads"
     max_upload_bytes: int = 5 * 1024 * 1024  # 5 MB

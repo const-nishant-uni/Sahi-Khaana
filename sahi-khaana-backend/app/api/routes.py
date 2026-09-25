@@ -1,10 +1,14 @@
 """All HTTP endpoints, mounted under /api/v1 in main.py."""
 import uuid
 
-from fastapi import APIRouter, Depends, File, Form, Header, UploadFile
+from fastapi import APIRouter, Depends, File, Form, Header, Query, Response, UploadFile
+from sqlmodel import Session
 
+from app.database import get_session
 from app.errors import AppError
-from app.schemas import AnalyzeRequest, CategoriesResponse, ErrorResponse, HealthCheck, ScanResponse
+from app.schemas import (
+    AnalyzeRequest, CategoriesResponse, ErrorResponse, HealthCheck, ScanListResponse, ScanResponse,
+)
 from app.services import scan_service
 
 router = APIRouter()
@@ -12,19 +16,19 @@ router = APIRouter()
 # Error shapes, so /docs shows them for the Flutter developer.
 _ERRORS = {
     400: {"model": ErrorResponse},
+    404: {"model": ErrorResponse},
     413: {"model": ErrorResponse},
     422: {"model": ErrorResponse},
 }
 
 
-def get_device_id(x_device_id: str | None = Header(default=None)) -> str | None:
+def get_device_id(x_device_id: str | None = Header(default=None)) -> str:
     """Every Flutter request sends X-Device-Id (a UUID) instead of a login.
 
-    Phase 1: optional (so curl/Swagger testing is easy), but validated if present.
-    TODO(Phase 3): make it required on the history endpoints.
+    It scopes scan history, so it is required on every endpoint that creates or reads scans.
     """
-    if x_device_id is None:
-        return None
+    if not x_device_id:
+        raise AppError("MISSING_DEVICE_ID", "The X-Device-Id header is required.", 400)
     try:
         uuid.UUID(x_device_id)
     except ValueError:
@@ -47,24 +51,56 @@ def categories():
 def scan(
     image: UploadFile = File(..., description="JPG/PNG/WEBP photo of the ingredient label, max 5 MB"),
     food_category: str | None = Form(default=None, description="A category id from GET /categories"),
-    device_id: str | None = Depends(get_device_id),
+    device_id: str = Depends(get_device_id),
+    session: Session = Depends(get_session),
 ):
-    """Photo -> preprocessing -> OCR -> analysis.
+    """Photo -> preprocessing -> OCR -> extraction -> FSSAI check + health assessment. Saved to history.
 
-    Phase 2: `ocr`, `ingredients` and `nutrition` are real.
-    `fssai_result` / `health_result` are still placeholders (MOCK_DATA warning).
     (Plain `def`, so FastAPI runs this CPU-heavy work in a worker thread.)
     """
-    return scan_service.process_scan(image, food_category)
+    return scan_service.process_scan(session, device_id, image, food_category)
 
 
 @router.post("/analyze", response_model=ScanResponse, responses=_ERRORS)
-def analyze(body: AnalyzeRequest, device_id: str | None = Depends(get_device_id)):
-    """Same analysis as /scan but from typed/pasted text (no image, `ocr` is null).
+def analyze(
+    body: AnalyzeRequest,
+    device_id: str = Depends(get_device_id),
+    session: Session = Depends(get_session),
+):
+    """Same analysis as /scan but from typed/pasted text (no image, `ocr` is null). Saved to history."""
+    return scan_service.analyze_text(session, device_id, body)
 
-    Handy for testing the parser and for a "type the ingredients" screen in the app.
-    """
-    return scan_service.analyze_text(body)
+
+@router.get("/scans", response_model=ScanListResponse, responses=_ERRORS)
+def list_scans(
+    limit: int = Query(20, ge=1, le=100),
+    offset: int = Query(0, ge=0),
+    device_id: str = Depends(get_device_id),
+    session: Session = Depends(get_session),
+):
+    """This device's scan history, newest first."""
+    return scan_service.list_scans(session, device_id, limit, offset)
+
+
+@router.get("/scans/{scan_id}", response_model=ScanResponse, responses=_ERRORS)
+def get_scan(
+    scan_id: str,
+    device_id: str = Depends(get_device_id),
+    session: Session = Depends(get_session),
+):
+    """The full stored result of one scan."""
+    return scan_service.get_scan(session, device_id, scan_id)
+
+
+@router.delete("/scans/{scan_id}", status_code=204, response_class=Response, responses=_ERRORS)
+def delete_scan(
+    scan_id: str,
+    device_id: str = Depends(get_device_id),
+    session: Session = Depends(get_session),
+):
+    """Delete a scan, its stored data and its image."""
+    scan_service.delete_scan(session, device_id, scan_id)
+    return Response(status_code=204)
 
 
 @router.get("/mock/scan", response_model=ScanResponse)

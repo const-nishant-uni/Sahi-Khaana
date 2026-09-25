@@ -14,6 +14,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.routes import router
 from app.config import get_settings
+from app.database import init_db
 from app.errors import AppError
 from app.pipeline.ocr import get_rapidocr
 
@@ -24,6 +25,7 @@ log = logging.getLogger("sahi-khaana")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     get_settings().upload_dir.mkdir(parents=True, exist_ok=True)
+    init_db()
     get_rapidocr()  # load OCR models now so the first scan isn't slow
     log.info("Startup complete")
     yield

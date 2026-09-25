@@ -116,7 +116,7 @@
   {
    "id": "sugar",
    "name": "sugar",
-   "category": "sweetener",
+   "category": "sugar",
    "aliases": [
     "cane sugar",
     "icing sugar",
@@ -132,7 +132,7 @@
   {
    "id": "glucose_syrup",
    "name": "glucose syrup",
-   "category": "sweetener",
+   "category": "sugar",
    "aliases": [
     "glucose",
     "glucose syrup",
@@ -144,7 +144,7 @@
   {
    "id": "invert_sugar_syrup",
    "name": "invert sugar syrup",
-   "category": "sweetener",
+   "category": "sugar",
    "aliases": [
     "invert sugar",
     "invert sugar syrup",
@@ -156,7 +156,7 @@
   {
    "id": "dextrose",
    "name": "dextrose",
-   "category": "sweetener",
+   "category": "sugar",
    "aliases": [
     "dextrose",
     "dextrose monohydrate"
@@ -167,7 +167,7 @@
   {
    "id": "maltodextrin",
    "name": "maltodextrin",
-   "category": "sweetener",
+   "category": "sugar",
    "aliases": [
     "maltodextrin"
    ],
@@ -177,7 +177,7 @@
   {
    "id": "fructose",
    "name": "fructose",
-   "category": "sweetener",
+   "category": "sugar",
    "aliases": [
     "fructose",
     "fructose syrup",
@@ -189,7 +189,7 @@
   {
    "id": "jaggery",
    "name": "jaggery",
-   "category": "sweetener",
+   "category": "sugar",
    "aliases": [
     "gur",
     "jaggery"
@@ -200,7 +200,7 @@
   {
    "id": "honey",
    "name": "honey",
-   "category": "sweetener",
+   "category": "sugar",
    "aliases": [
     "honey"
    ],

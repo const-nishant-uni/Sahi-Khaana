@@ -1,8 +1,9 @@
-"""Orchestrates one scan: validate upload -> preprocess -> OCR -> extraction.
+"""Orchestrates one scan and stores it:
 
-Phase 2: `ocr`, `ingredients` and `nutrition` are real. `fssai_result` and
-`health_result` are still placeholders (TODO Phase 3) and every response says
-so with the MOCK_DATA warning.
+validate upload -> preprocess -> OCR -> extract ingredients/nutrition
+-> FSSAI rule check + health assessment -> save to SQLite -> response.
+
+Also holds the history operations (list / get / delete).
 """
 import json
 import logging
@@ -12,15 +13,19 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import UploadFile
+from sqlmodel import Session, col, delete, func, select
 
 from app.config import BASE_DIR, get_settings
+from app.engines.fssai_engine import evaluate_fssai
+from app.engines.health_engine import assess_health
 from app.errors import AppError, file_too_large, invalid_file, no_ingredients_section
+from app.models import FindingRow, IngredientRow, Scan
 from app.pipeline.normalizer import extract_ingredients
 from app.pipeline.nutrition_parser import parse_nutrition
 from app.pipeline.ocr import run_ocr
 from app.pipeline.preprocessing import decode_image, preprocess
 from app.pipeline.sections import extract_sections
-from app.schemas import AnalyzeRequest, Ingredient, Nutrition, ScanResponse
+from app.schemas import AnalyzeRequest, Ingredient, Nutrition, ScanListResponse, ScanResponse, ScanSummary
 
 log = logging.getLogger(__name__)
 
@@ -75,7 +80,7 @@ def read_and_save_upload(file: UploadFile) -> tuple[bytes, Path]:
 
 
 # ---------- the scan itself ----------
-def process_scan(file: UploadFile, food_category: str | None) -> ScanResponse:
+def process_scan(session: Session, device_id: str, file: UploadFile, food_category: str | None) -> ScanResponse:
     cfg = get_settings()
     food_category = validate_category(food_category)
     data, path = read_and_save_upload(file)
@@ -107,12 +112,13 @@ def process_scan(file: UploadFile, food_category: str | None) -> ScanResponse:
         warnings.append("LOW_OCR_CONFIDENCE")
     warnings += _extraction_warnings(nutrition, nutrition_warnings)
     return build_response(
-        ingredients, nutrition, food_category, warnings,
+        session, device_id, ingredients, nutrition, food_category, warnings,
         ocr={"raw_text": ocr.raw_text, "confidence": round(ocr.confidence, 4), "engine": ocr.engine},
+        label_text=ocr.raw_text, image_name=path.name,
     )
 
 
-def analyze_text(req: AnalyzeRequest) -> ScanResponse:
+def analyze_text(session: Session, device_id: str, req: AnalyzeRequest) -> ScanResponse:
     """Text-only version of a scan (POST /analyze)."""
     food_category = validate_category(req.food_category)
     text = ", ".join(i.strip() for i in req.ingredients if i.strip()) if req.ingredients else req.ingredients_text
@@ -127,7 +133,11 @@ def analyze_text(req: AnalyzeRequest) -> ScanResponse:
         raise no_ingredients_section()
     nutrition, nutrition_warnings = parse_nutrition(nutrition_text)
     warnings = _extraction_warnings(nutrition, nutrition_warnings)
-    return build_response(ingredients, nutrition, food_category, warnings, ocr=None)
+    label_text = f"{text}\n{req.nutrition_text or ''}"  # declarations are looked for in what was typed
+    return build_response(
+        session, device_id, ingredients, nutrition, food_category, warnings,
+        ocr=None, label_text=label_text, image_name=None,
+    )
 
 
 def _extraction_warnings(nutrition: Nutrition, nutrition_warnings: list[str]) -> list[str]:
@@ -138,31 +148,87 @@ def _extraction_warnings(nutrition: Nutrition, nutrition_warnings: list[str]) ->
 
 
 def build_response(
+    session: Session, device_id: str,
     ingredients: list[Ingredient], nutrition: Nutrition, food_category: str | None,
-    warnings: list[str], ocr: dict | None,
+    warnings: list[str], ocr: dict | None, label_text: str | None, image_name: str | None,
 ) -> ScanResponse:
-    """Assemble the full response. FSSAI + health parts are placeholders until Phase 3."""
-    known = sum(1 for i in ingredients if i.known)
-    return ScanResponse(
+    """Run both engines, assemble the response and save it to history."""
+    ocr_confidence = ocr["confidence"] if ocr else 1.0  # typed text has no OCR uncertainty
+    response = ScanResponse(
         scan_id=str(uuid.uuid4()),
         created_at=datetime.now(timezone.utc).isoformat(),
-        warnings=warnings + ["MOCK_DATA"],  # TODO(Phase 3): drop once the engines exist
+        warnings=warnings,
         ocr=ocr,
         food_category=food_category,
         ingredients=ingredients,
         nutrition=nutrition,
-        # TODO(Phase 3): replace with fssai_engine / health_engine output.
-        fssai_result={
-            "overall_status": "REVIEW",
-            "summary": {"scanned": len(ingredients), "matched": known, "pass": 0, "flag": 0, "review": len(ingredients)},
-            "confidence": 0.0,
-            "findings": [],
-        },
-        health_result={
-            "score": 50, "assessment": "MODERATE", "data_completeness": 0.0, "factors": [],
-            "disclaimer": "General information only. Not medical or dietary advice.",
-        },
+        fssai_result=evaluate_fssai(ingredients, food_category, label_text, ocr_confidence),
+        health_result=assess_health(nutrition, ingredients),
     )
+    _save_scan(session, device_id, response, image_name)
+    return response
+
+
+# ---------- history (SQLite) ----------
+def _save_scan(session: Session, device_id: str, r: ScanResponse, image_name: str | None) -> None:
+    session.add(Scan(
+        id=r.scan_id, device_id=device_id, created_at=r.created_at, food_category=r.food_category,
+        overall_status=r.fssai_result.overall_status, health_score=r.health_result.score,
+        assessment=r.health_result.assessment, ingredient_count=len(r.ingredients),
+        image_name=image_name, result_json=r.model_dump_json(by_alias=True),
+    ))
+    for position, ing in enumerate(r.ingredients):
+        session.add(IngredientRow(
+            scan_id=r.scan_id, ing_id=ing.id, position=position, original=ing.original,
+            normalized=ing.normalized, category=ing.category, ins_number=ing.ins_number,
+            percentage=ing.percentage, match_confidence=ing.match_confidence, known=ing.known,
+        ))
+    for f in r.fssai_result.findings:
+        session.add(FindingRow(
+            scan_id=r.scan_id, ingredient_id=f.ingredient_id, rule_id=f.rule_id,
+            status=f.status, reason=f.reason, source=f.source,
+        ))
+    session.commit()
+
+
+def _get_owned_scan(session: Session, device_id: str, scan_id: str) -> Scan:
+    """Another device's scan looks exactly like a missing one (404), so ids can't be probed."""
+    scan = session.get(Scan, scan_id)
+    if scan is None or scan.device_id != device_id:
+        raise AppError("SCAN_NOT_FOUND", "Scan not found.", 404)
+    return scan
+
+
+def list_scans(session: Session, device_id: str, limit: int, offset: int) -> ScanListResponse:
+    where = Scan.device_id == device_id
+    total = session.exec(select(func.count()).select_from(Scan).where(where)).one()
+    rows = session.exec(
+        select(Scan).where(where).order_by(col(Scan.created_at).desc()).offset(offset).limit(limit)
+    ).all()
+    items = [
+        ScanSummary(
+            scan_id=r.id, created_at=r.created_at, food_category=r.food_category,
+            overall_status=r.overall_status, health_score=r.health_score,
+            assessment=r.assessment, ingredient_count=r.ingredient_count,
+        )
+        for r in rows
+    ]
+    return ScanListResponse(items=items, total=total, limit=limit, offset=offset)
+
+
+def get_scan(session: Session, device_id: str, scan_id: str) -> ScanResponse:
+    return ScanResponse.model_validate_json(_get_owned_scan(session, device_id, scan_id).result_json)
+
+
+def delete_scan(session: Session, device_id: str, scan_id: str) -> None:
+    scan = _get_owned_scan(session, device_id, scan_id)
+    image_name = scan.image_name
+    session.exec(delete(FindingRow).where(FindingRow.scan_id == scan_id))
+    session.exec(delete(IngredientRow).where(IngredientRow.scan_id == scan_id))
+    session.delete(scan)
+    session.commit()
+    if image_name:  # we generated this name (uuid + extension), so it is safe to join
+        (get_settings().upload_dir / image_name).unlink(missing_ok=True)
 
 
 # ---------- MOCK sample for GET /mock/scan ----------
@@ -195,7 +261,7 @@ def build_mock_analysis(food_category: str | None = None) -> dict:
             {"id": "ing_1", "original": "Refined wheat flour (72%)", "normalized": "wheat flour", "category": "cereal", "ins_number": None, "percentage": 72.0, "match_confidence": 1.0, "known": True},
             {"id": "ing_2", "original": "Palm oil", "normalized": "palm oil", "category": "fat_oil", "ins_number": None, "percentage": None, "match_confidence": 1.0, "known": True},
             {"id": "ing_3", "original": "Salt", "normalized": "salt", "category": "seasoning", "ins_number": None, "percentage": None, "match_confidence": 1.0, "known": True},
-            {"id": "ing_4", "original": "Sugar", "normalized": "sugar", "category": "sweetener", "ins_number": None, "percentage": None, "match_confidence": 1.0, "known": True},
+            {"id": "ing_4", "original": "Sugar", "normalized": "sugar", "category": "sugar", "ins_number": None, "percentage": None, "match_confidence": 1.0, "known": True},
             {"id": "ing_5", "original": "Acidity regulator (INS 501(i))", "normalized": "potassium carbonate", "category": "acidity_regulator", "ins_number": "501(i)", "percentage": None, "match_confidence": 0.98, "known": True},
             {"id": "ing_6", "original": "Flavour enhancer (INS 627)", "normalized": "disodium guanylate", "category": "flavour_enhancer", "ins_number": "627", "percentage": None, "match_confidence": 0.98, "known": True},
             {"id": "ing_7", "original": "Flavour enhancer (INS 631)", "normalized": "disodium inosinate", "category": "flavour_enhancer", "ins_number": "631", "percentage": None, "match_confidence": 0.98, "known": True},

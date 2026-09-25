@@ -8,16 +8,19 @@ food's ingredient label; the backend preprocesses the image (OpenCV), reads it
 > Principle: OCR/AI extracts information; deterministic rules make the
 > regulatory decision. An LLM only phrases explanations, never decides.
 
-## Status: Phase 2 (extraction)
+## Status: Phase 3 (engines + database)
 
 | Part | State |
 |---|---|
 | Upload validation, preprocessing, OCR (RapidOCR + Tesseract fallback) | real |
-| Section finding, `ingredients` (parse + normalise), `nutrition`, `POST /analyze` | real |
-| `fssai_result`, `health_result` | **placeholders** (every response carries the `MOCK_DATA` warning) |
-| History endpoints, DB, explanation | not built yet (Phases 3-4) |
+| Section finding, `ingredients`, `nutrition`, `POST /analyze` | real |
+| FSSAI rule engine, health engine | real (but the **rule data is placeholder**, see "Rule data") |
+| SQLite history: `GET /scans`, `GET /scans/{id}`, `DELETE /scans/{id}` | real |
+| LLM explanation, image cleanup, evaluation script | not built yet (Phase 4) |
 
-`GET /api/v1/mock/scan` still returns a complete, realistic sample of the final response.
+`GET /api/v1/mock/scan` returns a complete, realistic sample of the final response.
+
+**`X-Device-Id` (a UUID) is required** on `/scan`, `/analyze` and `/scans*`. It scopes history: a device can only see and delete its own scans (another device's scan id returns 404).
 
 ## Setup
 
@@ -78,13 +81,19 @@ curl -X POST $B/scan \
   -H "X-Device-Id: $(python -c 'import uuid;print(uuid.uuid4())')" \
   -F image=@label.jpg -F food_category=cereals_noodles
 
-# Text only (no image): great for testing the parser
-curl -X POST $B/analyze -H 'Content-Type: application/json' -d '{
+# Text only (no image): great for testing the parser and engines
+curl -X POST $B/analyze -H "X-Device-Id: $DEVICE" -H 'Content-Type: application/json' -d '{
   "ingredients_text": "Wheat flour (72%), Salt, Emulsifier (322, 471), Colour (INS 102)",
   "nutrition_text": "Energy 1890 kJ, Sugar 3.4 g, Salt 1.5 g",
   "food_category": "bakery"
 }'
+
+# History (newest first), one scan, delete
+curl "$B/scans?limit=20&offset=0" -H "X-Device-Id: $DEVICE"
+curl $B/scans/<scan_id> -H "X-Device-Id: $DEVICE"
+curl -X DELETE $B/scans/<scan_id> -H "X-Device-Id: $DEVICE"     # 204, also deletes the photo
 ```
+(`DEVICE=$(python -c 'import uuid;print(uuid.uuid4())')`; in Swagger, fill in the `X-Device-Id` field.)
 
 Run the tests with `pytest` (from this folder).
 
@@ -94,6 +103,27 @@ Run the tests with `pytest` (from this folder).
 2. `ingredient_parser.py` splits on top-level commas (brackets respected), reads percentages and INS/E numbers, expands `Emulsifier (322, 471)` into one item per number, and repairs common OCR slips (`lNS`, `1O2`, `501(l)`, full-width brackets, `.` for `,`).
 3. `normalizer.py` maps each item to `rules/additives.json` / `rules/ingredients.json`: INS number, then exact alias, then fuzzy match (rapidfuzz `token_sort_ratio >= 88`). Anything else is `known: false`.
 4. `nutrition_parser.py` reads each nutrient with regexes. Energy is returned in kcal (kJ converted), sodium in mg (salt / 2.5 if sodium isn't printed). Missing nutrients stay `null`.
+
+## How the decisions are made
+
+**FSSAI engine** (`engines/fssai_engine.py`, deterministic, no AI). Per ingredient:
+
+| Situation | Result |
+|---|---|
+| Ingredient not recognised | REVIEW |
+| Rule says `NOT_PERMITTED` | FLAG |
+| Rule says `PERMITTED` | PASS |
+| Rule says `CONDITIONAL` and no food category was sent | REVIEW |
+| `CONDITIONAL` and a condition covers the category | that condition's `PASS` / `FLAG` |
+| `CONDITIONAL` and no condition covers the category | REVIEW |
+| Would be PASS but `match_confidence < 0.95` | REVIEW |
+| Declaration rule (e.g. "contains permitted colour") and the phrase is missing from the label text | REVIEW |
+
+Overall: any FLAG gives FLAG, otherwise any REVIEW gives REVIEW, otherwise PASS. `confidence = ocr_confidence x matched / scanned` (typed text counts as OCR confidence 1.0). The summary counts each ingredient once, at its worst status.
+
+A `CONDITIONAL` rule looks like `{"food_categories": ["bakery"], "result": "PASS", "note": "..."}` in the entry's `conditions` list (`"*"` matches every category).
+
+**Health engine** (`engines/health_engine.py`). Score starts at `base_score` (100); thresholds and impacts come from `rules/nutrition_rules.json`; only the strictest matching tier per nutrient applies; the result is clamped to 0-100 and mapped to a band. Values are per 100 g, so a per-serving table is not scored. With no usable nutrition, coarse ingredient-based rules apply instead. `data_completeness` = 0.7 x (scoring nutrients present) + 0.3 x (ingredients recognised); **show it in the app**, because a product with no nutrition table can score high simply because nothing is known.
 
 Known limits: a comma the OCR drops completely ("Salt Sugar") can't be repaired and gives one unknown ingredient; brackets holding only a descriptor ("Salt (iodised)") are ignored.
 
@@ -122,9 +152,11 @@ app/
   schemas.py       Pydantic models = the API contract
   api/routes.py    Endpoints
   pipeline/        preprocessing, ocr, sections, ingredient_parser, nutrition_parser, normalizer
-  services/        scan_service.py           (orchestration; FSSAI/health placeholders until Phase 3)
+  engines/         fssai_engine.py, health_engine.py
+  database.py, models.py   SQLite (scans, ingredients, findings)
+  services/        scan_service.py           (orchestration, saving, history)
   rules/           food_categories, additives, ingredients, declarations, nutrition_rules (.json)
-tests/             test_parser.py
+tests/             test_parser.py, test_fssai.py, test_health.py, test_history.py
 uploads/           saved images (gitignored)
 ```
 
@@ -134,6 +166,7 @@ Every rule entry carries a `source`. Anything not verified is marked
 `"TODO: verify against FSS (FPS&FA) Regulations 2011"`. Verify these before
 relying on any result.
 
+- **Until you fill in `conditions`, every additive comes out as REVIEW** (that is deliberate: no rule is verified, so the engine never claims PASS or FLAG for an additive).
 - `additives.json`: INS numbers, names and categories come from the Codex INS list, but **every `status` is a `CONDITIONAL` placeholder with empty `conditions`**. Nothing is asserted about what is permitted.
 - `ingredients.json`: ordinary foods (`PERMITTED` = "not an additive", itself unverified) and flavour entries (placeholder).
-- `declarations.json`, `nutrition_rules.json`: structure for Phase 3; the health thresholds are placeholder heuristics, not regulatory limits.
+- `declarations.json`: accepted phrases are placeholders. `nutrition_rules.json`: health thresholds are placeholder heuristics, not regulatory limits.
