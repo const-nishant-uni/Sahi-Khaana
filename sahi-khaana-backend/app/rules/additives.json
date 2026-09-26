@@ -1,12 +1,18 @@
 {
  "_meta": {
-  "note": "Food additives by INS number. `status` is a PLACEHOLDER for every entry: none were verified. `conditions` is empty on purpose; Phase 3 will read entries like {\"food_categories\": [\"bakery\"], \"result\": \"PASS\"} once you fill them in from the regulations.",
+    "note": "Food additives by INS number. `origin_by_ins` records the commonly documented source/origin of selected additives for label interpretation; it is not a safety or legal-permission classification. The official FSSAI regulation lists additive identity/specification, but approval is conditional on the permitted food category and maximum use level. `status` therefore remains CONDITIONAL until those use-level conditions are entered for each food category. Review this data against later FSSAI amendments before production use.",
   "status_values": [
    "PERMITTED",
    "NOT_PERMITTED",
    "CONDITIONAL"
   ],
-  "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+    "source": "FSSAI Food Safety and Standards (Food Products Standards and Food Additives) Regulations, 2011, official PDF and current regulations index accessed 26 Sep 2026: https://www.fssai.gov.in/docs/food-law/regulations/Food_Additives_Regulations.pdf ; https://www.fssai.gov.in/cms/food-safety-and-standards-regulations.php",
+    "verification": {
+      "identity_and_specification": "listed_in_official_fssai_regulation",
+      "use_permission": "not_verified_without_food_category_and_maximum_level",
+      "status_policy": "Keep additive entries CONDITIONAL until Schedule/category limits are transcribed and tested.",
+      "last_checked": "2026-09-26"
+    }
  },
  "functional_classes": [
   {
@@ -160,6 +166,61 @@
    ],
    "source": "Common label wording"
   }
+ ],
+ "origin_by_ins": [
+  {"ins": "100", "name": "curcumin", "origin": "natural", "source": "Turmeric-derived colour"},
+  {"ins": "101", "name": "riboflavin", "origin": "natural_or_fermentation_derived", "source": "Vitamin B2; commonly produced by fermentation"},
+  {"ins": "102", "name": "tartrazine", "origin": "synthetic", "source": "Synthetic azo colour"},
+  {"ins": "104", "name": "quinoline yellow", "origin": "synthetic", "source": "Synthetic colour"},
+  {"ins": "110", "name": "sunset yellow fcf", "origin": "synthetic", "source": "Synthetic azo colour"},
+  {"ins": "120", "name": "carmines", "origin": "natural", "source": "Cochineal insect-derived colour"},
+  {"ins": "122", "name": "carmoisine", "origin": "synthetic", "source": "Synthetic azo colour"},
+  {"ins": "123", "name": "amaranth", "origin": "synthetic", "source": "Synthetic azo colour"},
+  {"ins": "124", "name": "ponceau 4r", "origin": "synthetic", "source": "Synthetic azo colour"},
+  {"ins": "127", "name": "erythrosine", "origin": "synthetic", "source": "Synthetic xanthene colour"},
+  {"ins": "129", "name": "allura red ac", "origin": "synthetic", "source": "Synthetic azo colour"},
+  {"ins": "131", "name": "patent blue v", "origin": "synthetic", "source": "Synthetic colour"},
+  {"ins": "132", "name": "indigo carmine", "origin": "synthetic", "source": "Synthetic colour"},
+  {"ins": "133", "name": "brilliant blue fcf", "origin": "synthetic", "source": "Synthetic colour"},
+  {"ins": "140", "name": "chlorophylls", "origin": "natural", "source": "Plant-derived pigment"},
+  {"ins": "150a", "name": "plain caramel", "origin": "processed_natural", "source": "Produced by heating food-grade carbohydrates"},
+  {"ins": "150b", "name": "caustic sulphite caramel", "origin": "processed_natural", "source": "Carbohydrate-derived caramel colour"},
+  {"ins": "150c", "name": "ammonia caramel", "origin": "processed_natural", "source": "Carbohydrate-derived caramel colour"},
+  {"ins": "150d", "name": "sulphite ammonia caramel", "origin": "processed_natural", "source": "Carbohydrate-derived caramel colour"},
+  {"ins": "160a(i)", "name": "beta-carotene (synthetic)", "origin": "synthetic", "source": "Synthetic beta-carotene; natural beta-carotene also exists"},
+  {"ins": "160b", "name": "annatto extracts", "origin": "natural", "source": "Bixa orellana seed-derived colour"},
+  {"ins": "160c", "name": "paprika oleoresin", "origin": "natural", "source": "Paprika-derived colour"},
+  {"ins": "160d", "name": "lycopene", "origin": "natural_or_synthetic", "source": "May be tomato-derived or produced synthetically"},
+  {"ins": "162", "name": "beet red", "origin": "natural", "source": "Beetroot-derived colour"},
+  {"ins": "163", "name": "anthocyanins", "origin": "natural", "source": "Plant-derived pigments"},
+  {"ins": "171", "name": "titanium dioxide", "origin": "mineral", "source": "Mineral pigment"},
+  {"ins": "200", "name": "sorbic acid", "origin": "natural_or_synthetic", "source": "Occurs naturally; commercial material may be manufactured"},
+  {"ins": "202", "name": "potassium sorbate", "origin": "synthetic_derivative", "source": "Salt of sorbic acid"},
+  {"ins": "210", "name": "benzoic acid", "origin": "natural_or_synthetic", "source": "Occurs naturally; commercial material may be manufactured"},
+  {"ins": "211", "name": "sodium benzoate", "origin": "synthetic_derivative", "source": "Sodium salt of benzoic acid"},
+  {"ins": "220", "name": "sulphur dioxide", "origin": "mineral_or_synthetic", "source": "Sulphur compound; industrially produced"},
+  {"ins": "260", "name": "acetic acid", "origin": "fermentation_or_synthetic", "source": "Vinegar fermentation or industrial manufacture"},
+  {"ins": "270", "name": "lactic acid", "origin": "fermentation_or_synthetic", "source": "Fermentation or industrial manufacture"},
+  {"ins": "300", "name": "ascorbic acid", "origin": "natural_or_synthetic", "source": "Vitamin C; commercial material commonly manufactured"},
+  {"ins": "306", "name": "tocopherols mixed concentrate", "origin": "natural", "source": "Vitamin E compounds, commonly vegetable-oil derived"},
+  {"ins": "322", "name": "lecithins", "origin": "natural", "source": "Commonly derived from soy or sunflower"},
+  {"ins": "330", "name": "citric acid", "origin": "fermentation_derived", "source": "Commercial material commonly produced by fermentation"},
+  {"ins": "400", "name": "alginic acid", "origin": "natural", "source": "Brown seaweed-derived hydrocolloid"},
+  {"ins": "406", "name": "agar", "origin": "natural", "source": "Seaweed-derived hydrocolloid"},
+  {"ins": "410", "name": "locust bean gum", "origin": "natural", "source": "Carob seed-derived hydrocolloid"},
+  {"ins": "412", "name": "guar gum", "origin": "natural", "source": "Guar seed-derived hydrocolloid"},
+  {"ins": "415", "name": "xanthan gum", "origin": "fermentation_derived", "source": "Microbial fermentation-derived hydrocolloid"},
+  {"ins": "440", "name": "pectins", "origin": "natural", "source": "Fruit or plant cell-wall-derived hydrocolloid"},
+  {"ins": "420", "name": "sorbitol", "origin": "natural_or_synthetic", "source": "Occurs naturally; commercial material commonly hydrogenated glucose"},
+  {"ins": "950", "name": "acesulfame potassium", "origin": "synthetic", "source": "Synthetic high-intensity sweetener"},
+  {"ins": "951", "name": "aspartame", "origin": "synthetic", "source": "Synthetic dipeptide methyl ester"},
+  {"ins": "955", "name": "sucralose", "origin": "synthetic", "source": "Chlorinated sucrose derivative"},
+  {"ins": "960", "name": "steviol glycosides", "origin": "natural", "source": "Stevia leaf-derived sweetener"},
+  {"ins": "965", "name": "maltitol", "origin": "synthetic_derivative", "source": "Hydrogenated maltose derivative"},
+  {"ins": "967", "name": "xylitol", "origin": "natural_or_synthetic", "source": "Occurs naturally; commercial material commonly manufactured from plant sugars"},
+  {"ins": "901", "name": "beeswax", "origin": "natural", "source": "Bee-derived glazing agent"},
+  {"ins": "903", "name": "carnauba wax", "origin": "natural", "source": "Palm-leaf-derived glazing agent"},
+  {"ins": "904", "name": "shellac", "origin": "natural", "source": "Lac insect-derived glazing agent"}
  ],
  "additives": [
   {
