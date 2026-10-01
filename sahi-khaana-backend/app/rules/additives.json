@@ -6,12 +6,12 @@
    "NOT_PERMITTED",
    "CONDITIONAL"
   ],
-    "source": "FSSAI Food Safety and Standards (Food Products Standards and Food Additives) Regulations, 2011, official PDF and current regulations index accessed 26 Sep 2026: https://www.fssai.gov.in/docs/food-law/regulations/Food_Additives_Regulations.pdf ; https://www.fssai.gov.in/cms/food-safety-and-standards-regulations.php",
+    "source": "FSSAI Food Safety and Standards (Food Products Standards and Food Additives) Regulations, 2011, official regulations index accessed 29 Sep 2026: https://www.fssai.gov.in/cms/food-safety-and-standards-regulations.php",
     "verification": {
       "identity_and_specification": "listed_in_official_fssai_regulation",
       "use_permission": "not_verified_without_food_category_and_maximum_level",
       "status_policy": "Keep additive entries CONDITIONAL until Schedule/category limits are transcribed and tested.",
-      "last_checked": "2026-09-26"
+      "last_checked": "2026-09-29"
     }
  },
  "functional_classes": [
@@ -165,6 +165,32 @@
     "bulking agents"
    ],
    "source": "Common label wording"
+  }
+ ],
+ "food_category_profiles": [
+  {
+   "id": "sauces_condiments_additives",
+   "fssai_food_category": "12.6",
+   "name": "Sauces, dips, spreads, gravies and table condiments",
+   "status": "REVIEW_REQUIRED",
+   "additives": [
+    {"ins": "202", "name": "potassium sorbate", "functional_class": "preservative"},
+    {"ins": "211", "name": "sodium benzoate", "functional_class": "preservative"},
+    {"ins": "260", "name": "acetic acid", "functional_class": "acidity_regulator"},
+    {"ins": "270", "name": "lactic acid", "functional_class": "acidity_regulator"},
+    {"ins": "300", "name": "ascorbic acid", "functional_class": "antioxidant"},
+    {"ins": "322", "name": "lecithins", "functional_class": "emulsifier"},
+    {"ins": "330", "name": "citric acid", "functional_class": "acidity_regulator"},
+    {"ins": "412", "name": "guar gum", "functional_class": "thickener"},
+    {"ins": "415", "name": "xanthan gum", "functional_class": "thickener"},
+    {"ins": "440", "name": "pectins", "functional_class": "thickener"},
+    {"ins": "471", "name": "mono- and diglycerides of fatty acids", "functional_class": "emulsifier"},
+    {"ins": "621", "name": "monosodium glutamate", "functional_class": "flavour_enhancer"}
+   ],
+   "maximum_level": null,
+   "maximum_level_unit": null,
+   "verification_note": "Identity and functional class are recorded for label review. The permitted additive and maximum level must be verified against the applicable current FSSAI schedule and the specific standardized sauce or condiment; this profile must not be used as blanket approval.",
+   "source": "FSSAI Food Products Standards and Food Additives Regulations, 2011 and current amendments; official compendium index accessed 29 Sep 2026: https://www.fssai.gov.in/food-law/regulations/compendium/food-products-standards"
   }
  ],
  "origin_by_ins": [

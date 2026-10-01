@@ -1,7 +1,8 @@
+
 {
   "_meta": {
     "note": "Category-level master list for FSSAI 2026 — practical, lightweight dataset for compliance checks (category nodes include representative INS codes and usage notes).",
-    "source": "Compiled from FSSAI FPS&FA Regulations 2011 (amendments through 2026) and user-provided ingredients.json",
+    "source": "Compiled from FSSAI Food Products Standards and Food Additives Regulations, 2011 and current amendments; official regulations index accessed 29 Sep 2026: https://www.fssai.gov.in/cms/food-safety-and-standards-regulations.php",
     "document_excerpt": "Plain (non-INS) ingredients used by the normalizer. `PERMITTED` here only means 'ordinary food ingredient, no additive rule needed' and is itself unverified."
   },
   "ingredients": [
@@ -217,6 +218,114 @@
       "examples": ["Tomato Paste", "Dehydrated Vegetables", "Fruit Purees", "Dried Fruits"],
       "notes": "Sulphite/sulphur dioxide limits apply for dried fruits.",
       "source": "FSSAI FPS&FA Regulations 2011, amended 2026"
+    },
+    {
+      "id": "water",
+      "name": "Water",
+      "category": "ingredient_category",
+      "aliases": ["water", "purified water", "drinking water"],
+      "status": "PERMITTED",
+      "notes": "Water used as an ingredient must meet the applicable FSSAI drinking-water requirements.",
+      "source": "FSSAI Food Products Standards and Food Additives Regulations, 2011 and current amendments"
+    },
+    {
+      "id": "tomato_ingredients",
+      "name": "Tomato Ingredients",
+      "category": "ingredient_category",
+      "aliases": ["tomato", "tomatoes", "tomato puree", "tomato paste", "tomato pulp", "tomato concentrate"],
+      "status": "PERMITTED",
+      "notes": "Tomato content and product identity must meet the applicable standard when sold as tomato sauce or tomato ketchup.",
+      "source": "FSSAI Food Products Standards and Food Additives Regulations, 2011 and current amendments"
+    },
+    {
+      "id": "vinegar",
+      "name": "Vinegar",
+      "category": "ingredient_category",
+      "aliases": ["vinegar", "acetic acid vinegar", "malt vinegar", "fruit vinegar", "spirit vinegar"],
+      "status": "PERMITTED",
+      "notes": "Use the applicable vinegar standard; acetic acid declared as an additive is evaluated separately by INS rule.",
+      "source": "FSSAI Food Products Standards and Food Additives Regulations, 2011 and current amendments"
+    },
+    {
+      "id": "salt",
+      "name": "Salt",
+      "category": "ingredient_category",
+      "aliases": ["salt", "common salt", "sodium chloride", "iodised salt", "iodized salt"],
+      "status": "PERMITTED",
+      "notes": "Iodised salt claims and composition must meet the applicable FSSAI standard.",
+      "source": "FSSAI Food Products Standards and Food Additives Regulations, 2011 and current amendments"
+    },
+    {
+      "id": "sugar",
+      "name": "Sugar",
+      "category": "ingredient_category",
+      "aliases": ["sugar", "cane sugar", "sucrose", "invert sugar syrup", "glucose syrup"],
+      "status": "PERMITTED",
+      "notes": "Sugar is an ordinary ingredient; declared sweeteners and their permitted use levels are evaluated separately.",
+      "source": "FSSAI Food Products Standards and Food Additives Regulations, 2011 and current amendments"
+    },
+    {
+      "id": "edible_vegetable_oil",
+      "name": "Edible Vegetable Oil",
+      "category": "ingredient_category",
+      "aliases": ["edible vegetable oil", "vegetable oil", "soybean oil", "sunflower oil", "rapeseed oil", "mustard oil"],
+      "status": "PERMITTED",
+      "notes": "The oil name, purity, blending and trans-fat requirements must meet the applicable FSSAI edible-oil standards.",
+      "source": "FSSAI Food Products Standards and Food Additives Regulations, 2011 and current amendments"
+    },
+    {
+      "id": "mustard",
+      "name": "Mustard",
+      "category": "ingredient_category",
+      "aliases": ["mustard", "mustard seed", "mustard seeds", "mustard flour", "mustard powder"],
+      "status": "PERMITTED",
+      "notes": "Mustard is an allergen and must be declared according to FSSAI labelling requirements.",
+      "source": "FSSAI Food Products Standards and Food Additives Regulations, 2011 and current amendments"
+    },
+    {
+      "id": "soy_ingredients",
+      "name": "Soy Ingredients",
+      "category": "ingredient_category",
+      "aliases": ["soy", "soya", "soybean", "soy protein", "soya protein", "soy sauce", "soya sauce"],
+      "status": "PERMITTED",
+      "notes": "Soy is an allergen. Soy sauce composition and labelling must meet applicable FSSAI requirements.",
+      "source": "FSSAI Food Products Standards and Food Additives Regulations, 2011 and current amendments"
+    },
+    {
+      "id": "chilli",
+      "name": "Chilli",
+      "category": "ingredient_category",
+      "aliases": ["chilli", "chilli pepper", "red chilli", "green chilli", "chilli puree", "chilli paste"],
+      "status": "PERMITTED",
+      "notes": "Use only food-grade chilli ingredients and comply with applicable spice purity and contaminant requirements.",
+      "source": "FSSAI Food Products Standards and Food Additives Regulations, 2011 and current amendments"
+    },
+    {
+      "id": "garlic_and_onion",
+      "name": "Garlic and Onion",
+      "category": "ingredient_category",
+      "aliases": ["garlic", "garlic puree", "garlic paste", "onion", "onion puree", "onion paste"],
+      "status": "PERMITTED",
+      "notes": "Use food-grade fresh, dried or processed garlic and onion ingredients.",
+      "source": "FSSAI Food Products Standards and Food Additives Regulations, 2011 and current amendments"
+    },
+    {
+      "id": "lemon_and_lime",
+      "name": "Lemon and Lime",
+      "category": "ingredient_category",
+      "aliases": ["lemon juice", "lime juice", "lemon concentrate", "lime concentrate"],
+      "status": "PERMITTED",
+      "notes": "Fruit juice or concentrate identity and composition must meet the applicable FSSAI standard.",
+      "source": "FSSAI Food Products Standards and Food Additives Regulations, 2011 and current amendments"
+    },
+    {
+      "id": "tamarind",
+      "name": "Tamarind",
+      "category": "ingredient_category",
+      "aliases": ["tamarind", "tamarind pulp", "tamarind paste", "tamarind concentrate"],
+      "status": "PERMITTED",
+      "notes": "Use food-grade tamarind pulp, paste or concentrate with the applicable fruit-product requirements.",
+      "source": "FSSAI Food Products Standards and Food Additives Regulations, 2011 and current amendments"
     },
     {
       "id": "nuts_seeds_and_oils",

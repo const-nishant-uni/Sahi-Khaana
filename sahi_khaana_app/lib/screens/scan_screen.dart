@@ -136,7 +136,7 @@ class _ScanScreenState extends State<ScanScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Food Label AI')),
+        appBar: AppBar(title: const Text('tatvatracer')),
         body: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,

@@ -118,14 +118,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Food Label AI'),
+        title: const Text('tatvatracer'),
         actions: [
           IconButton(
             icon: const Icon(Icons.info_outline, size: 22),
             onPressed: () {
               showAboutDialog(
                 context: context,
-                applicationName: 'Food Label AI',
+                applicationName: 'tatvatracer',
                 applicationVersion: '1.0.0',
                 children: const [
                   Text(

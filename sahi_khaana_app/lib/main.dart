@@ -11,10 +11,7 @@ void main() {
   final deviceIdStore = SharedPrefsDeviceIdStore();
   final api = createSahiApi();
 
-  runApp(SahiKhaanaApp(
-    api: api,
-    deviceIdStore: deviceIdStore,
-  ));
+  runApp(SahiKhaanaApp(api: api, deviceIdStore: deviceIdStore));
 }
 
 class SahiKhaanaApp extends StatelessWidget {
@@ -30,13 +27,10 @@ class SahiKhaanaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Food Label AI',
+      title: 'tatvatracer',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: BottomNavScaffold(
-        api: api,
-        deviceIdStore: deviceIdStore,
-      ),
+      home: BottomNavScaffold(api: api, deviceIdStore: deviceIdStore),
     );
   }
 }

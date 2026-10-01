@@ -1,9 +1,14 @@
 {
   "_meta": {
-    "note": "FSSAI 2026 category-to-additive mapping with maximum limits for compliance checks.",
-    "source": "FPS&FA Regulations 2011 with amendments through 2026"
+    "note": "Representative category-to-additive data for review. The listed limits must not be treated as FSSAI-approved compliance limits until each additive, food category, unit, and maximum level is checked against the applicable current notification or compendium table.",
+    "source": "FSSAI Food Safety and Standards (Food Products Standards and Food Additives) Regulations, 2011 and current amendments, official regulations index accessed 29 Sep 2026: https://www.fssai.gov.in/cms/food-safety-and-standards-regulations.php",
+    "verification": {
+      "status": "representative_data_not_verified_for_production",
+      "approval_scope": "FSSAI additive permissions are category- and maximum-level-specific; a listed INS identity does not establish unrestricted approval.",
+      "last_checked": "2026-09-29"
+    }
   },
-  "ingredients": [
+  "categories": [
     {
       "id": "bakery",
       "name": "Bread, biscuits & bakery",
@@ -39,7 +44,7 @@
       ],
       "conditions": ["Declared on label", "Use within specified limits"],
       "notes": "Colours and sweeteners restricted; flavouring substances conditional.",
-      "source": "FSSAI FPS&FA Regulations 2011, amended 2026"
+      "source": "Representative data; verify against the current FSSAI additive table before use"
     },
     {
       "id": "beverages_non_alcoholic",
@@ -76,7 +81,7 @@
       ],
       "conditions": ["Declared on label", "Sweeteners not permitted in infant foods"],
       "notes": "Colours restricted; flavouring substances conditional.",
-      "source": "FSSAI FPS&FA Regulations 2011, amended 2026"
+      "source": "Representative data; verify against the current FSSAI additive table before use"
     },
     {
       "id": "confectionery",
@@ -113,7 +118,75 @@
       ],
       "conditions": ["Declared on label", "Use within specified limits"],
       "notes": "Colours restricted; sulphur dioxide limited.",
-      "source": "FSSAI FPS&FA Regulations 2011, amended 2026"
+      "source": "Representative data; verify against the current FSSAI additive table before use"
+    },
+    {
+      "id": "sauces_condiments",
+      "name": "Sauces, condiments & table sauces",
+      "category": "food_category",
+      "fssai_food_category": "12.6",
+      "aliases": [
+        "sauces",
+        "table sauces",
+        "condiments",
+        "seasonings",
+        "dips",
+        "spreads",
+        "gravies"
+      ],
+      "status": "PERMITTED/RESTRICTED",
+      "examples": [
+        "Tomato ketchup or tomato sauce",
+        "Chilli sauce",
+        "Mustard sauce",
+        "Soy sauce",
+        "Mayonnaise",
+        "Salad dressing",
+        "Chutney",
+        "Pickle"
+      ],
+      "representative_INS": [
+        {
+          "name": "Acetic Acid",
+          "codes": ["INS 260"],
+          "type": "acidity_regulator",
+          "limits": [
+            { "food_category": "sauces_condiments", "value": null, "unit": "category-specific; verify current FSSAI schedule" }
+          ]
+        },
+        {
+          "name": "Sodium Benzoate",
+          "codes": ["INS 211"],
+          "type": "preservative",
+          "limits": [
+            { "food_category": "sauces_condiments", "value": null, "unit": "category-specific; verify current FSSAI schedule" }
+          ]
+        },
+        {
+          "name": "Potassium Sorbate",
+          "codes": ["INS 202"],
+          "type": "preservative",
+          "limits": [
+            { "food_category": "sauces_condiments", "value": null, "unit": "category-specific; verify current FSSAI schedule" }
+          ]
+        },
+        {
+          "name": "Xanthan Gum",
+          "codes": ["INS 415"],
+          "type": "thickener",
+          "limits": [
+            { "food_category": "sauces_condiments", "value": null, "unit": "category-specific; verify current FSSAI schedule" }
+          ]
+        }
+      ],
+      "conditions": [
+        "Use only additives permitted for the specific sauce or condiment subcategory",
+        "Use within the applicable FSSAI maximum level or GMP condition",
+        "Declare additives by functional class followed by name or INS number where required",
+        "Verify product-specific standards for tomato sauce, mayonnaise, pickles, chutneys and other standardized foods"
+      ],
+      "notes": "Food category 12.6 covers sauces, dips, spreads and gravies. This record identifies common table-condiment products; it is not a blanket additive approval.",
+      "source": "FSSAI Food Products Standards and Food Additives Regulations, 2011 and current amendments; official regulations index accessed 29 Sep 2026: https://www.fssai.gov.in/cms/food-safety-and-standards-regulations.php"
     }
   ]
 }

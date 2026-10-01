@@ -1,6 +1,6 @@
 {
-    "name": "sahi_khaana_app",
-    "short_name": "sahi_khaana_app",
+    "name": "tatvatracer",
+    "short_name": "tatvatracer",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

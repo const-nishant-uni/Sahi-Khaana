@@ -20,7 +20,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify key editorial elements from Stitch design appear
-    expect(find.text('Food Label AI'), findsWidgets);
+    expect(find.text('tatvatracer'), findsWidgets);
     expect(find.text('INDEPENDENT FOOD INTELLIGENCE'), findsOneWidget);
     expect(find.textContaining('Know what’s in'), findsOneWidget);
     expect(find.text('Scan with Camera'), findsOneWidget);

@@ -1,7 +1,7 @@
 {
  "_meta": {
     "note": "Label declaration terms used by the FSSAI engine. If an additive of `applies_to_category` is present but none of `accepted_phrases` appear in the scanned text, the engine adds ONE label-level finding (ingredient_id null) with status REVIEW. These checks detect label wording only; they do not decide whether an additive is permitted. Review against the latest amendment before production use.",
-    "source": "FSSAI Food Safety and Standards (Labelling and Display) Regulations, 2020, consolidated compendium Version VIII (09 Sep 2025), accessed 26 Sep 2026: https://www.fssai.gov.in/docs/food-law/regulations/Comp_Labelling%20Display_Version%20VIII_09_09_2025.pdf"
+   "source": "FSSAI Food Safety and Standards (Labelling and Display) Regulations, 2020, consolidated compendium Version VIII (09 Sep 2025), official regulations index accessed 29 Sep 2026: https://www.fssai.gov.in/cms/food-safety-and-standards-regulations.php"
  },
  "declarations": [
   {
@@ -56,6 +56,71 @@
     "sweeteners (ins"
    ],
    "source": "FSSAI Labelling and Display Regulations 2020, regulation 2.3.1 (declaration of food additives by functional class and name/INS number); see current consolidated compendium in _meta.source"
+   },
+   {
+    "id": "DECL-ACIDITY-REGULATOR-001",
+    "applies_to_category": "acidity_regulator",
+    "accepted_phrases": [
+      "acidity regulator",
+      "acidity regulators",
+      "acidulant",
+      "acidulants",
+      "acidity regulator (ins",
+      "acidulant (ins"
+    ],
+    "source": "FSSAI Labelling and Display Regulations 2020, regulation 2.3.1 (declaration of food additives by functional class and name/INS number); relevant to sauce and condiment labels"
+   },
+   {
+    "id": "DECL-THICKENER-001",
+    "applies_to_category": "thickener",
+    "accepted_phrases": [
+      "thickener",
+      "thickeners",
+      "stabilizer",
+      "stabilizers",
+      "stabiliser",
+      "stabilisers",
+      "gelling agent",
+      "thickener (ins",
+      "stabilizer (ins"
+    ],
+    "source": "FSSAI Labelling and Display Regulations 2020, regulation 2.3.1 (declaration of food additives by functional class and name/INS number); relevant to sauce and condiment labels"
+   },
+   {
+    "id": "DECL-EMULSIFIER-001",
+    "applies_to_category": "emulsifier",
+    "accepted_phrases": [
+      "emulsifier",
+      "emulsifiers",
+      "emulsifying agent",
+      "emulsifying agents",
+      "emulsifier (ins"
+    ],
+    "source": "FSSAI Labelling and Display Regulations 2020, regulation 2.3.1 (declaration of food additives by functional class and name/INS number); relevant to mayonnaise, dressings and emulsified sauces"
+   },
+   {
+    "id": "DECL-ANTIOXIDANT-001",
+    "applies_to_category": "antioxidant",
+    "accepted_phrases": [
+      "antioxidant",
+      "antioxidants",
+      "antioxidant (ins",
+      "antioxidants (ins"
+    ],
+    "source": "FSSAI Labelling and Display Regulations 2020, regulation 2.3.1 (declaration of food additives by functional class and name/INS number); relevant to sauce and condiment labels"
+   },
+   {
+    "id": "DECL-FLAVOUR-ENHANCER-001",
+    "applies_to_category": "flavour_enhancer",
+    "accepted_phrases": [
+      "flavour enhancer",
+      "flavour enhancers",
+      "flavor enhancer",
+      "flavor enhancers",
+      "flavour enhancer (ins",
+      "flavor enhancer (ins"
+    ],
+    "source": "FSSAI Labelling and Display Regulations 2020, regulation 2.3.1 (declaration of food additives by functional class and name/INS number); relevant to sauce and condiment labels"
   }
  ]
 }

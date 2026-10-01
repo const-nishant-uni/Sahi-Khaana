@@ -86,7 +86,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Food Label AI'),
+        title: const Text('tatvatracer'),
         actions: [
           IconButton(
             icon: const Icon(Icons.share_outlined, size: 20),
