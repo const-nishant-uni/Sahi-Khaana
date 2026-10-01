@@ -15,6 +15,9 @@ class SahiApi {
 
   final ApiClient _client;
 
+  /// The underlying API client with its configuration and device ID store.
+  ApiClient get client => _client;
+
   /// `GET /health`: is the server up? Returns its version string.
   Future<String> health() async {
     final json = await _client.getJson('/health');

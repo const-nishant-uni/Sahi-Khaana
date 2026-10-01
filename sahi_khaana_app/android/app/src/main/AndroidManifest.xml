@@ -7,7 +7,7 @@
          DEVELOPMENT ONLY: remove this and use HTTPS before publishing the app. -->
     <application
         android:usesCleartextTraffic="true"
-        android:label="sahi_khaana_app"
+        android:label="tatvatracer"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

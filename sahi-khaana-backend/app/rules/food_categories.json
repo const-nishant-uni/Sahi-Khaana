@@ -1,68 +1,192 @@
 {
   "_meta": {
-    "note": "Dropdown list shown in the Flutter app. These are plain UI labels; they are NOT regulatory statuses. Later phases use the id to look up per-category rules.",
-    "source": "TODO: verify against the FSS (FPS&FA) Regulations 2011 food category system"
+    "note": "Representative category-to-additive data for review. The listed limits must not be treated as FSSAI-approved compliance limits until each additive, food category, unit, and maximum level is checked against the applicable current notification or compendium table.",
+    "source": "FSSAI Food Safety and Standards (Food Products Standards and Food Additives) Regulations, 2011 and current amendments, official regulations index accessed 29 Sep 2026: https://www.fssai.gov.in/cms/food-safety-and-standards-regulations.php",
+    "verification": {
+      "status": "representative_data_not_verified_for_production",
+      "approval_scope": "FSSAI additive permissions are category- and maximum-level-specific; a listed INS identity does not establish unrestricted approval.",
+      "last_checked": "2026-09-29"
+    }
   },
   "categories": [
     {
       "id": "bakery",
       "name": "Bread, biscuits & bakery",
-      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+      "category": "food_category",
+      "aliases": ["bakery products", "bread", "biscuits"],
+      "status": "PERMITTED/RESTRICTED",
+      "examples": ["Bread", "Biscuits", "Cakes", "Pastries"],
+      "representative_INS": [
+        {
+          "name": "Calcium Propionate",
+          "codes": ["INS 282"],
+          "type": "synthetic",
+          "limits": [
+            { "food_category": "bakery", "value": 3000, "unit": "mg/kg" }
+          ]
+        },
+        {
+          "name": "Lecithin",
+          "codes": ["INS 322"],
+          "type": "natural",
+          "limits": [
+            { "food_category": "bakery", "value": null, "unit": "GMP" }
+          ]
+        },
+        {
+          "name": "Tartrazine",
+          "codes": ["INS 102"],
+          "type": "synthetic",
+          "limits": [
+            { "food_category": "bakery", "value": 100, "unit": "mg/kg" }
+          ]
+        }
+      ],
+      "conditions": ["Declared on label", "Use within specified limits"],
+      "notes": "Colours and sweeteners restricted; flavouring substances conditional.",
+      "source": "Representative data; verify against the current FSSAI additive table before use"
     },
     {
       "id": "beverages_non_alcoholic",
       "name": "Beverages (non-alcoholic)",
-      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
-    },
-    {
-      "id": "cereals_noodles",
-      "name": "Cereals, noodles & pasta",
-      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+      "category": "food_category",
+      "aliases": ["soft drinks", "juices", "energy drinks"],
+      "status": "PERMITTED/RESTRICTED",
+      "examples": ["Carbonated drinks", "Fruit juices", "Energy drinks"],
+      "representative_INS": [
+        {
+          "name": "Sodium Benzoate",
+          "codes": ["INS 211"],
+          "type": "synthetic",
+          "limits": [
+            { "food_category": "beverages_non_alcoholic", "value": 250, "unit": "mg/L" }
+          ]
+        },
+        {
+          "name": "Sucralose",
+          "codes": ["INS 955"],
+          "type": "synthetic",
+          "limits": [
+            { "food_category": "beverages_non_alcoholic", "value": 800, "unit": "mg/L" }
+          ]
+        },
+        {
+          "name": "Sulphur Dioxide",
+          "codes": ["INS 220"],
+          "type": "synthetic",
+          "limits": [
+            { "food_category": "beverages_non_alcoholic", "value": 100, "unit": "mg/L" }
+          ]
+        }
+      ],
+      "conditions": ["Declared on label", "Sweeteners not permitted in infant foods"],
+      "notes": "Colours restricted; flavouring substances conditional.",
+      "source": "Representative data; verify against the current FSSAI additive table before use"
     },
     {
       "id": "confectionery",
       "name": "Confectionery & chocolates",
-      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
-    },
-    {
-      "id": "dairy",
-      "name": "Dairy products",
-      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
-    },
-    {
-      "id": "fats_oils",
-      "name": "Fats & oils",
-      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
-    },
-    {
-      "id": "fruit_veg_products",
-      "name": "Fruit & vegetable products",
-      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
-    },
-    {
-      "id": "meat_fish_egg",
-      "name": "Meat, fish & egg products",
-      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+      "category": "food_category",
+      "aliases": ["candies", "chocolates", "sweets"],
+      "status": "PERMITTED/RESTRICTED",
+      "examples": ["Sugar confectionery", "Chocolate", "Chewing gum"],
+      "representative_INS": [
+        {
+          "name": "Sorbic Acid",
+          "codes": ["INS 200"],
+          "type": "synthetic",
+          "limits": [
+            { "food_category": "confectionery", "value": 1000, "unit": "mg/kg" }
+          ]
+        },
+        {
+          "name": "Sorbitol",
+          "codes": ["INS 420"],
+          "type": "synthetic",
+          "limits": [
+            { "food_category": "confectionery", "value": 10000, "unit": "mg/kg" }
+          ]
+        },
+        {
+          "name": "Erythrosine",
+          "codes": ["INS 127"],
+          "type": "synthetic",
+          "limits": [
+            { "food_category": "confectionery", "value": 200, "unit": "mg/kg" }
+          ]
+        }
+      ],
+      "conditions": ["Declared on label", "Use within specified limits"],
+      "notes": "Colours restricted; sulphur dioxide limited.",
+      "source": "Representative data; verify against the current FSSAI additive table before use"
     },
     {
       "id": "sauces_condiments",
-      "name": "Sauces, spreads & condiments",
-      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
-    },
-    {
-      "id": "snacks_savoury",
-      "name": "Savoury snacks & namkeen",
-      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
-    },
-    {
-      "id": "sweets_desserts",
-      "name": "Sweets & desserts",
-      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
-    },
-    {
-      "id": "other",
-      "name": "Other",
-      "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+      "name": "Sauces, condiments & table sauces",
+      "category": "food_category",
+      "fssai_food_category": "12.6",
+      "aliases": [
+        "sauces",
+        "table sauces",
+        "condiments",
+        "seasonings",
+        "dips",
+        "spreads",
+        "gravies"
+      ],
+      "status": "PERMITTED/RESTRICTED",
+      "examples": [
+        "Tomato ketchup or tomato sauce",
+        "Chilli sauce",
+        "Mustard sauce",
+        "Soy sauce",
+        "Mayonnaise",
+        "Salad dressing",
+        "Chutney",
+        "Pickle"
+      ],
+      "representative_INS": [
+        {
+          "name": "Acetic Acid",
+          "codes": ["INS 260"],
+          "type": "acidity_regulator",
+          "limits": [
+            { "food_category": "sauces_condiments", "value": null, "unit": "category-specific; verify current FSSAI schedule" }
+          ]
+        },
+        {
+          "name": "Sodium Benzoate",
+          "codes": ["INS 211"],
+          "type": "preservative",
+          "limits": [
+            { "food_category": "sauces_condiments", "value": null, "unit": "category-specific; verify current FSSAI schedule" }
+          ]
+        },
+        {
+          "name": "Potassium Sorbate",
+          "codes": ["INS 202"],
+          "type": "preservative",
+          "limits": [
+            { "food_category": "sauces_condiments", "value": null, "unit": "category-specific; verify current FSSAI schedule" }
+          ]
+        },
+        {
+          "name": "Xanthan Gum",
+          "codes": ["INS 415"],
+          "type": "thickener",
+          "limits": [
+            { "food_category": "sauces_condiments", "value": null, "unit": "category-specific; verify current FSSAI schedule" }
+          ]
+        }
+      ],
+      "conditions": [
+        "Use only additives permitted for the specific sauce or condiment subcategory",
+        "Use within the applicable FSSAI maximum level or GMP condition",
+        "Declare additives by functional class followed by name or INS number where required",
+        "Verify product-specific standards for tomato sauce, mayonnaise, pickles, chutneys and other standardized foods"
+      ],
+      "notes": "Food category 12.6 covers sauces, dips, spreads and gravies. This record identifies common table-condiment products; it is not a blanket additive approval.",
+      "source": "FSSAI Food Products Standards and Food Additives Regulations, 2011 and current amendments; official regulations index accessed 29 Sep 2026: https://www.fssai.gov.in/cms/food-safety-and-standards-regulations.php"
     }
   ]
 }

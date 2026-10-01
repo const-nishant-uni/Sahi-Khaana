@@ -1,4 +1,5 @@
 import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 /// Where the backend is and how long to wait for it.
 ///
@@ -16,7 +17,7 @@ class ApiConfig {
   factory ApiConfig.fromEnvironment() => ApiConfig(
     baseUrl: resolveBaseUrl(
       override: const String.fromEnvironment('API_BASE_URL'),
-      isAndroid: Platform.isAndroid,
+      isAndroid: !kIsWeb && Platform.isAndroid,
     ),
   );
 

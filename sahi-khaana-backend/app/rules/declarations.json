@@ -1,41 +1,126 @@
 {
  "_meta": {
-  "note": "Label declaration rules used by the FSSAI engine. If any ingredient of `applies_to_category` is present but none of `accepted_phrases` appear in the scanned text, the engine adds ONE label-level finding (ingredient_id null) with status REVIEW. A missing declaration is never a FLAG, because OCR may simply have missed the text. All entries are placeholders.",
-  "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+    "note": "Label declaration terms used by the FSSAI engine. If an additive of `applies_to_category` is present but none of `accepted_phrases` appear in the scanned text, the engine adds ONE label-level finding (ingredient_id null) with status REVIEW. These checks detect label wording only; they do not decide whether an additive is permitted. Review against the latest amendment before production use.",
+   "source": "FSSAI Food Safety and Standards (Labelling and Display) Regulations, 2020, consolidated compendium Version VIII (09 Sep 2025), official regulations index accessed 29 Sep 2026: https://www.fssai.gov.in/cms/food-safety-and-standards-regulations.php"
  },
  "declarations": [
   {
    "id": "DECL-COLOUR-001",
    "applies_to_category": "colour",
    "accepted_phrases": [
+    "added colour",
+    "added colours",
+    "added colour(s)",
+    "colour (ins",
+    "colours (ins",
     "permitted natural colour",
-    "permitted synthetic food colour",
-    "permitted synthetic colour",
-    "contains added colour"
+    "permitted synthetic food colour"
    ],
-   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+   "source": "FSSAI Labelling and Display Regulations 2020, regulation 2.3.1 (declaration of food additives by functional class and name/INS number); see current consolidated compendium in _meta.source"
   },
   {
    "id": "DECL-FLAVOUR-001",
    "applies_to_category": "flavour",
    "accepted_phrases": [
-    "contains natural flavouring",
-    "contains nature identical flavouring",
-    "contains artificial flavouring",
-    "contains added flavour",
-    "added flavour"
+    "added flavour",
+    "added flavours",
+    "added flavour(s)",
+    "natural flavouring substances",
+    "nature identical flavouring substances",
+    "artificial flavouring substances",
+    "flavour (ins",
+    "flavours (ins"
    ],
-   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+   "source": "FSSAI Labelling and Display Regulations 2020, regulation 2.3.1 (flavouring substances and declaration by name/class); see current consolidated compendium in _meta.source"
   },
   {
    "id": "DECL-PRESERVATIVE-001",
    "applies_to_category": "preservative",
    "accepted_phrases": [
-    "contains permitted preservative",
-    "contains preservative",
-    "preservative"
+    "preservative",
+    "preservatives",
+    "preservative (ins",
+    "preservatives (ins"
    ],
-   "source": "TODO: verify against FSS (FPS&FA) Regulations 2011"
+   "source": "FSSAI Labelling and Display Regulations 2020, regulation 2.3.1 (declaration of food additives by functional class and name/INS number); see current consolidated compendium in _meta.source"
+  },
+  {
+   "id": "DECL-SWEETENER-001",
+   "applies_to_category": "sweetener",
+   "accepted_phrases": [
+    "contains sweetener",
+    "contains sweeteners",
+    "with sweetener",
+    "with sweeteners",
+    "sweetener (ins",
+    "sweeteners (ins"
+   ],
+   "source": "FSSAI Labelling and Display Regulations 2020, regulation 2.3.1 (declaration of food additives by functional class and name/INS number); see current consolidated compendium in _meta.source"
+   },
+   {
+    "id": "DECL-ACIDITY-REGULATOR-001",
+    "applies_to_category": "acidity_regulator",
+    "accepted_phrases": [
+      "acidity regulator",
+      "acidity regulators",
+      "acidulant",
+      "acidulants",
+      "acidity regulator (ins",
+      "acidulant (ins"
+    ],
+    "source": "FSSAI Labelling and Display Regulations 2020, regulation 2.3.1 (declaration of food additives by functional class and name/INS number); relevant to sauce and condiment labels"
+   },
+   {
+    "id": "DECL-THICKENER-001",
+    "applies_to_category": "thickener",
+    "accepted_phrases": [
+      "thickener",
+      "thickeners",
+      "stabilizer",
+      "stabilizers",
+      "stabiliser",
+      "stabilisers",
+      "gelling agent",
+      "thickener (ins",
+      "stabilizer (ins"
+    ],
+    "source": "FSSAI Labelling and Display Regulations 2020, regulation 2.3.1 (declaration of food additives by functional class and name/INS number); relevant to sauce and condiment labels"
+   },
+   {
+    "id": "DECL-EMULSIFIER-001",
+    "applies_to_category": "emulsifier",
+    "accepted_phrases": [
+      "emulsifier",
+      "emulsifiers",
+      "emulsifying agent",
+      "emulsifying agents",
+      "emulsifier (ins"
+    ],
+    "source": "FSSAI Labelling and Display Regulations 2020, regulation 2.3.1 (declaration of food additives by functional class and name/INS number); relevant to mayonnaise, dressings and emulsified sauces"
+   },
+   {
+    "id": "DECL-ANTIOXIDANT-001",
+    "applies_to_category": "antioxidant",
+    "accepted_phrases": [
+      "antioxidant",
+      "antioxidants",
+      "antioxidant (ins",
+      "antioxidants (ins"
+    ],
+    "source": "FSSAI Labelling and Display Regulations 2020, regulation 2.3.1 (declaration of food additives by functional class and name/INS number); relevant to sauce and condiment labels"
+   },
+   {
+    "id": "DECL-FLAVOUR-ENHANCER-001",
+    "applies_to_category": "flavour_enhancer",
+    "accepted_phrases": [
+      "flavour enhancer",
+      "flavour enhancers",
+      "flavor enhancer",
+      "flavor enhancers",
+      "flavour enhancer (ins",
+      "flavor enhancer (ins"
+    ],
+    "source": "FSSAI Labelling and Display Regulations 2020, regulation 2.3.1 (declaration of food additives by functional class and name/INS number); relevant to sauce and condiment labels"
   }
  ]
 }

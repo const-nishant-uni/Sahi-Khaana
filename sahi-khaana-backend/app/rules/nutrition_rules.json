@@ -1,8 +1,67 @@
 {
  "_meta": {
-  "note": "Health-score inputs, per 100 g. Score starts at base_score; each nutrient adds its (negative) impact when the value is STRICTLY greater than gt. Each of sugars, total fat, saturated fat and sodium has two tiers from the UK FSA: 'high' (the big penalty) and 'medium' (above the FSA 'low' cut-off, -5). Only the strictest matching tier applies, so there is no double counting. Thresholds marked with the UK FSA source are those cut-offs; the impact sizes (how many points each costs) are always a project heuristic. Beverages (per 100 ml, or a category listed in beverage_categories) use half of the thresholds listed in beverage_halved.",
-  "source": "UK FSA front-of-pack nutrition labelling (traffic light) criteria, per 100 g: 'high' threshold"
+    "note": "Health-score inputs, per 100 g. Score starts at base_score; each nutrient adds its (negative) impact when the value is STRICTLY greater than gt. The numeric scoring thresholds below are UK FSA traffic-light criteria and project heuristics, not FSSAI-approved health claims or legal limits. FSSAI label requirements are recorded separately in `fssai_label_requirements`; use those for label-data completeness, not for a health-pass decision. Beverages (per 100 ml, or a category listed in beverage_categories) use half of the scoring thresholds listed in beverage_halved.",
+   "source": "FSSAI Food Safety and Standards (Labelling and Display) Regulations, 2020, consolidated compendium Version VIII (09 Sep 2025), official regulations index accessed 29 Sep 2026: https://www.fssai.gov.in/cms/food-safety-and-standards-regulations.php",
+    "verification": {
+     "regulatory_scope": "FSSAI requires nutrition information on the label but does not publish one universal healthy/unhealthy score threshold for all packaged foods.",
+   "last_checked": "2026-09-29",
+     "scoring_thresholds_status": "project_scoring_criteria_not_fssai_approval"
+    }
  },
+ "fssai_label_requirements": {
+    "basis": "per_100g_or_per_100ml_as_applicable",
+    "required_nutrients": [
+     {"key": "energy_kcal", "label": "Energy", "unit": "kcal"},
+     {"key": "protein_g", "label": "Protein", "unit": "g"},
+     {"key": "carbohydrate_g", "label": "Carbohydrate", "unit": "g"},
+     {"key": "total_sugars_g", "label": "Total sugars", "unit": "g"},
+     {"key": "added_sugars_g", "label": "Added sugars", "unit": "g"},
+     {"key": "total_fat_g", "label": "Total fat", "unit": "g"},
+     {"key": "saturated_fat_g", "label": "Saturated fat", "unit": "g"},
+     {"key": "trans_fat_g", "label": "Trans fat", "unit": "g"},
+     {"key": "sodium_mg", "label": "Sodium", "unit": "mg"}
+    ],
+    "source": "FSSAI Labelling and Display Regulations 2020, nutrition information provisions; see _meta.source",
+    "note": "A missing field should be reported as unavailable for label review. It must not be treated as zero or as evidence that a product is compliant."
+ },
+ "food_category_profiles": [
+   {
+    "id": "sauces_condiments_nutrition",
+    "fssai_food_category": "12.6",
+    "name": "Sauces, dips, spreads, gravies and table condiments",
+    "products": [
+      "Tomato ketchup or tomato sauce",
+      "Chilli sauce",
+      "Mustard sauce",
+      "Soy sauce",
+      "Mayonnaise",
+      "Salad dressing",
+      "Chutney",
+      "Pickle"
+    ],
+    "label_basis": "per_100g_or_per_100ml_as_applicable",
+    "required_nutrient_keys": [
+      "energy_kcal",
+      "protein_g",
+      "carbohydrate_g",
+      "total_sugars_g",
+      "added_sugars_g",
+      "total_fat_g",
+      "saturated_fat_g",
+      "trans_fat_g",
+      "sodium_mg"
+    ],
+    "nutrition_review_points": [
+      "Record sodium and salt information from the product label or laboratory result; do not infer compliance from a generic sauce profile.",
+      "Record total sugars and added sugars separately where declared.",
+      "Use per-100 g or per-100 ml values consistently with the product label and serving format.",
+      "Mayonnaise and oil-based dressings require particular attention to total fat, saturated fat and trans fat.",
+      "Product-specific nutrient values are not fixed by the FSSAI food category and must come from the declared label or analysis."
+    ],
+    "status": "LABEL_DATA_REQUIRED",
+    "source": "FSSAI Food Safety and Standards (Labelling and Display) Regulations, 2020, nutrition information provisions; official regulations index accessed 29 Sep 2026: https://www.fssai.gov.in/cms/food-safety-and-standards-regulations.php"
+   }
+ ],
  "base_score": 100,
  "beverage_categories": [
   "beverages_non_alcoholic"
